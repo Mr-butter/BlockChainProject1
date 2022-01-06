@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const { sequelize } = require('./models');
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -14,6 +15,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+sequelize.sync({ force : false})
+	.then(() => {
+		console.log('DB 연결성공');
+	})
+	.catch((err) => {
+		console.error(`DB 연결실패 - ${err}`);
+	});
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
