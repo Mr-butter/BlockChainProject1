@@ -13,6 +13,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { withRouter } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../actions";
 import axios from "axios";
 
 function Copyright(props) {
@@ -34,6 +36,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 function Login(props) {
+    const dispatch = useDispatch();
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
     const [isRemember, setIsRemember] = useState(false);
@@ -69,15 +72,29 @@ function Login(props) {
             email: Email,
             password: Password,
         };
-        await axios
-            .post("/login", body, {
-                withCredentials: true,
-            })
-            // .then((res) => console.log(res.data.message));
+
+        dispatch(loginUser(body))
             .then((res) => {
-                alert(res.data.message);
-                props.history.push("/mypage");
+                if (res.payload.login) {
+                    alert(res.payload.message);
+                    return props.history.push("/");
+                } else {
+                    alert(res.payload.message);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
             });
+
+        // await axios
+        //     .post("/login", body, {
+        //         withCredentials: true,
+        //     })
+        //     // .then((res) => console.log(res.data.message));
+        //     .then((res) => {
+        //         alert(res.data.message);
+        //         props.history.push("/mypage");
+        //     });
     };
 
     return (

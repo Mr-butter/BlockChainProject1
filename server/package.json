@@ -1,6 +1,6 @@
 {
     "name": "blockchainproject1",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "private": true,
     "scripts": {
         "start": "nodemon ./bin/www"
@@ -22,6 +22,7 @@
         "mysql2": "^2.3.3",
         "passport": "^0.5.2",
         "passport-local": "^1.0.0",
+        "random": "^3.0.6",
         "sequelize": "^6.12.5",
         "sequelize-cli": "^6.3.0",
         "ws": "^8.4.0"
