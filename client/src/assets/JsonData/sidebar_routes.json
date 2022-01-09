@@ -15,13 +15,18 @@
     "icon": "bx bxl-squarespace"
   },
   {
-    "display_name": "settings",
-    "route": "/settings",
-    "icon": "bx bxs-cog"
+    "display_name": "message",
+    "route": "/message",
+    "icon": "bx bx-message"
   },
   {
     "display_name": "wallet",
     "route": "/wallet",
     "icon": "bx bx-wallet"
+  },
+  {
+    "display_name": "settings",
+    "route": "/settings",
+    "icon": "bx bxs-cog"
   }
 ]
