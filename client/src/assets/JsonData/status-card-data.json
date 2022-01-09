@@ -1,22 +1,22 @@
 [
-    {
-        "icon": "bx bx-shopping-bag",
-        "count": "1,995",
-        "title": "Total sales"
-    },
-    {
-        "icon": "bx bx-cart",
-        "count": "2,001",
-        "title": "Daily visits"
-    },
-    {
-        "icon": "bx bx-dollar-circle",
-        "count": "$2,632",
-        "title": "Total income"
-    },
-    {
-        "icon": "bx bx-receipt",
-        "count": "1,711",
-        "title": "Total orders"
-    }
+  {
+    "icon": "bx bx-shopping-bag",
+    "count": "4604.25 USD",
+    "title": "Total Volume   (24 Hours)"
+  },
+  {
+    "icon": "bx bx-cart",
+    "count": "13812.61.12 USD(10BTC)",
+    "title": "Market Cap"
+  },
+  {
+    "icon": "bx bx-dollar-circle",
+    "count": "$2,632",
+    "title": "Supplies"
+  },
+  {
+    "icon": "bx bx-receipt",
+    "count": "460445.5 USD(50BTC)",
+    "title": "Maximum Supplies"
+  }
 ]
