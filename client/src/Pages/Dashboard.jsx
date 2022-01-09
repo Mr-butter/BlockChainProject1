@@ -4,6 +4,8 @@ import Chart from "react-apexcharts";
 
 import StatusCard from "../components/status-card/StatusCard";
 
+import Table from "../components/table/Table";
+
 import statusCards from "../assets/JsonData/status-card-data.json";
 import { Link } from "@mui/material";
 
@@ -81,15 +83,17 @@ const Dashboard = () => {
               height="100%"
             />
           </div>
-          <div className="col-4">
-            <div className="card">
-              <div className="card__header">
-                <h3>Latest Blocks</h3>
-              </div>
-              <div className="card__body">{/* table */}</div>
-              <div className="card__footer">
-                <Link to="/">View all</Link>
-              </div>
+        </div>
+        <div className="col-4">
+          <div className="card">
+            <div className="card__header">
+              <h3>Latest Blocks</h3>
+            </div>
+            <div className="card__body">
+              <Table />
+            </div>
+            <div className="card__footer">
+              <Link to="/">View all</Link>
             </div>
           </div>
         </div>
