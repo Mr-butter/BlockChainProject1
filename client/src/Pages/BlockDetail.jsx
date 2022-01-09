@@ -4,6 +4,70 @@ import Table from "../components/table/Table";
 
 const blockTableHead = ["Hash", "Timestamp", "Amount", "Data"];
 
+// 아래 blockTableBody은 페이지 기능보려고 넣은 임시데이타
+const blockTableBody = [
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+  {
+    Hash: "717705125461",
+    Timestamp: "1321546489797",
+    Amount: "1000",
+    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
+  },
+];
+
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const renderBody = (item, index) => (
@@ -24,9 +88,10 @@ const BlockDetail = () => {
           <div className="card">
             <div className="card__body">
               <Table
+                limit="10"
                 headData={blockTableHead}
                 renderHead={(item, index) => renderHead(item, index)}
-                bodyData={[]} // 추후 데이터 베이스 불러와야함.
+                bodyData={blockTableBody} // 추후 데이터 베이스 불러와야함.
                 renderBody={(item, index) => renderBody(item, index)}
               />
             </div>
