@@ -8,10 +8,28 @@ import Dropdown from "../dropdown/Dropdown";
 
 import notifications from "../../assets/JsonData/notification.json";
 
+import user_image from "../../assets/images/tuat.png";
+
+import user_menu from "../../assets/JsonData/user_menus.json";
+
+const curr_user = {
+  display_name: "cococoin",
+  image: user_image,
+};
+
 const renderNotificationItem = (item, index) => (
   <div className="notification-item" key={index}>
     <i className={item.icon}></i>
     <span>{item.content}</span>
+  </div>
+);
+
+const renderUserToggle = (user) => (
+  <div className="topnav__right-user">
+    <div className="topnav__right-user__image">
+      <img src={user.image} alt="" />
+    </div>
+    <div className="topnav__right-user__name">{user.display_name}</div>
   </div>
 );
 
