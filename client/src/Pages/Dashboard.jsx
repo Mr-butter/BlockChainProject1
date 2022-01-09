@@ -100,7 +100,25 @@ const renderCusomerBody = (item, index) => (
   </tr>
 );
 
-const latestOrders = {};
+const latestOrders = {
+  header: ["Hash", "Time", "Amount", "Data"],
+  body: [],
+};
+
+// const orderStatus = {};
+
+const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
+
+const renderOrderBody = (item, index) => (
+  <tr>
+    <td>{item.Hash}</td>
+    <td>{item.Time}</td>
+    <td>{item.Amount}</td>
+    <td>
+      <span>{item.Data}</span>
+    </td>
+  </tr>
+);
 
 const Dashboard = () => {
   return (
@@ -151,12 +169,19 @@ const Dashboard = () => {
               <Link to="/">View all</Link>
             </div>
           </div>
-          <div className="col-8">
+        </div>
+        <div className="col-8">
+          <div className="card">
             <div className="card__header">
-              <h3>Latest Transactions</h3>
+              <h3>latest orders</h3>
             </div>
             <div className="card__body">
-              <Table />
+              <Table
+                headData={latestOrders.header}
+                renderHead={(item, index) => renderOrderHead(item, index)}
+                bodyData={latestOrders.body}
+                renderBody={(item, index) => renderOrderBody(item, index)}
+              />
             </div>
             <div className="card__footer">
               <Link to="/">view all</Link>

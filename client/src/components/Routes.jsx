@@ -3,13 +3,13 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Dashboard from "../Pages/Dashboard";
-import Customers from "../Pages/Customers";
+import BlockDetail from "../Pages/BlockDetail";
 
 const Routes = () => {
   return (
     <Switch>
       <Route path="/" exact component={Dashboard} />
-      <Route path="/customers" component={Customers} />
+      <Route path="/detail" component={BlockDetail} />
     </Switch>
   );
 };
