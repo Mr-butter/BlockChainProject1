@@ -71,11 +71,31 @@ function MainSection(props) {
     }
 
     function mnemonic() {
-        axios.post("/mnemonic").then((res) => {
+        axios.post("/wallet/mnemonic").then((res) => {
             const data = res.data;
             document.getElementById("writefield").innerText =
                 JSON.stringify(data);
         });
+    }
+
+    function newWallet() {
+        let walletPwdFromUser = prompt(
+            "지갑 생성을 위한 패스워드를 입력하세요.",
+            "1234"
+        );
+        let mnemonicFromUser = prompt(
+            "니모닉을 입력하세요."
+        );
+        axios
+            .post("/wallet/newWallet", {
+                password: walletPwdFromUser,
+                mnemonic: mnemonicFromUser
+            })
+            .then((res) => {
+                const data = res.data;
+                document.getElementById("writefield").innerText =
+                    JSON.stringify(data);
+            });
     }
     return (
         <div>
@@ -119,6 +139,11 @@ function MainSection(props) {
                 <li>
                     <button id="mnemonic" onClick={() => mnemonic()}>
                         mnemonic
+                    </button>
+                </li>
+                <li>
+                    <button id="newWallet" onClick={() => newWallet()}>
+                        newWallet
                     </button>
                 </li>
             </ol>
