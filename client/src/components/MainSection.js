@@ -61,6 +61,22 @@ function MainSection(props) {
                 JSON.stringify(data);
         });
     }
+
+    function makeWallet() {
+        axios.post("/initWallet").then((res) => {
+            const data = res.data;
+            document.getElementById("writefield").innerText =
+                JSON.stringify(data);
+        });
+    }
+
+    function mnemonic() {
+        axios.post("/mnemonic").then((res) => {
+            const data = res.data;
+            document.getElementById("writefield").innerText =
+                JSON.stringify(data);
+        });
+    }
     return (
         <div>
             <h2>메인 페이지 내용 추가</h2>
@@ -93,6 +109,16 @@ function MainSection(props) {
                 <li>
                     <button id="address" onClick={() => address()}>
                         address
+                    </button>
+                </li>
+                <li>
+                    <button id="initwallet" onClick={() => makeWallet()}>
+                        initwallet
+                    </button>
+                </li>
+                <li>
+                    <button id="mnemonic" onClick={() => mnemonic()}>
+                        mnemonic
                     </button>
                 </li>
             </ol>

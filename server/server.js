@@ -16,6 +16,7 @@ var main = require("./routes/main");
 var register = require("./routes/register");
 var initWallet = require("./routes/initWallet");
 var login = require("./routes/login");
+var mnemonic = require("./routes/mnemonic");
 
 var app = express();
 passportConfig(); // 패스포트 설정
@@ -52,6 +53,7 @@ app.use("/", main);
 app.use("/register", register);
 app.use("/initWallet", initWallet);
 app.use("/login", login);
+app.use("/mnemonic", mnemonic);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
