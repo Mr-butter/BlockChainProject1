@@ -53,6 +53,55 @@ const chartOptions = {
   },
 };
 
+const LatestBlocks = {
+  head: ["Height", "Mined", "Miner", "Size"],
+  body: [
+    {
+      Height: "717701",
+      Mined: "5555555",
+      Miner: "sgsfsf",
+      Size: "1231545 bytes",
+    },
+    {
+      Height: "717702",
+      Mined: "5555555",
+      Miner: "sdfsfg",
+      Size: "1231545 bytes",
+    },
+    {
+      Height: "717703",
+      Mined: "555555",
+      Miner: "fsdfsdf0",
+      Size: "1231545 bytes",
+    },
+    {
+      Height: "717704",
+      Mined: "5555555",
+      Miner: "gf1gfs",
+      Size: "1231545 bytes",
+    },
+    {
+      Height: "717705",
+      Mined: "555555",
+      Miner: "sdfgh",
+      Size: "1231545 bytes",
+    },
+  ],
+};
+
+const renderCustomerHead = (item, index) => <th key={index}>{item}</th>;
+
+const renderCusomerBody = (item, index) => (
+  <tr key={index}>
+    <td>{item.Height}</td>
+    <td>{item.Mined}</td>
+    <td>{item.Miner}</td>
+    <td>{item.Size}</td>
+  </tr>
+);
+
+const latestOrders = {};
+
 const Dashboard = () => {
   return (
     <div>
@@ -88,12 +137,29 @@ const Dashboard = () => {
           <div className="card">
             <div className="card__header">
               <h3>Latest Blocks</h3>
+              <h5>The most recently mined blocks</h5>
+            </div>
+            <div className="card__body">
+              <Table
+                headData={LatestBlocks.head}
+                renderHead={(item, index) => renderCustomerHead(item, index)}
+                bodyData={LatestBlocks.body}
+                renderBody={(item, index) => renderCusomerBody(item, index)}
+              />
+            </div>
+            <div className="card__footer">
+              <Link to="/">View all</Link>
+            </div>
+          </div>
+          <div className="col-8">
+            <div className="card__header">
+              <h3>Latest Transactions</h3>
             </div>
             <div className="card__body">
               <Table />
             </div>
             <div className="card__footer">
-              <Link to="/">View all</Link>
+              <Link to="/">view all</Link>
             </div>
           </div>
         </div>
