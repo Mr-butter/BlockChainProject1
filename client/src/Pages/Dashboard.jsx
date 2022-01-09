@@ -84,7 +84,7 @@ const Dashboard = () => {
           <div className="col-4">
             <div className="card">
               <div className="card__header">
-                <h3>top customers</h3>
+                <h3>Latest Blocks</h3>
               </div>
               <div className="card__body">{/* table */}</div>
               <div className="card__footer">
