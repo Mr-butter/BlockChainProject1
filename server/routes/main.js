@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const { getBlocks, nextBlock, getVersion } = require("../public/chainedBlock");
 const { addBlock } = require("../public/checkValidBlock");
+const { getPublicKeyFromWallet } = require("../public/encryption");
 
 /* GET home page. */
 router.post("/addPeers", (req, res) => {
@@ -40,7 +41,7 @@ router.post("/stop", (req, res) => {
     process.exit();
 });
 
-router.post("/address", (req, res) => {
+router.get("/address", (req, res) => {
     const address = getPublicKeyFromWallet().toString();
     if (address != "") {
         res.send({ address: address });
