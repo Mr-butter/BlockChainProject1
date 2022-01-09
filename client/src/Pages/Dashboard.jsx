@@ -173,7 +173,7 @@ const Dashboard = () => {
         <div className="col-8">
           <div className="card">
             <div className="card__header">
-              <h3>latest orders</h3>
+              <h3>Latest Transactions</h3>
             </div>
             <div className="card__body">
               <Table
