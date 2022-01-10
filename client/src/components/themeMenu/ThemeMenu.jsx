@@ -103,7 +103,7 @@ const ThemeMenu = () => {
     if (themeClass !== undefined) setcurrMode(themeClass.id);
 
     if (colorClass !== undefined) setcurrColor(colorClass.id);
-  }, [input]);
+  }, []);
 
   return (
     <div>

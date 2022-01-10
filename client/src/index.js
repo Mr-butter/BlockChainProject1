@@ -8,7 +8,7 @@ import "./css/index.css";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 // import { composeWithDevTools } from "redux-devtools-extension";
-import rootReducer from "./reducers";
+import rootReducer from "./redux/reducers/index";
 
 import "./assets/boxicons-2.1.1/css/boxicons.min.css";
 import "./assets/css/grid.css";
@@ -17,14 +17,14 @@ import "./assets/css/index.css";
 
 import Layout from "./components/layout/Layout";
 
+const store = createStore(rootReducer);
+
 document.title = "CoLink";
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   promiseMiddleware,
 //   ReduxThunk
 // )(createStore);
-
-const store = createStore(rootReducer);
 
 ReactDOM.render(
   //   <Provider
