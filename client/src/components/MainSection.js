@@ -10,16 +10,14 @@ function MainSection(props) {
                 JSON.stringify(data);
         });
     }
+
     function mineBlock() {
-        axios
-            .post("/mineBlock", {
-                data: [{ transection: Math.random() * 1000 }],
-            })
-            .then((res) => {
-                const data = res.data;
-                document.getElementById("writefield").innerText =
-                    JSON.stringify(data);
-            });
+        axios.post("/mineBlock").then((res) => {
+            const data = res.data;
+            console.log(data);
+            document.getElementById("writefield").innerText =
+                JSON.stringify(data);
+        });
     }
     function version() {
         axios.post("/version").then((res) => {
@@ -100,13 +98,11 @@ function MainSection(props) {
             "지갑 생성을 위한 패스워드를 입력하세요.",
             "1234"
         );
-        let mnemonicFromUser = prompt(
-            "니모닉을 입력하세요."
-        );
+        let mnemonicFromUser = prompt("니모닉을 입력하세요.");
         axios
             .post("/wallet/newWallet", {
                 password: walletPwdFromUser,
-                mnemonic: mnemonicFromUser
+                mnemonic: mnemonicFromUser,
             })
             .then((res) => {
                 const data = res.data;
