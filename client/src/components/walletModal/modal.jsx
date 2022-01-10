@@ -5,15 +5,16 @@ import styled from "styled-components";
 import { MdClose } from "react-icons/md";
 
 const Background = styled.div`
-  width: 75%;
-  height: 100%;
+  width: 65%;
+  height: 87%;
   background: rgba(0, 0, 0, 0.9);
   position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 45px;
+  margin-left: 85px;
   z-index: 8;
+  margin-bottom: 10%;
 `;
 
 const ModalWrapper = styled.div`
@@ -49,9 +50,9 @@ const ModalContent = styled.div`
   }
   button {
     padding: 10px 24px;
-    background: #141414;
+    background: #272727;
     color: gold;
-    margin: 25px 25px;
+    margin: 15px 25px;
     border: none;
   }
 `;
