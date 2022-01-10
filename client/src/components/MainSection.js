@@ -1,7 +1,6 @@
 import axios from "axios";
 import React from "react";
 import { withRouter } from "react-router-dom";
-import WebSocket from "ws";
 
 function MainSection(props) {
     function block() {
@@ -28,6 +27,24 @@ function MainSection(props) {
             document.getElementById("writefield").innerText =
                 JSON.stringify(data);
         });
+    }
+
+    function connectSocketServer() {
+        axios.post("/socketServer/connectServer").then((res) => {
+            const data = res.data;
+            console.log(data);
+        });
+    }
+
+    function sendMessage() {
+        let ws = new WebSocket("ws://localhost:6001");
+
+        ws.onopen = function () {
+            ws.send("할로");
+        };
+        ws.onmessage = function (e) {
+            console.log(e.data);
+        };
     }
 
     function addPeers() {
@@ -117,18 +134,31 @@ function MainSection(props) {
                     </button>
                 </li>
                 <li>
+                    <button
+                        id="connectSocketServer"
+                        onClick={() => connectSocketServer()}
+                    >
+                        connectSocketServer
+                    </button>
+                </li>
+                <li>
+                    <button id="sendMessage" onClick={() => sendMessage()}>
+                        sendMessage
+                    </button>
+                </li>
+                <li>
                     <button id="addPeers" onClick={() => addPeers()}>
-                        addPeers
+                        addPeers(test...)
                     </button>
                 </li>
                 <li>
                     <button id="peers" onClick={() => peers()}>
-                        peers
+                        peers(test...)
                     </button>
                 </li>
                 <li>
                     <button id="address" onClick={() => address()}>
-                        address
+                        address(test...)
                     </button>
                 </li>
                 <li>

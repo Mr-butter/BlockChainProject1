@@ -16,6 +16,7 @@ var main = require("./routes/main");
 var register = require("./routes/register");
 var initWallet = require("./routes/initWallet");
 var login = require("./routes/login");
+var socketServer = require("./routes/socketServer");
 var wallet = require("./routes/wallet");
 
 var app = express();
@@ -53,6 +54,7 @@ app.use("/", main);
 app.use("/register", register);
 app.use("/initWallet", initWallet);
 app.use("/login", login);
+app.use("/socketServer", socketServer);
 app.use("/wallet", wallet);
 
 // catch 404 and forward to error handler
