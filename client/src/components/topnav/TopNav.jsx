@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "./topnav.css";
 
@@ -44,13 +44,33 @@ const renderNotificationItem = (item, index) => (
 //   </Link>
 // );
 
+// function Modal(props) {
+//   function initModal() {
+//     axios.post("/modal", (req, res) => {
+//       alert(res.data.message);
+//     });
+//   }
+//   return (
+//     <F>
+//       <h2>모달창</h2>
+//       <button onClick={initModal()}>개인지갑생성</button>
+//     </F>
+//   );
+// }
+
 const Topnav = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal((prev) => !prev);
+  };
   return (
     <div className="topnav">
       <div className="topnav__search">
         <input type="text" placeholder="Search here..." />
         <i className="bx bx-search"></i>
       </div>
+
       <div className="topnav__right">
         <div className="topnav__right-item">
           <Dropdown
@@ -58,10 +78,14 @@ const Topnav = () => {
             // customerToggle={() => renderUserToggle(curr_user)}
             // contentData={user_menu}
             // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={() => <Link to="/mypage">Sign In</Link>}
+            renderFooter={() => (
+              <Link to="/mypage" onClick={openModal}>
+                Sign In
+              </Link>
+            )}
           />
-          {/* 여기에 드롭다운바 만들기 */}
         </div>
+
         <div className="topnav__right-item">
           <Dropdown
             icon="bx bx-bell"
