@@ -35,7 +35,6 @@ class BlockHeader {
 
 function getVersion() {
     const package = fs.readFileSync("package.json");
-    //console.log(JSON.parse(package).version)
     return JSON.parse(package).version;
 }
 

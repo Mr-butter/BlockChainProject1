@@ -1,5 +1,8 @@
 var express = require("express");
 var router = express.Router();
+const { getBlocks, nextBlock, getVersion } = require("../public/chainedBlock");
+const { addBlock } = require("../public/checkValidBlock");
+const { getPublicKeyFromWallet } = require("../public/encryption");
 
 /* GET home page. */
 router.post("/addPeers", (req, res) => {
@@ -8,7 +11,7 @@ router.post("/addPeers", (req, res) => {
     res.send(data);
 });
 
-router.get("/peers", (req, res) => {
+router.post("/peers", (req, res) => {
     let sockInfo = [];
 
     getSockets().forEach((s) => {
@@ -17,7 +20,7 @@ router.get("/peers", (req, res) => {
     res.send(sockInfo);
 });
 
-router.get("/blocks", (req, res) => {
+router.post("/blocks", (req, res) => {
     res.send(getBlocks());
 });
 
@@ -29,11 +32,11 @@ router.post("/mineBlock", (req, res) => {
     res.send(block);
 });
 
-router.get("/version", (req, res) => {
+router.post("/version", (req, res) => {
     res.send(getVersion());
 });
 
-router.get("/stop", (req, res) => {
+router.post("/stop", (req, res) => {
     res.send({ msg: "Stop Server!" });
     process.exit();
 });
