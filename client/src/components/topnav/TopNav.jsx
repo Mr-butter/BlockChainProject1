@@ -15,6 +15,8 @@ import styled from "styled-components";
 import Modal from "../walletModal/Modal";
 // import ModalStyles from "../walletModal/ModalStyles";
 
+import Toggle from "./Toggle";
+
 const Button = styled.button`
   padding: 16px 32px;
   border-radious: 30%;
@@ -81,11 +83,18 @@ const Topnav = () => {
     setShowModal((prev) => !prev);
   };
 
+  const [toggled, setToggled] = useState(false);
+
   return (
     <div className="topnav">
       <div className="topnav__search">
         <input type="text" placeholder="Search here..." />
         <i className="bx bx-search"></i>
+      </div>
+
+      <div className="topnav__right">
+        <Toggle onChange={(e) => setToggled(e.target.checked)} />
+        <p>The switch is {toggled ? "on" : "off"}.</p>
       </div>
 
       <div className="topnav__right">

@@ -10,9 +10,9 @@
     "icon": "bx bx-bar-chart-alt"
   },
   {
-    "display_name": "contract",
-    "route": "/contract",
-    "icon": "bx bxl-squarespace"
+    "display_name": "Mining",
+    "route": "/mining",
+    "icon": "bx bxs-badge-dollar"
   },
   {
     "display_name": "message",

@@ -20,7 +20,7 @@ const Button = styled.button`
   color: gold;
   font-size: 24px;
   margin-left: 44%;
-  margin-bottom: 20%;
+  margin-bottom: 60%;
   cursor: pointer;
 `;
 
