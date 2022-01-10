@@ -19,8 +19,8 @@ const Button = styled.button`
   background: #000000;
   color: gold;
   font-size: 24px;
-  margin-left: 45%;
-  margin-bottom: 50%;
+  margin-left: 44%;
+  margin-bottom: 20%;
   cursor: pointer;
 `;
 
