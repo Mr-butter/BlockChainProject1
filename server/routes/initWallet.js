@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.post("/", async (req, res, next) => {
-    res.json(initWallet());
+    res.json(getPublicKeyFromWallet());
 });
 
 module.exports = router;

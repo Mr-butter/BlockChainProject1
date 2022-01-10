@@ -114,6 +114,24 @@ function MainSection(props) {
                     JSON.stringify(data);
             });
     }
+
+
+    function getWallet() {
+        localStorage.setItem('name', 'jess2');
+        const getValue = localStorage.getItem('name');
+        console.log('로컬스토리지확인', getValue);
+        axios
+            .post("/wallet/getWallet", {
+
+                get: getValue
+            })
+            .then((res) => {
+                const data = res.data;
+                document.getElementById("writefield").innerText =
+                    JSON.stringify(data);
+            });
+    }
+
     return (
         <div>
             <h2>메인 페이지 내용 추가</h2>
@@ -134,10 +152,7 @@ function MainSection(props) {
                     </button>
                 </li>
                 <li>
-                    <button
-                        id="connectSocketServer"
-                        onClick={() => connectSocketServer()}
-                    >
+                    <button id="connectSocketServer" onClick={() => connectSocketServer()} >
                         connectSocketServer
                     </button>
                 </li>
@@ -174,6 +189,11 @@ function MainSection(props) {
                 <li>
                     <button id="newWallet" onClick={() => newWallet()}>
                         newWallet
+                    </button>
+                </li>
+                <li>
+                    <button id="getWallet" onClick={() => getWallet()}>
+                        getWallet
                     </button>
                 </li>
             </ol>
