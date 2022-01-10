@@ -82,22 +82,27 @@ const ThemeMenu = () => {
 
   const [currColor, setcurrColor] = useState("blue");
 
+  const dispatch = useDispatch();
+
   const setMode = (mode) => {
     setcurrMode(mode.id);
     localStorage.setItem("themeMode", mode.class);
+    dispatch(ThemeAction.setMode(mode.class));
   };
 
   const setColor = (color) => {
     setcurrColor(color.id);
     localStorage.setItem("colorMode", color.class);
+    dispatch(ThemeAction.setColor(color.class));
   };
 
   useEffect(() => {
     const themeClass = mode_settings.find(
       (e) => e.class === localStorage.getItem("themeMode", "theme-mode-light")
     );
+
     const colorClass = color_settings.find(
-      (e) => e.class === localStorage.getItem("colorMode", "color-mode-light")
+      (e) => e.class === localStorage.getItem("colorMode", "theme-mode-light")
     );
 
     if (themeClass !== undefined) setcurrMode(themeClass.id);
@@ -120,7 +125,7 @@ const ThemeMenu = () => {
           <i className="bx bx-x"></i>
         </button>
         <div className="theme-menu__select">
-          <span>choose mode</span>
+          <span>Choose mode</span>
           <ul className="mode-list">
             {mode_settings.map((item, index) => (
               <li key={index} onClick={() => setMode(item)}>
@@ -140,7 +145,7 @@ const ThemeMenu = () => {
           <span>Choose color</span>
           <ul className="mode-list">
             {color_settings.map((item, index) => (
-              <li key={index} onclick={() => setColor(item)}>
+              <li key={index} onClick={() => setColor(item)}>
                 <div
                   className={`mode-list__color ${item.background} ${
                     item.id === currColor ? "active" : ""

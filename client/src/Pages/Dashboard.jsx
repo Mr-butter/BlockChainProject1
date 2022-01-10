@@ -110,7 +110,7 @@ const latestOrders = {
 const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
 
 const renderOrderBody = (item, index) => (
-  <tr>
+  <tr key={index}>
     <td>{item.Hash}</td>
     <td>{item.Time}</td>
     <td>{item.Amount}</td>
@@ -128,7 +128,7 @@ const Dashboard = () => {
         <div className="col-6">
           <div className="row">
             {statusCards.map((item, index) => (
-              <div className="col-6">
+              <div className="col-6" key={index}>
                 {/* status card here */}
                 {item.title}
                 <StatusCard
