@@ -26,16 +26,15 @@ function getSockets() {
 
 const write = (ws, message) => ws.send(JSON.stringify(message));
 
+///////////////////////////////////////////////////////////
+
 function broadcast(message) {
-    sockets.forEach(
-        // function (socket) {
-        // 	write(socket, message);
-        // }
-        (socket) => {
-            write(socket, message);
-        }
-    );
+    console.log("진입");
+    sockets.forEach((socket) => {
+        write(socket, message);
+    });
 }
+///////////////////////////////////////////////////////////
 
 function connectToPeers(newPeers) {
     newPeers.forEach((peer) => {
@@ -154,4 +153,6 @@ module.exports = {
     connectToPeers,
     initMessageHandler,
     getSockets,
+    broadcast,
+    responseLatestMsg,
 };

@@ -38,14 +38,11 @@ function getVersion() {
     return JSON.parse(package).version;
 }
 
-//getVersion()
-
 function createGenesisBlock() {
     const version = getVersion();
     const index = 0;
     const previousHash = "0".repeat(64);
-    // const timestamp = 1231006505; // 2009/01/03 6:15pm (UTC)
-    const timestamp = parseInt(Date.now() / 1000);
+    const timestamp = Math.round(new Date().getTime() / 1000);
 
     const body = [
         "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks",
@@ -54,12 +51,6 @@ function createGenesisBlock() {
     const merkleRoot = tree.root() || "0".repeat(64);
     const difficulty = 0;
     const nonce = 0;
-
-    //console.log("version : %s, timestamp : %d, body : %s", version, timestamp, body)
-    //console.log("previousHash : %d", previousHash)
-    //console.log("tree : ")
-    //console.log(tree)
-    //console.log("merkleRoot : %d", merkleRoot.toString('hex'))
 
     const header = new BlockHeader(
         version,
@@ -72,9 +63,6 @@ function createGenesisBlock() {
     );
     return new Block(header, body);
 }
-
-//const block = createGenesisBlock()
-//console.log(block)
 
 let Blocks = [createGenesisBlock()];
 
@@ -130,8 +118,6 @@ function calculateHash(
 }
 
 const genesisBlock = createGenesisBlock();
-//const testHash = createHash(block)
-// console.log(genesisBlock);
 
 function nextBlock(bodyData) {
     const prevBlock = getLastBlock();
@@ -139,11 +125,10 @@ function nextBlock(bodyData) {
     const version = getVersion();
     const index = prevBlock.header.index + 1;
     const previousHash = createHash(prevBlock);
-    const timestamp = parseInt(Date.now() / 1000);
+    const timestamp = Math.round(new Date().getTime() / 1000);
     const tree = merkle("sha256").sync(bodyData);
     const merkleRoot = tree.root() || "0".repeat(64);
     const difficulty = getDifficulty(getBlocks());
-    //const nonce = 0
 
     const header = findBlock(
         version,
@@ -156,14 +141,6 @@ function nextBlock(bodyData) {
 
     return new Block(header, bodyData);
 }
-
-//const block1 = nextBlock(["tranjactio1"])
-//console.log(block1)
-
-// function addBlock(bodyData){
-// 	const newBlock = nextBlock(bodyData)
-// 	Blocks.push(newBlock)
-// }
 
 function replaceChain(newBlocks) {
     if (isValidChain(newBlocks)) {
@@ -248,7 +225,6 @@ function findBlock(
             );
         }
         nonce++;
-        console.log(nonce);
     }
 }
 
@@ -279,8 +255,99 @@ function getAdjustDifficulty(lastBlock, blocks) {
     }
 }
 
+//////////////////////////// 검증코드
+function isValidBlockStructure(block) {
+    return (
+        typeof block.header.version === "string" &&
+        typeof block.header.index === "number" &&
+        typeof block.header.previousHash === "string" &&
+        typeof block.header.timestamp === "number" &&
+        typeof block.header.merkleRoot === "string" &&
+        typeof block.header.difficulty === "number" &&
+        typeof block.header.nonce === "number" &&
+        typeof block.body === "object"
+    );
+}
+
+function isValidNewBlock(newBlock, previousBlock) {
+    if (isValidBlockStructure(newBlock) === false) {
+        console.log("Invalid Block Structure");
+        return false;
+    } else if (newBlock.header.index !== previousBlock.header.index + 1) {
+        console.log("Invalid Index");
+        return false;
+    } else if (createHash(previousBlock) !== newBlock.header.previousHash) {
+        console.log("Invalid previousHash");
+        return false;
+    } else if (
+        (newBlock.body.length === 0 &&
+            "0".repeat(64) !== newBlock.header.merkleRoot) ||
+        (newBlock.body.length !== 0 &&
+            merkle("sha256").sync(newBlock.body).root() !==
+                newBlock.header.merkleRoot)
+    ) {
+        console.log("Invalid merkleRoot");
+        return false;
+    } else if (!isValidTimestamp(newBlock, previousBlock)) {
+        console.log("invalid timestamp");
+        return false;
+    } else if (
+        !hashMatchesDifficulty(createHash(newBlock), newBlock.header.difficulty)
+    ) {
+        console.log("Invalid hash");
+        return false;
+    }
+    return true;
+}
+
+function getCurrentTimestamp() {
+    return Math.round(new Date().getTime() / 1000);
+}
+
+function isValidTimestamp(newBlock, previousBlock) {
+    return (
+        previousBlock.header.timestamp - 60 < newBlock.header.timestamp &&
+        newBlock.header.timestamp - 60 < getCurrentTimestamp()
+    );
+}
+
+function isValidChain(newBlocks) {
+    if (JSON.stringify(newBlocsk[0]) !== JSON.stringify(Blocks[0])) {
+        return false;
+    }
+
+    var tempBlocks = [newBlocks[0]];
+    for (var i = 1; i < newBlocks.length; i++) {
+        if (isValidNewBlock(newBlocks[i], tempBlocks[i - 1])) {
+            tempBlocks.push(newBlocks[i]);
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+//////////////////////////////////////임의거래장부
+let transectionArry = [];
+
+setInterval(() => {
+    const transection = { addTransection: parseInt(Math.random() * 1000) };
+    transectionArry.push(transection);
+}, Math.random() * 10000);
+//////////////////////////////////////
+
+function addBlock() {
+    const newBlock = nextBlock(transectionArry);
+    if (isValidNewBlock(newBlock, getLastBlock())) {
+        transectionArry = [];
+        Blocks.push(newBlock);
+        return newBlock;
+    }
+    return null;
+}
+
 module.exports = {
     Blocks,
+    addBlock,
     getLastBlock,
     createHash,
     nextBlock,
