@@ -117,7 +117,7 @@ function MainSection(props) {
 
 
     function getWallet() {
-        localStorage.setItem('name', 'jess2');
+        localStorage.setItem('name', '로컬스토리에 저장합니다.');
         const getValue = localStorage.getItem('name');
         console.log('로컬스토리지확인', getValue);
         axios
