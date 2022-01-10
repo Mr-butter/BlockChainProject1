@@ -58,7 +58,7 @@ const Topnav = () => {
             // customerToggle={() => renderUserToggle(curr_user)}
             // contentData={user_menu}
             // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={() => <Link to="/">Sign In</Link>}
+            renderFooter={() => <Link to="/mypage">Sign In</Link>}
           />
           {/* 여기에 드롭다운바 만들기 */}
         </div>
