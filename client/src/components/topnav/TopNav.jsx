@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 
 import Dropdown from "../dropdown/Dropdown";
 
+import ThemeMenu from "../themeMenu/ThemeMenu";
+
 import notifications from "../../assets/JsonData/notification.json";
 
 import user_image from "../../assets/images/tuat.png";
@@ -52,9 +54,10 @@ const Topnav = () => {
       <div className="topnav__right">
         <div className="topnav__right-item">
           <Dropdown
-            customerToggle={() => renderUserToggle(curr_user)}
-            contentData={user_menu}
-            renderItems={(item, index) => renderUserMenu(item, index)}
+            icon="bx bx-user"
+            // customerToggle={() => renderUserToggle(curr_user)}
+            // contentData={user_menu}
+            // renderItems={(item, index) => renderUserMenu(item, index)}
           />
           {/* 여기에 드롭다운바 만들기 */}
         </div>
@@ -69,8 +72,7 @@ const Topnav = () => {
           {/* 여기에 드롭다운바 만들기 */}
         </div>
         <div className="topnav__right-item">
-          <Dropdown />
-          {/* 테마세팅 */}
+          <ThemeMenu />
         </div>
       </div>
     </div>

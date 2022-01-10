@@ -38,7 +38,7 @@ const ThemeMenu = () => {
             {mode_setting.map((item, index) => (
               <li key={index}>
                 <div className={`mode-list__color ${item.background}`}>
-                    <i className="bx bx-check"
+                  <i className="bx bx-check"></i>
                 </div>
               </li>
             ))}
