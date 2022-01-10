@@ -10,6 +10,22 @@ import ThemeMenu from "../themeMenu/ThemeMenu";
 
 import notifications from "../../assets/JsonData/notification.json";
 
+import styled from "styled-components";
+
+import Modal from "../walletModal/Modal";
+// import ModalStyles from "../walletModal/ModalStyles";
+
+const Button = styled.button`
+  padding: 16px 32px;
+  border-radious: 30%;
+  background: #333333;
+  color: gold;
+  font-size: 24px;
+  margin-left: 44%;
+  margin-bottom: 20%;
+  cursor: pointer;
+`;
+
 // import user_image from "../../assets/images/tuat.png";
 
 // import user_menu from "../../assets/JsonData/user_menus.json";
@@ -64,6 +80,7 @@ const Topnav = () => {
   const openModal = () => {
     setShowModal((prev) => !prev);
   };
+
   return (
     <div className="topnav">
       <div className="topnav__search">
@@ -72,6 +89,11 @@ const Topnav = () => {
       </div>
 
       <div className="topnav__right">
+        <div className="topnav__right-item">
+          <Button onClick={openModal}>Get Started</Button>
+          <Modal showModal={showModal} setShowModal={setShowModal} />
+        </div>
+
         <div className="topnav__right-item">
           <Dropdown
             icon="bx bx-user"

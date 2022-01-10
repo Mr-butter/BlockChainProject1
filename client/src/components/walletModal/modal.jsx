@@ -13,6 +13,7 @@ const Background = styled.div`
   justify-content: center;
   align-items: center;
   margin-left: 45px;
+  z-index: 8;
 `;
 
 const ModalWrapper = styled.div`
@@ -25,7 +26,7 @@ const ModalWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   position: relative;
   margin-left: 200px;
-  z-index: 10;
+  z-index: 100;
   border-radius: 20%;
 `;
 
@@ -76,11 +77,32 @@ const Modal = ({ showModal, setShowModal }) => {
     opacity: showModal ? 1 : 0,
     transform: showModal ? `translateY(0%)` : `translateY(-100%)`,
   });
+
+  const closeModal = (e) => {
+    if (modalRef.current === e.target) {
+      setShowModal(false);
+    }
+  };
+
+  const keyPress = useCallback(
+    (e) => {
+      if (e.key === "Escape" && showModal) {
+        setShowModal(false);
+      }
+    },
+    [setShowModal, showModal]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyPress);
+    return () => document.removeEventListener("keydown", keyPress);
+  }, [keyPress]);
+
   return (
     <>
       {showModal ? (
-        <Background>
-          <animated.div style={animation}>
+        <Background ref={modalRef}>
+          <animated.div style={animation} onClick={closeModal}>
             <ModalWrapper showModal={showModal}>
               {/* <ModalImg src={require("")} alt="login" /> */}
 
@@ -90,11 +112,12 @@ const Modal = ({ showModal, setShowModal }) => {
                 <button>Create New Wallet</button>
                 <button>Plese Unlock Me</button>
               </ModalContent>
+
+              <CloseModalButton
+                aria-label="Close modal"
+                onClick={() => setShowModal((prev) => !prev)}
+              />
             </ModalWrapper>
-            <CloseModalButton
-              aria-label="Close modal"
-              onClick={() => setShowModal((prev) => !prev)}
-            />
           </animated.div>
         </Background>
       ) : null}
