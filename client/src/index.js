@@ -7,8 +7,9 @@ import promiseMiddleware from "redux-promise";
 import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import rootReducer from "./reducers";
+// import rootReducer from "./reducers";
 import { BrowserRouter } from "react-router-dom";
+import rootReducer from "./redux/reducers/index";
 
 import "./assets/boxicons-2.1.1/css/boxicons.min.css";
 import "./assets/css/grid.css";
