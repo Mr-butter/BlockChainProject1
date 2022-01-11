@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import Modal from "../components/walletModal/Modal";
+import Modal from "../components/walletModal/modal";
 // import ModalStyles from "../walletModal/ModalStyles";
 
 const Container = styled.div`
