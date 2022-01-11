@@ -57,14 +57,6 @@ function Testingboard(props) {
         });
     }
 
-    function makeWallet() {
-        axios.post("/initWallet").then((res) => {
-            const data = res.data;
-            document.getElementById("writefield").innerText =
-                JSON.stringify(data);
-        });
-    }
-
     function mnemonic() {
         axios.post("/wallet/mnemonic").then((res) => {
             const data = res.data;
@@ -158,6 +150,11 @@ function Testingboard(props) {
                 <li>
                     <button id="newWallet" onClick={() => newWallet()}>
                         newWallet
+                    </button>
+                </li>
+                <li>
+                    <button id="getWallet" onClick={() => getWallet()}>
+                        getWallet
                     </button>
                 </li>
             </ol>

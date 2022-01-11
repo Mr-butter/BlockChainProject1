@@ -57,8 +57,9 @@ router.post("/", async (req, res, next) => {
       function (err, ks) {
 
         ks.keyFromPassword(password, function (err, pwDerivedKey) {
-          if (err) throw err;
-
+          if (!ks.isDerivedKeyCorrect(pwDerivedKey)) {
+            throw new Error("Incorrect derived key!");
+          }
           ks.generateNewAddress(pwDerivedKey, 1);
 
           //var address = (ks.getAddresses()).toString();
