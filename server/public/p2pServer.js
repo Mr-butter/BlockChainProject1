@@ -1,8 +1,8 @@
 const p2p_port = process.env.P2P_PORT || 6001;
 
 const WebSocket = require("ws");
-const { getLastBlock, createHash } = require("./chainedBlock");
-const { addBlock } = require("./checkValidBlock");
+const { getLastBlock, createHash, addBlock } = require("./chainedBlock");
+
 
 function initP2PServer(port) {
     const server = new WebSocket.Server({ port: port });
@@ -60,6 +60,7 @@ const MessageType = {
 
 function initMessageHandler(ws) {
     ws.on("message", (data) => {
+        console.log(data.toString('utf8'));
         const message = JSON.parse(data);
 
         switch (message.type) {

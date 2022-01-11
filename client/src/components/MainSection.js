@@ -38,7 +38,9 @@ function MainSection(props) {
         let ws = new WebSocket("ws://localhost:6001");
 
         ws.onopen = function () {
-            ws.send("할로");
+            let sendData = { event: 'open' }
+            ws.send(JSON.stringify('open'));
+
         };
         ws.onmessage = function (e) {
             console.log(e.data);
@@ -62,11 +64,12 @@ function MainSection(props) {
     }
 
     function peers() {
-        axios.get("/peers").then((res) => {
-            const data = res.data;
-            document.getElementById("writefield").innerText =
-                JSON.stringify(data);
-        });
+        axios.post("/peers")
+            .then((res) => {
+                const data = res.data;
+                document.getElementById("writefield").innerText =
+                    JSON.stringify(data);
+            });
     }
 
     function address() {
@@ -113,12 +116,15 @@ function MainSection(props) {
 
 
     function getWallet() {
-        localStorage.setItem('name', '로컬스토리에 저장합니다.');
-        const getValue = localStorage.getItem('name');
-        console.log('로컬스토리지확인', getValue);
+
+        localStorage.setItem('localStorege키', 'localStorege값');
+        localStorage.setItem('loglevel', 'warn');
+
+        const getValue = localStorage.getItem('localStorege키');
+        console.log('로컬스토리지 client 확인 : ', getValue);
+
         axios
             .post("/wallet/getWallet", {
-
                 get: getValue
             })
             .then((res) => {

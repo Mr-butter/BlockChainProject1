@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const chainedBlock = require("../public/chainedBlock");
 const { getPublicKeyFromWallet } = require("../public/encryption");
-const p2pServer = require("../public/p2pServer");
+const { connectToPeers, getSockets } = require("../public/p2pServer");
 
 /* GET home page. */
 router.post("/addPeers", (req, res) => {
@@ -17,7 +17,7 @@ router.post("/peers", (req, res) => {
     getSockets().forEach((s) => {
         sockInfo.push(s._socket.remoteAddress + ":" + s._socket.remotePort);
     });
-    res.send(sockInfo);
+    res.json(sockInfo);
 });
 
 router.post("/blocks", (req, res) => {
