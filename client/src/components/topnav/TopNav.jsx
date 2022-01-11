@@ -12,7 +12,9 @@ import notifications from "../../assets/JsonData/notification.json";
 
 import styled from "styled-components";
 
-import Modal from "../walletModal/Modal";
+import Password from "../Password/Password";
+
+// import Modal from "../walletModal/Modal";
 // import ModalStyles from "../walletModal/ModalStyles";
 
 import Toggle from "./Toggle";
@@ -28,6 +30,13 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const renderNotificationItem = (item, index) => (
+  <div className="notification-item" key={index}>
+    <i className={item.icon}></i>
+    <span>{item.content}</span>
+  </div>
+);
+
 // import user_image from "../../assets/images/tuat.png";
 
 // import user_menu from "../../assets/JsonData/user_menus.json";
@@ -36,13 +45,6 @@ const Button = styled.button`
 //   display_name: "cococoin",
 //   image: user_image,
 // };
-
-const renderNotificationItem = (item, index) => (
-  <div className="notification-item" key={index}>
-    <i className={item.icon}></i>
-    <span>{item.content}</span>
-  </div>
-);
 
 // const renderUserToggle = (user) => (
 //   <div className="topnav__right-user">
@@ -61,20 +63,6 @@ const renderNotificationItem = (item, index) => (
 //     </div>
 //   </Link>
 // );
-
-// function Modal(props) {
-//   function initModal() {
-//     axios.post("/modal", (req, res) => {
-//       alert(res.data.message);
-//     });
-//   }
-//   return (
-//     <F>
-//       <h2>모달창</h2>
-//       <button onClick={initModal()}>개인지갑생성</button>
-//     </F>
-//   );
-// }
 
 const Topnav = () => {
   const [showModal, setShowModal] = useState(false);
@@ -98,23 +86,26 @@ const Topnav = () => {
       </div>
 
       <div className="topnav__right">
-        <div className="topnav__right-item">
+        {/* 추후에 아래 지갑Modal버튼은 지울예정 */}
+        {/* <div className="topnav__right-item">
           <Button onClick={openModal}>Get Started</Button>
           <Modal showModal={showModal} setShowModal={setShowModal} />
-        </div>
+        </div> */}
 
         <div className="topnav__right-item">
           <Dropdown
             icon="bx bx-user"
             // customerToggle={() => renderUserToggle(curr_user)}
-            // contentData={user_menu}
+            // contentData={여기에 개인지갑 어드레스 들어와야함}
             // renderItems={(item, index) => renderUserMenu(item, index)}
             renderFooter={() => (
               <Link to="/mypage" onClick={openModal}>
-                Sign In
+                Join us
               </Link>
             )}
-          />
+          >
+            <Password />
+          </Dropdown>
         </div>
 
         <div className="topnav__right-item">
@@ -122,7 +113,7 @@ const Topnav = () => {
             icon="bx bx-bell"
             badge="12"
             contentData={notifications}
-            renderItem={(item, index) => renderNotificationItem(item, index)}
+            renderItems={(item, index) => renderNotificationItem(item, index)}
             renderFooter={() => <Link to="/">View All</Link>}
           />
           {/* 여기에 드롭다운바 만들기 */}

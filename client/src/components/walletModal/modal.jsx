@@ -18,11 +18,11 @@ const Background = styled.div`
 `;
 
 const ModalWrapper = styled.div`
-  width: 100%;
-  height: 800px;
+  width: 80%;
+  height: 600px;
   box-shadow: 0 5px 16px rgba(255, 255, 255, 0.7)
   background: #fff;
-  color: #ffffff;
+  color: #9b9b9b;
   display: grid;
   grid-template-columns: 1fr 1fr;
   position: relative;

@@ -58,11 +58,12 @@ transition: background-color 0.2s, box-shadow 0.2s;
 }
 `;
 
-const Toggle = ({ onChange }) => {
+const Toggle = ({ onChange, label }) => {
   return (
     <InputWrapper>
       <Input type="checkbox" onChange={onChange} />
       <Slider />
+      {label}
     </InputWrapper>
   );
 };
