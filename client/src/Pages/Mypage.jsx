@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
-import axios from "axios";
+// import { withRouter } from "react-router-dom";
+// import axios from "axios";
 import styled from "styled-components";
 
 import Modal from "../components/walletModal/modal";

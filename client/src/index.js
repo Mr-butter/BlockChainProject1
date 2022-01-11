@@ -7,6 +7,9 @@ import "./css/index.css";
 // import ReduxThunk from "redux-thunk";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
+import { ThemeProvider } from "@material-ui/styles";
+import { createMuiTheme } from "@material-ui/core";
+
 // import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./redux/reducers/index";
 
@@ -16,6 +19,12 @@ import "./assets/css/theme.css";
 import "./assets/css/index.css";
 
 import Layout from "./components/layout/Layout";
+
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+  },
+});
 
 const store = createStore(rootReducer);
 
@@ -30,10 +39,12 @@ ReactDOM.render(
   //   <Provider
   //     store={createStoreWithMiddleware(rootReducer, composeWithDevTools())}
   //   >
-  <Provider store={store}>
-    <React.StrictMode>
-      <Layout />
-    </React.StrictMode>
-  </Provider>,
+  <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <React.StrictMode>
+        <Layout />
+      </React.StrictMode>
+    </Provider>
+  </ThemeProvider>,
   document.getElementById("root")
 );

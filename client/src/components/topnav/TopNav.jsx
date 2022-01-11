@@ -10,7 +10,7 @@ import ThemeMenu from "../themeMenu/ThemeMenu";
 
 import notifications from "../../assets/JsonData/notification.json";
 
-import styled from "styled-components";
+// import styled from "styled-components";
 
 import Password from "../Password/Password";
 
@@ -19,16 +19,16 @@ import Password from "../Password/Password";
 
 import Toggle from "./Toggle";
 
-const Button = styled.button`
-  padding: 16px 32px;
-  border-radious: 30%;
-  background: #333333;
-  color: gold;
-  font-size: 24px;
-  margin-left: 44%;
-  margin-bottom: 20%;
-  cursor: pointer;
-`;
+// const Button = styled.button`
+//   padding: 16px 32px;
+//   border-radious: 30%;
+//   background: #333333;
+//   color: gold;
+//   font-size: 24px;
+//   margin-left: 44%;
+//   margin-bottom: 20%;
+//   cursor: pointer;
+// `;
 
 const renderNotificationItem = (item, index) => (
   <div className="notification-item" key={index}>
@@ -65,11 +65,11 @@ const renderNotificationItem = (item, index) => (
 // );
 
 const Topnav = () => {
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
 
-  const openModal = () => {
-    setShowModal((prev) => !prev);
-  };
+  // const openModal = () => {
+  //   setShowModal((prev) => !prev);
+  // };
 
   const [toggled, setToggled] = useState(false);
 
@@ -87,25 +87,24 @@ const Topnav = () => {
 
       <div className="topnav__right">
         {/* 추후에 아래 지갑Modal버튼은 지울예정 */}
-        {/* <div className="topnav__right-item">
+        {/* -<div className="topnav__right-item">
           <Button onClick={openModal}>Get Started</Button>
           <Modal showModal={showModal} setShowModal={setShowModal} />
         </div> */}
 
         <div className="topnav__right-item">
           <Dropdown
+            className="userpassword-item"
             icon="bx bx-user"
             // customerToggle={() => renderUserToggle(curr_user)}
             // contentData={여기에 개인지갑 어드레스 들어와야함}
             // renderItems={(item, index) => renderUserMenu(item, index)}
             renderFooter={() => (
-              <Link to="/mypage" onClick={openModal}>
-                Join us
-              </Link>
+              // <Link to="/mypage" onClick={openModal}>
+              // </Link>
+              <Password />
             )}
-          >
-            <Password />
-          </Dropdown>
+          ></Dropdown>
         </div>
 
         <div className="topnav__right-item">
@@ -116,8 +115,8 @@ const Topnav = () => {
             renderItems={(item, index) => renderNotificationItem(item, index)}
             renderFooter={() => <Link to="/">View All</Link>}
           />
-          {/* 여기에 드롭다운바 만들기 */}
         </div>
+
         <div className="topnav__right-item">
           <ThemeMenu />
         </div>
