@@ -1,63 +1,46 @@
 const p2p_port = process.env.P2P_PORT || 6001;
 
-const res = require("express/lib/response");
 const WebSocket = require("ws");
 const { getLastBlock, createHash } = require("./chainedBlock");
 const { addBlock } = require("./checkValidBlock");
 
-function initP2PServer(test_port) {
-    const server = new WebSocket.Server({ port: test_port });
-    //console.log(server);
+function initP2PServer(port) {
+    const server = new WebSocket.Server({ port: port });
     server.on("connection", (ws) => {
         initConnection(ws);
-        // console.log(ws._socket._server);
-        ws.send("hello");
-        ws.on("message", (message) => {
-            console.log(`received:${message}`);
-        });
     });
-    console.log("Listening webSocket port : " + test_port);
+    console.log("Listening webSocket port : " + port);
 }
-
-initP2PServer(6001);
-initP2PServer(6002);
-initP2PServer(6003);
 
 let sockets = [];
 
 function initConnection(ws) {
-    //console.log(ws._socket.remotePort)
     sockets.push(ws);
-    // initMessageHandler(ws);
-    // initErrorHandler(ws);
+    initMessageHandler(ws);
+    initErrorHandler(ws);
 }
 
 function getSockets() {
     return sockets;
 }
 
-function write(ws, message) {
-    ws.send(JSON.stringify(message));
-}
+const write = (ws, message) => ws.send(JSON.stringify(message));
+
+///////////////////////////////////////////////////////////
 
 function broadcast(message) {
-    sockets.forEach(
-        // function (socket) {
-        // 	write(socket, message);
-        // }
-        (socket) => {
-            write(socket, message);
-        }
-    );
+    console.log("진입");
+    sockets.forEach((socket) => {
+        write(socket, message);
+    });
 }
+///////////////////////////////////////////////////////////
 
 function connectToPeers(newPeers) {
     newPeers.forEach((peer) => {
         const ws = new WebSocket(peer);
-        console.log(ws);
         ws.on("open", () => {
-            console.log("open");
-            initConnection(ws);
+            console.log("클라이언트 요청");
         });
         ws.on("message", (message) => {
             console.log(`received:${message}`);
@@ -165,6 +148,11 @@ function closeConnection(ws) {
 }
 
 module.exports = {
+    WebSocket,
+    initP2PServer,
     connectToPeers,
+    initMessageHandler,
     getSockets,
+    broadcast,
+    responseLatestMsg,
 };

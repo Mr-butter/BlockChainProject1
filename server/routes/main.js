@@ -1,7 +1,8 @@
 var express = require("express");
 var router = express.Router();
-const { getBlocks, nextBlock, getVersion } = require("../public/chainedBlock");
-const { addBlock } = require("../public/checkValidBlock");
+const chainedBlock = require("../public/chainedBlock");
+const { getPublicKeyFromWallet } = require("../public/encryption");
+const p2pServer = require("../public/p2pServer");
 
 /* GET home page. */
 router.post("/addPeers", (req, res) => {
@@ -20,19 +21,21 @@ router.post("/peers", (req, res) => {
 });
 
 router.post("/blocks", (req, res) => {
-    res.send(getBlocks());
+    res.send(chainedBlock.getBlocks());
 });
 
 router.post("/mineBlock", (req, res) => {
-    const data = req.body.data || [];
-    const block = nextBlock(data);
-    addBlock(block);
-
-    res.send(block);
+    const newBlock = chainedBlock.addBlock();
+    if (newBlock !== null) {
+        // p2pServer.broadcast(p2pServer.responseLatestMsg());
+        return res.json(newBlock);
+    } else {
+        return res.json(null);
+    }
 });
 
 router.post("/version", (req, res) => {
-    res.send(getVersion());
+    res.send(chainedBlock.getVersion());
 });
 
 router.post("/stop", (req, res) => {
@@ -40,7 +43,7 @@ router.post("/stop", (req, res) => {
     process.exit();
 });
 
-router.post("/address", (req, res) => {
+router.get("/address", (req, res) => {
     const address = getPublicKeyFromWallet().toString();
     if (address != "") {
         res.send({ address: address });
