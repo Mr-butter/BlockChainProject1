@@ -60,6 +60,7 @@ const Table = (props) => {
               className={`table__pagination-item ${
                 currPage === index + 1 ? "active" : ""
               }`}
+              onclick={() => selectPage(index)}
             >
               {item + 1}
             </div>

@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Chart from "react-apexcharts";
 
 import StatusCard from "../components/status-card/StatusCard";
 
+import { useSelector, useDispatch } from "react-redux";
+
 import Table from "../components/table/Table";
 
 import statusCards from "../assets/JsonData/status-card-data.json";
+
+import ThemeAction from "../redux/actions/ThemeAction";
+
 import { Link } from "@mui/material";
 
 const chartOptions = {
@@ -110,7 +115,7 @@ const latestOrders = {
 const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
 
 const renderOrderBody = (item, index) => (
-  <tr>
+  <tr key={index}>
     <td>{item.Hash}</td>
     <td>{item.Time}</td>
     <td>{item.Amount}</td>
@@ -121,6 +126,14 @@ const renderOrderBody = (item, index) => (
 );
 
 const Dashboard = () => {
+  const themeReducer = useSelector((state) => state.ThemeReducer.mode);
+
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(ThemeAction.getTheme());
+  // });
+
   return (
     <div>
       <h2 className="page-header">Dashboard</h2>
@@ -128,7 +141,7 @@ const Dashboard = () => {
         <div className="col-6">
           <div className="row">
             {statusCards.map((item, index) => (
-              <div className="col-6">
+              <div className="col-6" key={index}>
                 {/* status card here */}
                 {item.title}
                 <StatusCard
@@ -144,7 +157,17 @@ const Dashboard = () => {
           <div className="card full-height">
             {/* 누적채굴량 차트넣을자리 */}
             <Chart
-              options={chartOptions.options}
+              options={
+                themeReducer === "theme-mode-dark"
+                  ? {
+                      ...chartOptions.options,
+                      theme: { mode: "dark" },
+                    }
+                  : {
+                      ...chartOptions.options,
+                      theme: { mode: "light" },
+                    }
+              }
               series={chartOptions.series}
               type="line"
               height="100%"
