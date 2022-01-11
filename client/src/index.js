@@ -11,8 +11,6 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-
-// import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./redux/reducers/index";
 
 import "./assets/boxicons-2.1.1/css/boxicons.min.css";
@@ -23,44 +21,30 @@ import "./assets/css/index.css";
 import Layout from "./components/layout/Layout";
 
 const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-  },
+    palette: {
+        type: "dark",
+    },
 });
-
-const store = createStore(rootReducer);
 
 document.title = "CoLink";
 
-// const createStoreWithMiddleware = applyMiddleware(
-//     promiseMiddleware,
-//     ReduxThunk
-// )(createStore);
-
-// ReactDOM.render(
-//     <Provider
-//         store={createStoreWithMiddleware(rootReducer, composeWithDevTools())}
-//     >
-//         <BrowserRouter>
-//             <Layout />
-//         </BrowserRouter>
-//     </Provider>,
-//     document.getElementById("root")
-// // const createStoreWithMiddleware = applyMiddleware(
-// //   promiseMiddleware,
-// //   ReduxThunk
-// // )(createStore);
+const createStoreWithMiddleware = applyMiddleware(
+    promiseMiddleware,
+    ReduxThunk
+)(createStore);
 
 ReactDOM.render(
-  //   <Provider
-  //     store={createStoreWithMiddleware(rootReducer, composeWithDevTools())}
-  //   >
-  <ThemeProvider theme={theme}>
-    <Provider store={store}>
-      <React.StrictMode>
-        <Layout />
-      </React.StrictMode>
-    </Provider>
-  </ThemeProvider>,
-  document.getElementById("root")
+    <ThemeProvider theme={theme}>
+        <Provider
+            store={createStoreWithMiddleware(
+                rootReducer,
+                composeWithDevTools()
+            )}
+        >
+            <BrowserRouter>
+                <Layout />
+            </BrowserRouter>
+        </Provider>
+    </ThemeProvider>,
+    document.getElementById("root")
 );

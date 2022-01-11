@@ -1,8 +1,7 @@
 import axios from "axios";
 import React from "react";
-import { withRouter } from "react-router-dom";
 
-function MainSection(props) {
+function Testingboard(props) {
     function block() {
         axios.post("/blocks").then((res) => {
             const data = res.data;
@@ -119,7 +118,7 @@ function MainSection(props) {
 
     return (
         <div>
-            <h2>메인 페이지 내용 추가</h2>
+            <h2>테스트 코드</h2>
             <ol>
                 <li>
                     <button id="blocks" onClick={() => block()}>
@@ -167,4 +166,4 @@ function MainSection(props) {
     );
 }
 
-export default withRouter(MainSection);
+export default Testingboard;
