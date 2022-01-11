@@ -102,6 +102,8 @@ function MainSection(props) {
             "1234"
         );
         let mnemonicFromUser = prompt("니모닉을 입력하세요.");
+
+
         axios
             .post("/wallet/newWallet", {
                 password: walletPwdFromUser,
@@ -109,6 +111,9 @@ function MainSection(props) {
             })
             .then((res) => {
                 const data = res.data;
+
+                localStorage.setItem('loglevel', JSON.stringify(data));
+
                 document.getElementById("writefield").innerText =
                     JSON.stringify(data);
             });
@@ -116,16 +121,19 @@ function MainSection(props) {
 
 
     function getWallet() {
+        let walletPwdFromUser = prompt(
+            "지갑을 가져오기 위해 비밀번호를 입력하세요.",
+            "1234"
+        );
 
-        localStorage.setItem('localStorege키', 'localStorege값');
-        localStorage.setItem('loglevel', 'warn');
 
-        const getValue = localStorage.getItem('localStorege키');
-        console.log('로컬스토리지 client 확인 : ', getValue);
+        const loglevel = localStorage.getItem('loglevel');
+        console.log('로컬스토리지 client 확인 : ', loglevel);
 
         axios
             .post("/wallet/getWallet", {
-                get: getValue
+                password: walletPwdFromUser,
+                loglevel: loglevel
             })
             .then((res) => {
                 const data = res.data;
