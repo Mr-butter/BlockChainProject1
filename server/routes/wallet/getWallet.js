@@ -6,20 +6,19 @@ const isNullOrUndefined = require('util');
 router.post('/', function (req, res) {
   const walletPwdFromUser = req.body.password
   const LocalStoreServer = req.body.loglevel
+  const decryption = req.body.decryption
 
   if (LocalStoreServer === null) {
     return res.json("로컬스토리지에 저장된 지갑이 없네요. 지갑이 있으시다면 복구하세요!")
   }
 
-  const keystore = new ligthWallet.keystore.deserialize(LocalStoreServer);
+  const keystore = new ligthWallet.keystore.deserialize(decryption);
   //console.log(keystore);
   //console.log('keystore---------------\n', keystore);
   //console.log('LocalStoreServer---------------\n', LocalStoreServer);
 
   const address = keystore.getAddresses()
   console.log('address---------------', address);
-
-
 
   if (isNullOrUndefined.isNullOrUndefined(keystore)) {
     let error = {
@@ -44,7 +43,7 @@ router.post('/', function (req, res) {
   //console.log("1111111111111111111111", walletJson);
   //let ks = new ligthWallet.keystore.deserialize(walletJson);
   //console.log("222222222222222222", ks);
-  let password = walletPwdFromUser.toString();
+  const password = walletPwdFromUser.toString();
   //console.log(password);
 
   keystore.keyFromPassword(password, function (err, pwDerivedKey) {
