@@ -26,6 +26,7 @@ router.post("/", async (req, res, next) => {
   }
 
   function saveWallet(keystore) {
+
     if (!fs.existsSync(privateKeyFile)) {
       fs.writeFileSync(privateKeyFile, keystore, (err, data) => {
         if (err) {
@@ -33,7 +34,7 @@ router.post("/", async (req, res, next) => {
         }
         else {
           console.log("새로운 지갑경로 생성 경로 : " + privateKeyFile);
-          return res.json({ keystore: keystore, address: address });
+          return res.json({ keystore: keystore });
           //return { message: "지갑이 잘 생성되었습니다." };
         }
       });
@@ -56,6 +57,8 @@ router.post("/", async (req, res, next) => {
       function (err, ks) {
 
         ks.keyFromPassword(password, function (err, pwDerivedKey) {
+          if (err) throw err;
+
           ks.generateNewAddress(pwDerivedKey, 1);
 
           //var address = (ks.getAddresses()).toString();
@@ -64,7 +67,6 @@ router.post("/", async (req, res, next) => {
           saveWallet(keystore)
 
           //res.json({ keystore: keystore, address: address });
-
 
         });
       }
