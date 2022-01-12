@@ -174,6 +174,9 @@ function Testingboard(props) {
                 // const decStr = CryptoJS.enc.Utf8.stringify(decObj);
                 // console.log("decStr : " + decStr);
 
+                // const decStr = CryptoJS.enc.Utf8.stringify(decObj);
+                // console.log("decStr : " + decStr);
+
                 /////////////////////////////////////////////////////////////////////////////////////
 
                 //localStorage.setItem("loglevel", JSON.stringify(data));
