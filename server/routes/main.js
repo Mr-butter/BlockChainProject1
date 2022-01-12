@@ -23,48 +23,29 @@ router.post("/blocks", (req, res) => {
     res.send(chainedBlock.getBlocks());
 });
 
-// const addPeerPort = [];
-// router.post("/addPeer", (req, res) => {
-//     if (addPeerPort.length === 0) {
-//         addPeerPort.push(6000);
-//         const addP2pport = addPeerPort[0];
-//         const addPeer = `ws://localhost:${addP2pport}`;
-//         p2pServer.initP2PServer(addP2pport);
-//         p2pServer.connectToPeer(addPeer);
-//         res.send(`포트 ${addP2pport}번 에서 열림`);
-//     } else {
-//         const addP2pport = addPeerPort[addPeerPort.length() - 1] + 1;
-//         const addPeer = `ws://localhost:${addP2pport}`;
-//         p2pServer.initP2PServer(addP2pport);
-//         p2pServer.connectToPeer(addPeer);
-//         res.send(`포트 ${addP2pport}번 에서 열림`);
-//     }
-// });
-
+const addPeerPort = [];
 router.post("/addPeer", (req, res) => {
-    p2pServer.connectToPeer("ws://localhost:6001");
-    res.send();
+    if (addPeerPort.length === 0) {
+        addPeerPort.push(6000);
+        const addP2pport = addPeerPort[0];
+        const addPeer = `ws://localhost:${addP2pport}`;
+        p2pServer.initP2PServer(addP2pport);
+        p2pServer.connectToPeer(addPeer);
+        res.send(`포트 ${addP2pport}번 에서 열림`);
+    } else {
+        const addP2pport = addPeerPort[addPeerPort.length() - 1] + 1;
+        const addPeer = `ws://localhost:${addP2pport}`;
+        p2pServer.initP2PServer(addP2pport);
+        p2pServer.connectToPeer(addPeer);
+        res.send(`포트 ${addP2pport}번 에서 열림`);
+    }
 });
 
 router.post("/mineBlock", (req, res) => {
-    const switchOnOff = req.body.switchOnOff;
-    switch (switchOnOff) {
-        case "on":
-            p2pServer.testMinning(switchOnOff);
-            return res.send({ message: "마이닝을 시작합니다." });
-        case "off":
-            // p2pServer.testMinning(switchOnOff);
-            return res.send({ message: "마이닝을 종료합니다." });
-        default:
-            returnres.send({ message: "아직 작업 전입니다." });
-    }
-    // const newBlock = chainedBlock.addBlock();
-    // if (newBlock === null) {
-    //     res.status(400).send("could not generate block");
-    // } else {
-    //     res.json(newBlock);
-    //     // res.send(ok);
-    // }
+    const addP2pport = req.body.port;
+    const addPeer = `ws://localhost:${addP2pport}`;
+    p2pServer.initP2PServer(addP2pport);
+    p2pServer.connectToPeer(addPeer);
 });
 
 router.post("/version", (req, res) => {
