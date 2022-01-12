@@ -36,22 +36,25 @@ const Topnav = () => {
 
   const [toggled, setToggled] = useState(false);
 
-  const [NewWallet, setNewWallet] = useState(0);
+  const [haveWallet, sethaveWallet] = useState(false);
   // const ClickWallet = useRef(true);
 
-  // useEffect(() => {
-  //   if (!ClickWallet.current) {
-  //     console.log(NewWallet);
-  //   }
-  // }, [NewWallet]);
+  const getHaveWallet = () => {
+    sethaveWallet(false);
+  };
 
-  function ClickWallet() {
-    Promise.resolve()
-      .then(() => {
-        setNewWallet((NewWallet) => NewWallet + 1);
-      })
-      .then(() => console.log(NewWallet));
-  }
+  useEffect(() => {
+    sethaveWallet(!haveWallet);
+    console.log(!haveWallet);
+  }, [haveWallet]);
+
+  // function ClickWallet() {
+  //   Promise.resolve()
+  //     .then(() => {
+  //       setNewWallet((NewWallet) => NewWallet + 1);
+  //     })
+  //     .then(() => console.log(NewWallet));
+  // }
 
   return (
     <div className="topnav">
@@ -70,13 +73,14 @@ const Topnav = () => {
           <Dropdown
             className="userpassword-item"
             icon="bx bx-user"
+            // value={props}
             // customerToggle={() => renderUserToggle(curr_user)}
             // contentData={여기에 개인지갑 어드레스 들어와야함}
             // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={() => (
-              <Password onClick={ClickWallet} />
-              // <NewWallet />
-            )}
+            renderFooter={() =>
+              // <Password onClick={ClickWallet} />
+              haveWallet ? <NewWallet /> : <Password />
+            }
           ></Dropdown>
         </div>
 

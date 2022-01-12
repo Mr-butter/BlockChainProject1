@@ -28,7 +28,7 @@ import NewWallet from "../walletModal/NewWallet";
 //   }
 // }
 
-const Password = () => {
+const Password = (props) => {
   const paperStyle = {
     padding: 20,
     height: "42vh",
@@ -40,7 +40,9 @@ const Password = () => {
 
   const btnstyle = { margin: "20px 5px" };
 
-  // const [NewWallet, setNewWallet] = useState(0);
+  const sendHaveWallet = () => {
+    props.getHaveWallet(true);
+  };
 
   return (
     <Grid>
@@ -93,8 +95,11 @@ const Password = () => {
               marginLeft: "95px",
             }}
           >
-            <NewWallet />
+            {/* <NewWallet /> */}
           </i>
+          <p>
+            <button onClick={sendHaveWallet}>지갑버튼</button>
+          </p>
         </Typography>
       </Paper>
     </Grid>
