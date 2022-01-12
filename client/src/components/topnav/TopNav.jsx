@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import "./topnav.css";
 
@@ -36,7 +36,22 @@ const Topnav = () => {
 
   const [toggled, setToggled] = useState(false);
 
-  // const [NewWallet, setNewWallet] = useState(true);
+  const [NewWallet, setNewWallet] = useState(0);
+  // const ClickWallet = useRef(true);
+
+  // useEffect(() => {
+  //   if (!ClickWallet.current) {
+  //     console.log(NewWallet);
+  //   }
+  // }, [NewWallet]);
+
+  function ClickWallet() {
+    Promise.resolve()
+      .then(() => {
+        setNewWallet((NewWallet) => NewWallet + 1);
+      })
+      .then(() => console.log(NewWallet));
+  }
 
   return (
     <div className="topnav">
@@ -59,7 +74,7 @@ const Topnav = () => {
             // contentData={여기에 개인지갑 어드레스 들어와야함}
             // renderItems={(item, index) => renderUserMenu(item, index)}
             renderFooter={() => (
-              <Password />
+              <Password onClick={ClickWallet} />
               // <NewWallet />
             )}
           ></Dropdown>
