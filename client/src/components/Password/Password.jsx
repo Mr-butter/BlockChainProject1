@@ -5,6 +5,7 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
+  Icon,
   Link,
   Paper,
   TextField,
@@ -18,37 +19,38 @@ import Dropdown from "../dropdown/Dropdown";
 
 import NewWallet from "../walletModal/NewWallet";
 
-// const Btn = styled.button`
-//   padding: 2px;
-//   border-radious: 50%;
-//   background: #4b4b4b;
-//   background-shadow: 2px solid grey;
-//   color: gold;
-//   font-size: 17px;
-//   /* margin-left: 44%;
-//   margin-bottom: 60%; */
-//   cursor: pointer;
-// `;
+// function ComponentChange(props) {
+//   const CreateWallet = props.CreateWallet;
+//   if (true) {
+//     return <NewWallet />;
+//   } else {
+//     return null;
+//   }
+// }
 
 const Password = () => {
   const paperStyle = {
     padding: 20,
     height: "42vh",
     width: 280,
-    margin: "28px auto",
+    margin: "10px auto",
   };
 
   const avatarStyle = { backgroundColor: "gold" };
 
-  const btnstyle = { margin: "2px 1px" };
+  const btnstyle = { margin: "20px 5px" };
+
+  // const [NewWallet, setNewWallet] = useState(0);
 
   return (
     <Grid>
       <Paper className={10} style={paperStyle} variant="outlined">
+        <br />
         <Grid align="center">
           <Avatar style={avatarStyle}>
             <LockOutlined />
           </Avatar>
+          <br />
           <h2>My 간편 비밀번호</h2>
         </Grid>
         <TextField
@@ -62,7 +64,7 @@ const Password = () => {
           label="Remember me"
         />
         <Button
-          href="#"
+          href="/mypage"
           type="submit"
           color="gold"
           style={btnstyle}
@@ -78,11 +80,21 @@ const Password = () => {
         {/* Create New Wallet */}
         <Typography>
           Do you have an account ?
-          <Dropdown
-            className="userpassword-item"
-            icon="bx bx-wallet bx-tada"
-            renderFooter={() => <NewWallet />}
-          ></Dropdown>
+          <br />
+          <i
+            className="bx bx-wallet bx-tada"
+            style={{
+              display: "flex",
+              width: "20px",
+              height: "20px",
+              fontSize: "2.5rem",
+              alignItems: "center",
+              marginTop: "25px",
+              marginLeft: "95px",
+            }}
+          >
+            <NewWallet />
+          </i>
         </Typography>
       </Paper>
     </Grid>
