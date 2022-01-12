@@ -1,7 +1,46 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 function Testingboard(props) {
+    const ws = useRef(null);
+    const [socketMessage, setSocketMessage] = useState("");
+    useEffect(() => {
+        ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
+        ws.current.onopen = () => {
+            // connection opened
+            console.log("connected");
+            // send a message
+        };
+
+        ws.current.onmessage = (e) => {
+            // a message was received
+            setSocketMessage(e.data);
+        };
+
+        ws.current.onerror = (e) => {
+            // an error occurred
+            console.log(e.message);
+        };
+        ws.current.onclose = (e) => {
+            // connection closed
+            console.log(e.code, e.reason);
+        };
+
+        return () => {
+            ws.current.close();
+        };
+    }, []);
+
+    useEffect(() => {
+        ws.current.onmessage = (e) => {
+            // a message was received
+            setSocketMessage(e.data);
+        };
+
+        document.getElementById("socket_writefield").innerText =
+            JSON.stringify(socketMessage);
+    }, [socketMessage]);
+
     function block() {
         axios.post("/blocks").then((res) => {
             const data = res.data;
@@ -10,14 +49,15 @@ function Testingboard(props) {
         });
     }
 
-    function mineBlock(portNum) {
-        // console.log(portNum);
-        axios.post("/mineBlock", { port: portNum }).then((res) => {
-            const data = res.data;
-            // document.getElementById("writefield").innerText = JSON.stringify(data);
+    function mineBlock(onOff) {
+        axios.post("/mineBlock", { switchOnOff: onOff }).then((res) => {
+            // const data = res.data;
+            // document.getElementById("writefield").innerText =
+            //     JSON.stringify(data);
+            const data = res.data.message;
+            document.getElementById("writefield").innerText = data;
         });
     }
-
     function addPeer() {
         axios.post("/addPeer").then((res) => {
             const data = res.data;
@@ -131,8 +171,13 @@ function Testingboard(props) {
                     </button>
                 </li>
                 <li>
-                    <button id="mineBlock" onClick={() => mineBlock()}>
-                        mineBlock
+                    <button id="mineBlockon" onClick={() => mineBlock("on")}>
+                        mineBlock(on)
+                    </button>
+                </li>
+                <li>
+                    <button id="mineBlockoff" onClick={() => mineBlock("off")}>
+                        mineBlock(off)
                     </button>
                 </li>
                 <li>
@@ -161,7 +206,10 @@ function Testingboard(props) {
                     </button>
                 </li>
             </ol>
+            <h2>테스트 코드 결과</h2>
             <div id="writefield"></div>
+            <h2>소켓 메세지</h2>
+            <div id="socket_writefield"></div>
         </div>
     );
 }

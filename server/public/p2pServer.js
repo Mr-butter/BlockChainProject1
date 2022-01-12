@@ -1,41 +1,46 @@
-const p2p_port = process.env.P2P_PORT || 6001;
+const express = require("express");
+const app = express();
+const http = require("http");
+const port = process.env.PORT || "6001";
+app.set("port", port);
+const server = http.createServer(app);
+const { WebSocketServer, WebSocket } = require("ws");
+const chainedBlock_Func = require("./chainedBlock");
 
-const WebSocket = require("ws");
-const {
-    getLastBlock,
-    createHash,
-    addBlock,
-    replaceChain,
-} = require("./chainedBlock");
-
-function initP2PServer(port) {
-    const server = new WebSocket.Server({ port: port });
-    server.on("connection", (ws) => {
+function initP2PServer(server, port) {
+    const p2pserver = new WebSocketServer({ server });
+    p2pserver.on("connection", (ws) => {
         initConnection(ws);
     });
-    console.log("웹소켓 서버 포트 : " + port);
+    server.listen(port, () => {
+        console.log(`웹소켓 서버 포트 : ${port}.`);
+    });
 }
-
-// function initP2PServer(server, port) {
-//   const webSocketServer = new WebSocket.Server({ server: server });
-//   webSocketServer.on("connection", (ws) => {
-//     initConnection(ws);
-//   });
-//   console.log("웹소켓 서버 포트 : " + port);
+initP2PServer(server, port);
+// function initP2PServer(port) {
+//     const server = new WebSocket.Server({ port: port });
+//     server.on("connection", (ws) => {
+//         initConnection(ws);
+//     });
+//     console.log("웹소켓 서버 포트 : " + port);
 // }
 
-// function testmessage(peer) {
-//   const ws = new WebSocket(peer);
-//   ws.on("open", () => {
-//     ws.send("클라이언트 접속요청");
-//   });
-//   ws.on("message", (message) => {
-//     console.log(`클라이언트 받은 메세지:${message}`);
-//   });
-//   ws.on("error", (errorType) => {
-//     console.log("connetion Failed!" + errorType);
-//   });
-// }
+function testMinning(onoFF) {
+    const peer = `ws://localhost:${port}`;
+    const ws = new WebSocket(peer);
+    let minningSwitch = onoFF === "on" ? true : false;
+    console.log(minningSwitch);
+    ws.on("open", () => {
+        console.log("접속실행");
+        initConnection(ws);
+        while (minningSwitch) {
+            chainedBlock_Func.addBlock();
+        }
+    });
+    ws.on("error", () => {
+        console.log("connection failed");
+    });
+}
 
 let sockets = [];
 
@@ -67,13 +72,10 @@ function broadcast(message) {
 function connectToPeer(peer) {
     const ws = new WebSocket(peer);
     ws.on("open", () => {
-        console.log("채굴시작");
-        while (true) {
-            addBlock();
-        }
+        initConnection(ws);
     });
-    ws.on("error", (errorType) => {
-        console.log("connetion Failed!" + errorType);
+    ws.on("error", () => {
+        console.log("connection failed");
     });
 }
 
@@ -85,7 +87,6 @@ const MessageType = {
 };
 
 function initMessageHandler(ws) {
-    console.log("핸들러 진입");
     ws.on("message", (data) => {
         const message = JSON.parse(data);
 
@@ -106,21 +107,27 @@ function initMessageHandler(ws) {
 function responseLatestMsg() {
     return {
         type: MessageType.RESPONSE_BLOCKCHAIN,
-        data: JSON.stringify([getLastBlock()]),
+        data: JSON.stringify([chainedBlock_Func.getLastBlock()]),
     };
 }
 
 function responseAllChainMsg() {
     return {
         type: MessageType.RESPONSE_BLOCKCHAIN,
-        data: JSON.stringify(getBlocks()),
+        data: JSON.stringify(chainedBlock_Func.getBlocks()),
+    };
+}
+function startMinningMsg() {
+    return {
+        type: MessageType.START_MINNING,
+        data: true,
     };
 }
 
 function handleBlockChainResponse(message) {
     const receiveBlocks = JSON.parse(message.data);
     const latestReceiveBlock = receiveBlocks[receiveBlocks.length - 1];
-    const latesMyBlock = getLastBlock();
+    const latesMyBlock = chainedBlock_Func.getLastBlock();
 
     // 데이터로 받은 블럭 중에 마지막 블럭의 인덱스가
     // 내가 보유 중인 마지막 블럭의 인덱스보다 클 때 / 작을 때
@@ -139,7 +146,7 @@ function handleBlockChainResponse(message) {
         else if (receiveBlocks.length === 1) {
             broadcast(queryAllMsg());
         } else {
-            replaceChain(receiveBlocks);
+            chainedBlock_Func.replaceChain(receiveBlocks);
         }
     } else {
         console.log("Do nothing.");
@@ -161,17 +168,20 @@ function queryLatestMsg() {
 }
 
 function initErrorHandler(ws) {
+    console.log("에러 핸들러 진입");
     ws.on("close", () => {
         closeConnection(ws);
     });
     ws.on("error", () => {
         closeConnection(ws);
     });
+    console.log("에러 핸들러 종료");
 }
 
 function closeConnection(ws) {
-    console.log(`Connection close ${ws.url}`);
-    sockets.splice(sockets.indexOf(ws), 1);
+    console.log("접속종료");
+    // console.log(`Connection close ${ws.url}`);
+    // sockets.splice(sockets.indexOf(ws), 1);
 }
 
 module.exports = {
@@ -182,4 +192,5 @@ module.exports = {
     getSockets,
     broadcast,
     responseLatestMsg,
+    testMinning,
 };
