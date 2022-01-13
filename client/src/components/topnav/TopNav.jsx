@@ -40,14 +40,25 @@ const Topnav = (props) => {
   const [toggled, setToggled] = useState(false);
 
   const [haveWallet, sethaveWallet] = useState("pass");
-  // const ClickWallet = useRef(true);
-  const getHaveWallet = (e) => {
+  const [createWallet, setcreateWallet] = useState("pass");
+
+  const getHaveWallet = () => {
     sethaveWallet("wallet");
   };
+  // const getHaveCreatepwd = () => {
+  //   setcreateWallet("createpwd");
+  // };
   useEffect(() => {
     var elem = document.getElementById("password");
-    elem.addEventListener("click", (e) => getHaveWallet("pass"));
+    elem.addEventListener("click", () => getHaveWallet());
+    console.log(elem);
   }, []);
+
+  // useEffect(() => {
+  //   var eleme = document.getElementById("createpwd");
+  //   eleme.addEventListener("click", () => getHaveCreatepwd());
+  //   console.log(eleme);
+  // }, []);
 
   return (
     <div className="topnav">

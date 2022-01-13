@@ -35,8 +35,8 @@ const NewWallet = () => {
     document.execCommand("copy");
   };
 
-  const createPwd = (e) => {
-    e.getCreatePwd(true);
+  const sendcreateWallet = (e) => {
+    e.getHaveCreatepwd("wallet");
   };
 
   return (
@@ -67,19 +67,15 @@ const NewWallet = () => {
               your account. Please store it somewhere safe !
             </FormHelperText>
           </FormControl>
-
-          <Button
-            href="#"
-            type="submit"
-            color="gold"
-            style={btnstyle}
-            variant="contained"
-            fullWidth
-            value="wallet"
-            onClick={() => createPwd(true)}
-          >
-            Ok, I saved it somewhere
-          </Button>
+          <p>
+            <button
+              id="createpwd"
+              value="createpwd"
+              onClick={() => sendcreateWallet(true)}
+            >
+              Ok, I saved it somewhere
+            </button>
+          </p>
         </Paper>
       </Grid>
     </div>
@@ -87,21 +83,3 @@ const NewWallet = () => {
 };
 
 export default NewWallet;
-
-{
-  /* <center>
-<input
-  value={value}
-  onChange={({ target: { value } }) => {
-    setValue(value);
-    //   setCopied(false);
-  }}
-/>
-
-<CopyToClipboard text={value} onCopy={() => setCopied(true)}>
-  <button>Copy</button>
-</CopyToClipboard>
-
-{copied ? <span style={{ color: "gold" }}>Copied</span> : null}
-</center> */
-}
