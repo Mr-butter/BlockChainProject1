@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./topnav.css";
 
@@ -14,6 +14,9 @@ import notifications from "../../assets/JsonData/notification.json";
 
 import Password from "../Password/Password";
 import NewWallet from "../walletModal/NewWallet";
+import Pwd from "../Password/Pwd";
+
+import Click from "../topnav/Click";
 
 // import Modal from "../walletModal/Modal";
 // import ModalStyles from "../walletModal/ModalStyles";
@@ -27,7 +30,7 @@ const renderNotificationItem = (item, index) => (
   </div>
 );
 
-const Topnav = () => {
+const Topnav = (props) => {
   // const [showModal, setShowModal] = useState(false);
 
   // const openModal = () => {
@@ -36,25 +39,15 @@ const Topnav = () => {
 
   const [toggled, setToggled] = useState(false);
 
-  const [haveWallet, sethaveWallet] = useState(false);
+  const [haveWallet, sethaveWallet] = useState("pass");
   // const ClickWallet = useRef(true);
-
-  const getHaveWallet = () => {
-    sethaveWallet(false);
+  const getHaveWallet = (e) => {
+    sethaveWallet("wallet");
   };
-
   useEffect(() => {
-    sethaveWallet(!haveWallet);
-    console.log(!haveWallet);
-  }, [haveWallet]);
-
-  // function ClickWallet() {
-  //   Promise.resolve()
-  //     .then(() => {
-  //       setNewWallet((NewWallet) => NewWallet + 1);
-  //     })
-  //     .then(() => console.log(NewWallet));
-  // }
+    var elem = document.getElementById("password");
+    elem.addEventListener("click", (e) => getHaveWallet("pass"));
+  }, []);
 
   return (
     <div className="topnav">
@@ -73,13 +66,32 @@ const Topnav = () => {
           <Dropdown
             className="userpassword-item"
             icon="bx bx-user"
-            // value={props}
+            // getHaveWallet={(e) => getHaveWallet(e)}
             // customerToggle={() => renderUserToggle(curr_user)}
             // contentData={여기에 개인지갑 어드레스 들어와야함}
             // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={() =>
-              // <Password onClick={ClickWallet} />
-              haveWallet ? <NewWallet /> : <Password />
+            renderFooter={
+              () =>
+                // <Password onClick={ClickWallet} />
+                // haveWallet ? <NewWallet /> : <Password />
+                {
+                  // if (haveWallet === "pass") {
+                  //   return <Password />;
+                  // } else if (haveWallet === "wallet") {
+                  //   return <NewWallet />;
+                  // }
+                  switch (haveWallet) {
+                    case "pass":
+                      return <Password />;
+                    case "wallet":
+                      return <NewWallet />;
+                    case "createpwd":
+                      return <Pwd />;
+                    default:
+                      break;
+                  }
+                }
+              // <NewWallet />
             }
           ></Dropdown>
         </div>

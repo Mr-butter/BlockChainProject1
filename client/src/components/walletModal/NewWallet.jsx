@@ -34,6 +34,11 @@ const NewWallet = () => {
     el.select();
     document.execCommand("copy");
   };
+
+  const createPwd = (e) => {
+    e.getCreatePwd(true);
+  };
+
   return (
     <div>
       <Grid>
@@ -70,6 +75,8 @@ const NewWallet = () => {
             style={btnstyle}
             variant="contained"
             fullWidth
+            value="wallet"
+            onClick={() => createPwd(true)}
           >
             Ok, I saved it somewhere
           </Button>

@@ -19,15 +19,6 @@ import Dropdown from "../dropdown/Dropdown";
 
 import NewWallet from "../walletModal/NewWallet";
 
-// function ComponentChange(props) {
-//   const CreateWallet = props.CreateWallet;
-//   if (true) {
-//     return <NewWallet />;
-//   } else {
-//     return null;
-//   }
-// }
-
 const Password = (e) => {
   const paperStyle = {
     padding: 20,
@@ -41,7 +32,7 @@ const Password = (e) => {
   const btnstyle = { margin: "20px 5px" };
 
   const sendHaveWallet = (e) => {
-    e.getHaveWallet("pass");
+    e.getHaveWallet(true);
   };
 
   return (
@@ -53,7 +44,8 @@ const Password = (e) => {
             <LockOutlined />
           </Avatar>
           <br />
-          <h2>My 간편 비밀번호</h2>
+          <h2>Create a password</h2>
+          <p>You will use this to unlock your wallet.</p>
         </Grid>
         <TextField
           label="password"
@@ -61,9 +53,15 @@ const Password = (e) => {
           fullwidth
           required
         />
+        <TextField
+          label="confirm password"
+          placeholder="password confirm"
+          fullwidth
+          required
+        />
         <FormControlLabel
           control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
+          label="개인정보 처리 동의"
         />
         <Button
           href="/mypage"
@@ -73,39 +71,8 @@ const Password = (e) => {
           variant="contained"
           fullWidth
         >
-          SIGN IN
+          Save
         </Button>
-        <Typography>
-          <Link href="#">Forgot password ?</Link>
-        </Typography>
-        <br />
-        {/* Create New Wallet */}
-        <Typography>
-          Do you have an account ?
-          <br />
-          <i
-            className="bx bx-wallet bx-tada"
-            style={{
-              display: "flex",
-              width: "20px",
-              height: "20px",
-              fontSize: "2.5rem",
-              alignItems: "center",
-              marginTop: "25px",
-              marginLeft: "95px",
-            }}
-          />
-          {/* <NewWallet /> */}
-          <p>
-            <button
-              id="password"
-              value="password"
-              onClick={() => sendHaveWallet(true)}
-            >
-              지갑버튼
-            </button>
-          </p>
-        </Typography>
       </Paper>
     </Grid>
   );
