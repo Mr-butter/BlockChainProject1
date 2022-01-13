@@ -19,6 +19,8 @@ import Dropdown from "../dropdown/Dropdown";
 
 import NewWallet from "../walletModal/NewWallet";
 
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+
 // function ComponentChange(props) {
 //   const CreateWallet = props.CreateWallet;
 //   if (true) {
@@ -36,6 +38,12 @@ const Password = (e) => {
     height: 460,
     margin: "10px auto",
   };
+
+  const theme = createMuiTheme({
+    palette: {
+      type: "dark",
+    },
+  });
 
   const avatarStyle = { backgroundColor: "gold" };
 
@@ -84,28 +92,24 @@ const Password = (e) => {
         <Typography>
           Do you have an account ?
           <br />
-          <i
-            className="bx bx-wallet bx-tada"
-            style={{
-              display: "flex",
-              width: "20px",
-              height: "20px",
-              fontSize: "2.5rem",
-              alignItems: "center",
-              marginTop: "25px",
-              marginLeft: "95px",
-            }}
-          />
-          {/* <NewWallet /> */}
-          <p>
+          <ThemeProvider theme={theme}>
             <button
               id="password"
               value="password"
+              className="bx bxs-wallet bx-tada"
               onClick={() => sendHaveWallet(true)}
-            >
-              지갑버튼
-            </button>
-          </p>
+              style={{
+                display: "flex",
+                width: "25px",
+                height: "22px",
+                fontSize: "2.7rem",
+                alignItems: "center",
+                marginTop: "25px",
+                marginLeft: "95px",
+                color: "",
+              }}
+            ></button>
+          </ThemeProvider>
         </Typography>
       </Paper>
     </Grid>
