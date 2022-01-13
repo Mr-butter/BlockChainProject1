@@ -55,8 +55,8 @@ function Testingboard(props) {
             // const data = res.data;
             // document.getElementById("writefield").innerText =
             //     JSON.stringify(data);
-            const data = res.data.message;
-            document.getElementById("writefield").innerText = data;
+            // const data = res.data.message;
+            // document.getElementById("writefield").innerText = data;
         });
     }
     function addPeer() {

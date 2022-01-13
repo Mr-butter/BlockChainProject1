@@ -10,8 +10,8 @@ function initP2PServer(port) {
     });
     console.log(`웹소켓 서버 포트 : ${port}.`);
 }
-initP2PServer(port);
-connectToPeer("ws://localhost:6001");
+// initP2PServer(port);
+// connectToPeer("ws://localhost:6001");
 
 // function testMinning(onoFF) {
 //     const peer = `ws://localhost:${port}`;
@@ -169,25 +169,25 @@ function initErrorHandler(ws) {
 
 function closeConnection(ws) {
     console.log("접속종료");
-    // console.log(`Connection close ${ws.url}`);
-    // sockets.splice(sockets.indexOf(ws), 1);
+    console.log(`Connection close ${ws.url}`);
+    sockets.splice(sockets.indexOf(ws), 1);
 }
 
-parentPort.on("message", (message) => {
-    switch (message) {
-        case "on":
-            console.log("워커에서 응답" + message);
-            setInterval(() => chainedBlock_Func.addBlock());
-            return;
-        case "off":
-            console.log("워커에서 응답" + message);
-            parentPort.close();
-            return;
-        default:
-            console.log("디폴트 메시지");
-            return;
-    }
-});
+// parentPort.on("message", (message) => {
+//     switch (message) {
+//         case "on":
+//             console.log("워커에서 응답" + message);
+//             setInterval(() => chainedBlock_Func.addBlock());
+//             return;
+//         case "off":
+//             console.log("워커에서 응답" + message);
+//             parentPort.close();
+//             return;
+//         default:
+//             console.log("디폴트 메시지");
+//             return;
+//     }
+// });
 
 module.exports = {
     WebSocket,

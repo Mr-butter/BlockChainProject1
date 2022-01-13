@@ -1,9 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const chainedBlock_func = require("../public/chainedBlock");
-// const p2pServer_func = require("../public/p2pServer");
-const { isMainThread, Worker, parentPort } = require("worker_threads");
-const worker = new Worker("./public/p2pServer.js");
+const p2pServer_func = require("../public/p2pServer");
+// const { isMainThread, Worker, parentPort } = require("worker_threads");
+// const worker = new Worker("./public/p2pServer.js");
 
 router.post("/blocks", (req, res) => {
     const blocks = chainedBlock_func.getBlocks();
@@ -21,7 +21,7 @@ router.post("/mineBlock", (req, res) => {
     const switchOnOff = req.body.switchOnOff;
     // chainedBlock_func.testminning(switchOnOff);
     // console.log(switchOnOff);
-    worker.postMessage("on");
+    chainedBlock_func.testminning(switchOnOff);
     // switch (switchOnOff) {
     //     case "on":
     //         p2pServer.testMinning(switchOnOff);
@@ -42,7 +42,7 @@ router.post("/mineBlock", (req, res) => {
 });
 
 router.post("/version", (req, res) => {
-    // res.send(chainedBlock.getVersion());
+    res.send(chainedBlock_func.getVersion());
 });
 
 router.post("/stop", (req, res) => {
