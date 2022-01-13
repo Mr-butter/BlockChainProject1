@@ -1,55 +1,25 @@
 var express = require("express");
 var router = express.Router();
 const chainedBlock_func = require("../public/chainedBlock");
-const { Worker } = require("worker_threads");
-const worker = new Worker("./public/chainedBlock.js");
-
-/* GET home page. */
-// router.post("/addPeers", (req, res) => {
-//   const data = req.body.data || [];
-//   connectToPeers(data);
-//   res.send(data);
-// });
-
-// router.post("/peers", (req, res) => {
-//   let sockInfo = [];
-
-//   getSockets().forEach((s) => {
-//     sockInfo.push(s._socket.remoteAddress + ":" + s._socket.remotePort);
-//   });
-//   res.send(sockInfo);
-// });
+// const p2pServer_func = require("../public/p2pServer");
+const { isMainThread, Worker, parentPort } = require("worker_threads");
+const worker = new Worker("./public/p2pServer.js");
 
 router.post("/blocks", (req, res) => {
-    console.log("111");
-    console.log(chainedBlock.getBlocks());
+    const blocks = chainedBlock_func.getBlocks();
+    res.send(blocks);
 });
 
-// const addPeerPort = [];
-// router.post("/addPeer", (req, res) => {
-//     if (addPeerPort.length === 0) {
-//         addPeerPort.push(6000);
-//         const addP2pport = addPeerPort[0];
-//         const addPeer = `ws://localhost:${addP2pport}`;
-//         p2pServer.initP2PServer(addP2pport);
-//         p2pServer.connectToPeer(addPeer);
-//         res.send(`포트 ${addP2pport}번 에서 열림`);
-//     } else {
-//         const addP2pport = addPeerPort[addPeerPort.length() - 1] + 1;
-//         const addPeer = `ws://localhost:${addP2pport}`;
-//         p2pServer.initP2PServer(addP2pport);
-//         p2pServer.connectToPeer(addPeer);
-//         res.send(`포트 ${addP2pport}번 에서 열림`);
-//     }
-// });
-
 router.post("/addPeer", (req, res) => {
-    // p2pServer.connectToPeer("ws://localhost:6001");
-    // res.send();
+    const p2pPort = p2pServer_func.getSockets().length + 6000;
+    p2pServer_func.initP2PServer(p2pPort);
+    p2pServer_func.connectToPeer(`ws://localhost:${p2pPort}`);
+    res.send({ message: `${p2pPort}번 포트로 웹소켓 접속` });
 });
 
 router.post("/mineBlock", (req, res) => {
     const switchOnOff = req.body.switchOnOff;
+    // chainedBlock_func.testminning(switchOnOff);
     // console.log(switchOnOff);
     worker.postMessage("on");
     // switch (switchOnOff) {

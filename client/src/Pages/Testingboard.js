@@ -61,8 +61,8 @@ function Testingboard(props) {
     }
     function addPeer() {
         axios.post("/addPeer").then((res) => {
-            const data = res.data;
-            console.log(data);
+            const data = res.data.message;
+            document.getElementById("writefield").innerText = data;
         });
     }
 

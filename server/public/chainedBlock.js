@@ -2,7 +2,7 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
-const worker_threads = require("worker_threads");
+const { isMainThread, Worker, parentPort } = require("worker_threads");
 const { WebSocket } = require("ws");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
@@ -357,19 +357,36 @@ function addBlock() {
     }
     return null;
 }
-worker_threads.parentPort.on("message", (message) => {
-    switch (message) {
-        case "blocks":
-            parentPort.postMessage(getBlocks());
-            break;
-        case "on":
-            setInterval(() => addBlock());
-            break;
 
-        default:
-            break;
-    }
-});
+// function testminning(message) {
+//     if (isMainThread) {
+//         console.log("메인에서 응답" + message);
+//         const worker = new Worker(__filename);
+//         // worker.on("message", (message) => {
+//         //     console.log(message);
+//         // });
+//         worker.on("exit", () => {
+//             console.log("워커종료");
+//         });
+//         worker.postMessage(message);
+//     } else {
+//         parentPort.on("message", (message) => {
+//             switch (message) {
+//                 case "on":
+//                     console.log("워커에서 응답" + message);
+//                     parentPort.setInterval(() => addBlock());
+//                     return;
+//                 case "off":
+//                     console.log("워커에서 응답" + message);
+//                     parentPort.close();
+//                     return;
+//                 default:
+//                     console.log("디폴트 메시지");
+//                     return;
+//             }
+//         });
+//     }
+// }
 
 module.exports = {
     Blocks,
