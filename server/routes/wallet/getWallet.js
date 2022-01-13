@@ -17,8 +17,6 @@ router.post('/', function (req, res) {
   //console.log('keystore---------------\n', keystore);
   //console.log('LocalStoreServer---------------\n', LocalStoreServer);
 
-  const address = keystore.getAddresses()
-  console.log('address---------------', address);
 
   if (isNullOrUndefined.isNullOrUndefined(keystore)) {
     let error = {
@@ -44,12 +42,15 @@ router.post('/', function (req, res) {
   //let ks = new ligthWallet.keystore.deserialize(walletJson);
   //console.log("222222222222222222", ks);
   const password = walletPwdFromUser.toString();
+  const address = keystore.getAddresses()
+  console.log('address---------------', address);
   //console.log(password);
 
   keystore.keyFromPassword(password, function (err, pwDerivedKey) {
     if (keystore.isDerivedKeyCorrect(pwDerivedKey)) {
       let data = {
         isError: false,
+        msg: '지갑 주소 입니다.',
         address: address
       }
       console.log("data-----------------------", data);
@@ -64,6 +65,47 @@ router.post('/', function (req, res) {
     }
   });
 });
+
+router.post('/test', function (req, res) {
+
+  const password = req.body.password.toString();
+  const randomSeed = req.body.mnemonic.toString();
+  const checkingSeed = ligthWallet.keystore.isSeedValid(randomSeed)
+  //console.log(checkingSeed);
+
+  if (checkingSeed) {
+
+    ligthWallet.keystore.createVault({
+      password: password,
+      seedPhrase: randomSeed,
+      hdPathString: "m/0'/0'/0'"
+    }, function (err, ks) {
+      ks.keyFromPassword(password, function (err, pwDerivedKey) {
+        if (ks.isDerivedKeyCorrect(pwDerivedKey)) {
+          ks.generateNewAddress(pwDerivedKey, 1);
+          const address = ks.getAddresses(ks)
+          let data = {
+            keystore: ks,
+            isError: false,
+            msg: '성공적으로 복구되었습니다.',
+            address: address,
+          }
+          res.json(data);
+        }
+      })
+    });
+
+  }
+  else {
+
+    let data = {
+      isError: true,
+      msg: 'KeyStore: Invalid mnemonic // 유효한 니모닉이 아닙니다.'
+    };
+    res.json(data);
+  }
+});
+
 
 
 module.exports = router; 
