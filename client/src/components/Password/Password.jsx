@@ -33,6 +33,7 @@ const Password = (e) => {
     padding: 20,
     height: "42vh",
     width: 280,
+    height: 460,
     margin: "10px auto",
   };
 
