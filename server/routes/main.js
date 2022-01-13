@@ -1,7 +1,8 @@
 var express = require("express");
 var router = express.Router();
-const chainedBlock = require("../public/chainedBlock");
-const p2pServer = require("../public/p2pServer");
+const chainedBlock_func = require("../public/chainedBlock");
+const { Worker } = require("worker_threads");
+const worker = new Worker("./public/chainedBlock.js");
 
 /* GET home page. */
 // router.post("/addPeers", (req, res) => {
@@ -20,7 +21,8 @@ const p2pServer = require("../public/p2pServer");
 // });
 
 router.post("/blocks", (req, res) => {
-    res.send(chainedBlock.getBlocks());
+    console.log("111");
+    console.log(chainedBlock.getBlocks());
 });
 
 // const addPeerPort = [];
@@ -42,22 +44,24 @@ router.post("/blocks", (req, res) => {
 // });
 
 router.post("/addPeer", (req, res) => {
-    p2pServer.connectToPeer("ws://localhost:6001");
-    res.send();
+    // p2pServer.connectToPeer("ws://localhost:6001");
+    // res.send();
 });
 
 router.post("/mineBlock", (req, res) => {
     const switchOnOff = req.body.switchOnOff;
-    switch (switchOnOff) {
-        case "on":
-            p2pServer.testMinning(switchOnOff);
-            return res.send({ message: "마이닝을 시작합니다." });
-        case "off":
-            // p2pServer.testMinning(switchOnOff);
-            return res.send({ message: "마이닝을 종료합니다." });
-        default:
-            returnres.send({ message: "아직 작업 전입니다." });
-    }
+    // console.log(switchOnOff);
+    worker.postMessage("on");
+    // switch (switchOnOff) {
+    //     case "on":
+    //         p2pServer.testMinning(switchOnOff);
+    //         return res.send({ message: "마이닝을 시작합니다." });
+    //     case "off":
+    //         // p2pServer.testMinning(switchOnOff);
+    //         return res.send({ message: "마이닝을 종료합니다." });
+    //     default:
+    //         returnres.send({ message: "아직 작업 전입니다." });
+    // }
     // const newBlock = chainedBlock.addBlock();
     // if (newBlock === null) {
     //     res.status(400).send("could not generate block");
@@ -68,7 +72,7 @@ router.post("/mineBlock", (req, res) => {
 });
 
 router.post("/version", (req, res) => {
-    res.send(chainedBlock.getVersion());
+    // res.send(chainedBlock.getVersion());
 });
 
 router.post("/stop", (req, res) => {

@@ -21,85 +21,87 @@ import NewWallet from "../walletModal/NewWallet";
 import Toggle from "./Toggle";
 
 const renderNotificationItem = (item, index) => (
-  <div className="notification-item" key={index}>
-    <i className={item.icon}></i>
-    <span>{item.content}</span>
-  </div>
+    <div className="notification-item" key={index}>
+        <i className={item.icon}></i>
+        <span>{item.content}</span>
+    </div>
 );
 
 const Topnav = () => {
-  // const [showModal, setShowModal] = useState(false);
+    // const [showModal, setShowModal] = useState(false);
 
-  // const openModal = () => {
-  //   setShowModal((prev) => !prev);
-  // };
+    // const openModal = () => {
+    //   setShowModal((prev) => !prev);
+    // };
 
-  const [toggled, setToggled] = useState(false);
+    const [toggled, setToggled] = useState(false);
 
-  const [haveWallet, sethaveWallet] = useState(false);
-  // const ClickWallet = useRef(true);
+    const [haveWallet, sethaveWallet] = useState(false);
+    // const ClickWallet = useRef(true);
 
-  const getHaveWallet = () => {
-    sethaveWallet(false);
-  };
+    // const getHaveWallet = () => {
+    //   sethaveWallet(false);
+    // };
 
-  useEffect(() => {
-    sethaveWallet(!haveWallet);
-    console.log(!haveWallet);
-  }, [haveWallet]);
+    // useEffect(() => {
+    //   sethaveWallet(!haveWallet);
+    //   console.log(!haveWallet);
+    // }, [haveWallet]);
 
-  // function ClickWallet() {
-  //   Promise.resolve()
-  //     .then(() => {
-  //       setNewWallet((NewWallet) => NewWallet + 1);
-  //     })
-  //     .then(() => console.log(NewWallet));
-  // }
+    // function ClickWallet() {
+    //   Promise.resolve()
+    //     .then(() => {
+    //       setNewWallet((NewWallet) => NewWallet + 1);
+    //     })
+    //     .then(() => console.log(NewWallet));
+    // }
 
-  return (
-    <div className="topnav">
-      <div className="topnav__search">
-        <input type="text" placeholder="Search here..." />
-        <i className="bx bx-search"></i>
-      </div>
+    return (
+        <div className="topnav">
+            <div className="topnav__search">
+                <input type="text" placeholder="Search here..." />
+                <i className="bx bx-search"></i>
+            </div>
 
-      <div className="topnav__right">
-        <Toggle onChange={(e) => setToggled(e.target.checked)} />
-        <p>The switch is {toggled ? "on" : "off"}.</p>
-      </div>
+            <div className="topnav__right">
+                <Toggle onChange={(e) => setToggled(e.target.checked)} />
+                <p>The switch is {toggled ? "on" : "off"}.</p>
+            </div>
 
-      <div className="topnav__right">
-        <div className="topnav__right-item">
-          <Dropdown
-            className="userpassword-item"
-            icon="bx bx-user"
-            // value={props}
-            // customerToggle={() => renderUserToggle(curr_user)}
-            // contentData={여기에 개인지갑 어드레스 들어와야함}
-            // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={() =>
-              // <Password onClick={ClickWallet} />
-              haveWallet ? <NewWallet /> : <Password />
-            }
-          ></Dropdown>
+            <div className="topnav__right">
+                <div className="topnav__right-item">
+                    <Dropdown
+                        className="userpassword-item"
+                        icon="bx bx-user"
+                        // value={props}
+                        // customerToggle={() => renderUserToggle(curr_user)}
+                        // contentData={여기에 개인지갑 어드레스 들어와야함}
+                        // renderItems={(item, index) => renderUserMenu(item, index)}
+                        renderFooter={() =>
+                            // <Password onClick={ClickWallet} />
+                            haveWallet ? <NewWallet /> : <Password />
+                        }
+                    ></Dropdown>
+                </div>
+
+                <div className="topnav__right-item">
+                    <Dropdown
+                        icon="bx bx-bell"
+                        badge="12"
+                        contentData={notifications}
+                        renderItems={(item, index) =>
+                            renderNotificationItem(item, index)
+                        }
+                        renderFooter={() => <Link to="/">View All</Link>}
+                    />
+                </div>
+
+                <div className="topnav__right-item">
+                    <ThemeMenu />
+                </div>
+            </div>
         </div>
-
-        <div className="topnav__right-item">
-          <Dropdown
-            icon="bx bx-bell"
-            badge="12"
-            contentData={notifications}
-            renderItems={(item, index) => renderNotificationItem(item, index)}
-            renderFooter={() => <Link to="/">View All</Link>}
-          />
-        </div>
-
-        <div className="topnav__right-item">
-          <ThemeMenu />
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Topnav;

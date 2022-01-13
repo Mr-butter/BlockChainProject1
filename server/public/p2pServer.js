@@ -1,46 +1,35 @@
-const express = require("express");
-const app = express();
-const http = require("http");
 const port = process.env.PORT || "6001";
-app.set("port", port);
-const server = http.createServer(app);
-const { WebSocketServer, WebSocket } = require("ws");
+const { WebSocket } = require("ws");
 const chainedBlock_Func = require("./chainedBlock");
 
-function initP2PServer(server, port) {
-    const p2pserver = new WebSocketServer({ server });
+function initP2PServer(port) {
+    const p2pserver = new WebSocket.Server({ port: port });
     p2pserver.on("connection", (ws) => {
         initConnection(ws);
     });
-    server.listen(port, () => {
-        console.log(`웹소켓 서버 포트 : ${port}.`);
-    });
+    console.log(`웹소켓 서버 포트 : ${port}.`);
 }
-initP2PServer(server, port);
-// function initP2PServer(port) {
-//     const server = new WebSocket.Server({ port: port });
-//     server.on("connection", (ws) => {
-//         initConnection(ws);
-//     });
-//     console.log("웹소켓 서버 포트 : " + port);
-// }
 
-function testMinning(onoFF) {
-    const peer = `ws://localhost:${port}`;
-    const ws = new WebSocket(peer);
-    let minningSwitch = onoFF === "on" ? true : false;
-    console.log(minningSwitch);
-    ws.on("open", () => {
-        console.log("접속실행");
-        initConnection(ws);
-        while (minningSwitch) {
-            chainedBlock_Func.addBlock();
-        }
-    });
-    ws.on("error", () => {
-        console.log("connection failed");
-    });
-}
+initP2PServer(port);
+
+connectToPeer(`ws://localhost:${port}`);
+
+// function testMinning(onoFF) {
+//     const peer = `ws://localhost:${port}`;
+//     const ws = new WebSocket(peer);
+//     let minningSwitch = onoFF === "on" ? true : false;
+//     console.log(minningSwitch);
+//     ws.on("open", () => {
+//         console.log("접속실행");
+//         initConnection(ws);
+//         while (minningSwitch) {
+//             chainedBlock_Func.addBlock();
+//         }
+//     });
+//     ws.on("error", () => {
+//         console.log("connection failed");
+//     });
+// }
 
 let sockets = [];
 
@@ -192,5 +181,4 @@ module.exports = {
     getSockets,
     broadcast,
     responseLatestMsg,
-    testMinning,
 };

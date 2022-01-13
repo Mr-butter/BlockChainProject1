@@ -2,6 +2,8 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
+const worker_threads = require("worker_threads");
+const { WebSocket } = require("ws");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -347,8 +349,6 @@ setInterval(() => {
 //////////////////////////////////////
 
 function addBlock() {
-    const p2pServer = require("./p2pServer");
-
     const newBlock = nextBlock(transectionArry);
     if (isValidNewBlock(newBlock, getLastBlock())) {
         transectionArry = [];
@@ -357,6 +357,19 @@ function addBlock() {
     }
     return null;
 }
+worker_threads.parentPort.on("message", (message) => {
+    switch (message) {
+        case "blocks":
+            parentPort.postMessage(getBlocks());
+            break;
+        case "on":
+            setInterval(() => addBlock());
+            break;
+
+        default:
+            break;
+    }
+});
 
 module.exports = {
     Blocks,
