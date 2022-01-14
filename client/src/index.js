@@ -8,7 +8,6 @@ import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
 
 import { composeWithDevTools } from "redux-devtools-extension";
-// import rootReducer from "./reducers";
 import { BrowserRouter } from "react-router-dom";
 import rootReducer from "./redux/reducers/index";
 
@@ -25,8 +24,6 @@ const theme = createMuiTheme({
     type: "dark",
   },
 });
-
-const store = createStore(rootReducer);
 
 document.title = "CoLink";
 

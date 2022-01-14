@@ -12,16 +12,9 @@ const setColor = (color) => {
   };
 };
 
-const getTheme = () => {
-  return {
-    type: "GET_THEME",
-  };
-};
-
 const exportDefault = {
   setColor,
   setMode,
-  getTheme,
 };
 
 export default exportDefault;
