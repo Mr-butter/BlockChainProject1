@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { CopyToClipboard } from "copy-to-clipboard";
+import axios from "axios";
 
 import {
   Avatar,
@@ -40,6 +41,15 @@ const NewWallet = () => {
     e.getHaveCreatepwd("wallet");
   };
 
+  function mnemonic() {
+    axios.post("/wallet/mnemonic").then((res) => {
+      const mnemonic = res.data.mnemonic;
+      console.log(mnemonic);
+      document.getElementById("writefield").innerText = mnemonic;
+    });
+  }
+  console.log(mnemonic());
+
   return (
     <div>
       <Grid>
@@ -53,12 +63,18 @@ const NewWallet = () => {
           {/* 니모닉 들어갈 자리 */}
           <FormControl>
             <br />
-            <input
+            {/* <input
               type="text"
-              value="니모닉 12자리 비밀키 들어올 자리"
+              value=""
+              onClick={() => mnemonic()}
               ref={textInput}
               readOnly
-            ></input>
+            ></input> */}
+
+            <div id="writefield" ref={textInput}></div>
+            {/* <Button id="mnemonic" onClick={() => mnemonic()} style={btnstyle}>
+              create mnemonic
+            </Button> */}
             <br />
             <Button onClick={copy}>copy</Button>
             <br />

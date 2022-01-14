@@ -5,7 +5,7 @@ const ligthWallet = require('eth-lightwallet')
 router.post("/", async (req, res, next) => {
   try {
     const mnemonic = ligthWallet.keystore.generateRandomSeed();
-    res.json({ mnemonic })
+    res.json({ mnemonic: mnemonic })
   } catch (err) {
     console.log(err)
   }
