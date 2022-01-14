@@ -6,7 +6,7 @@ function Testingboard(props) {
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState("");
   useEffect(() => {
-    ws.current = new WebSocket(`ws://127.0.0.1:6005/`);
+    ws.current = new WebSocket(`ws://127.0.0.1:6002/`);
     ws.current.onopen = () => {
       // connection opened
       console.log("connected");

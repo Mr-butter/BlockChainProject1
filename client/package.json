@@ -54,9 +54,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "server1": "set PORT=3000 && react-scripts start",
-    "server2": "set PORT=3001 && react-scripts start",
-    "server3": "set PORT=3002 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

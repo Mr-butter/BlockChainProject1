@@ -1,6 +1,5 @@
-const port = process.env.PORT || "6001";
+const port = process.env.P2P_PORT || "6001";
 const { WebSocket } = require("ws");
-const { isMainThread, Worker, parentPort } = require("worker_threads");
 
 function initP2PServer(port) {
   const p2pserver = new WebSocket.Server({ port: port });
@@ -9,25 +8,16 @@ function initP2PServer(port) {
   });
   console.log(`웹소켓 서버 포트 : ${port}.`);
 }
-// initP2PServer(port);
-// connectToPeer("ws://localhost:6001");
 
-// function testMinning(onoFF) {
-//     const peer = `ws://localhost:${port}`;
-//     const ws = new WebSocket(peer);
-//     let minningSwitch = onoFF === "on" ? true : false;
-//     console.log(minningSwitch);
-//     ws.on("open", () => {
-//         console.log("접속실행");
-//         initConnection(ws);
-//         while (minningSwitch) {
-//             chainedBlock_Func.addBlock();
-//         }
-//     });
-//     ws.on("error", () => {
-//         console.log("connection failed");
-//     });
-// }
+initP2PServer(port);
+
+function initHttpP2PServer(server, port) {
+  const p2pserver = new WebSocket.Server({ server });
+  p2pserver.on("connection", (ws) => {
+    initConnection(ws);
+  });
+  console.log(`웹소켓 서버 포트 : ${port}.`);
+}
 
 let sockets = [];
 
@@ -192,6 +182,7 @@ function closeConnection(ws) {
 module.exports = {
   WebSocket,
   initP2PServer,
+  initHttpP2PServer,
   connectToPeer,
   initMessageHandler,
   getSockets,

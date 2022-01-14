@@ -13,7 +13,6 @@ router.post("/blocks", (req, res) => {
 router.post("/inputport", (req, res) => {
   const port = req.body.port;
   console.log(port);
-  p2pServer_func.initP2PServer(port);
   p2pServer_func.connectToPeer(`ws://localhost:${port}`);
   res.send({ message: `${port}번 포트로 웹소켓 접속` });
   chainedBlock_func.minning("on");
