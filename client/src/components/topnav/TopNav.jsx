@@ -45,17 +45,11 @@ const renderNotificationItem = (item, index) => (
 );
 
 const Topnav = (props) => {
-  // const [showModal, setShowModal] = useState(false);
-
-  // const openModal = () => {
-  //   setShowModal((prev) => !prev);
-  // };
-
   const [toggled, setToggled] = useState(false);
-
   const [haveWallet, sethaveWallet] = useState("pass");
   const [AnchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(AnchorEl);
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -63,26 +57,6 @@ const Topnav = (props) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  // const [createWallet, setcreateWallet] = useState("pass");
-
-  // const getHaveWallet = () => {
-  //   sethaveWallet("wallet");
-  // };
-  // // const getHaveCreatepwd = () => {
-  // //   setcreateWallet("createpwd");
-  // // };
-  // useEffect(() => {
-  //   var elem = document.getElementById("password");
-  //   elem.addEventListener("click", () => getHaveWallet());
-  //   console.log(elem);
-  // }, []);
-
-  // useEffect(() => {
-  //   var eleme = document.getElementById("createpwd");
-  //   eleme.addEventListener("click", () => getHaveCreatepwd());
-  //   console.log(eleme);
-  // }, []);
 
   useEffect(() => {
     console.log(toggled);
@@ -92,6 +66,10 @@ const Topnav = (props) => {
     console.log(haveWallet);
   }, [haveWallet]);
 
+  const usericon = {
+    fontSize: 37,
+    color: "#dbd5d5",
+  };
   function returnMenu(haveWallet) {
     switch (haveWallet) {
       case "pass":
@@ -169,7 +147,7 @@ const Topnav = (props) => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
-                테스트 버튼
+                <i class="bx bx-user" style={usericon} />
               </Button>
             </Tooltip>
             <Menu

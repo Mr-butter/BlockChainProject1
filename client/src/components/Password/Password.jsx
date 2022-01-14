@@ -35,11 +35,14 @@ const Password = (props) => {
     console.log(props.sethaveWallet);
   }, [props]);
 
+  const gridStyle = {
+    padding: 10,
+  };
+
   const paperStyle = {
     padding: 20,
-    height: "42vh",
-    width: 280,
-    height: 460,
+    height: 470,
+    width: 300,
     margin: "10px auto",
   };
 
@@ -54,7 +57,7 @@ const Password = (props) => {
   const btnstyle = { margin: "20px 5px" };
 
   return (
-    <Grid>
+    <Grid style={gridStyle}>
       <Paper className={10} style={paperStyle} variant="outlined">
         <Grid align="center">
           <Avatar style={avatarStyle}>
@@ -67,11 +70,14 @@ const Password = (props) => {
           placeholder="Enter password"
           fullwidth
           required
+          style={{ width: "250px", marginTop: "15px" }}
         />
+        <br />
         <FormControlLabel
           control={<Checkbox name="checkedB" color="primary" />}
           label="Remember me"
         />
+        <br />
         <Button
           href="#"
           type="submit"
@@ -98,13 +104,13 @@ const Password = (props) => {
               onClick={() => props.sethaveWallet("wallet")}
               style={{
                 display: "flex",
-                width: "25px",
-                height: "22px",
+                width: "15px",
+                height: "15px",
                 fontSize: "2.7rem",
                 alignItems: "center",
                 marginTop: "25px",
                 marginLeft: "95px",
-                color: "",
+                color: "white",
               }}
             ></button>
           </ThemeProvider>
