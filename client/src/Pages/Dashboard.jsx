@@ -154,7 +154,6 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="col-6">
-          <p>CoLink mined</p>
           <div className="card full-height">
             {/* 누적채굴량 차트넣을자리 */}
             <Chart

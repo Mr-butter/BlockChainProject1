@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Button,
@@ -18,40 +18,29 @@ import Dropdown from "../dropdown/Dropdown";
 
 import NewWallet from "../walletModal/NewWallet";
 
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+// const Btn = styled.button`
+//   padding: 2px;
+//   border-radious: 50%;
+//   background: #4b4b4b;
+//   background-shadow: 2px solid grey;
+//   color: gold;
+//   font-size: 17px;
+//   /* margin-left: 44%;
+//   margin-bottom: 60%; */
+//   cursor: pointer;
+// `;
 
-// function ComponentChange(props) {
-//   const CreateWallet = props.CreateWallet;
-//   if (true) {
-//     return <NewWallet />;
-//   } else {
-//     return null;
-//   }
-// }
-
-const Password = (props) => {
-  useEffect(() => {
-    console.log(props.haveWallet);
-    console.log(props.sethaveWallet);
-  }, [props]);
-
+const Password = () => {
   const paperStyle = {
     padding: 20,
     height: "42vh",
     width: 280,
-    height: 460,
-    margin: "10px auto",
+    margin: "28px auto",
   };
-
-  const theme = createMuiTheme({
-    palette: {
-      type: "dark",
-    },
-  });
 
   const avatarStyle = { backgroundColor: "gold" };
 
-  const btnstyle = { margin: "20px 5px" };
+  const btnstyle = { margin: "2px 1px" };
 
   return (
     <Grid>
@@ -89,25 +78,11 @@ const Password = (props) => {
         {/* Create New Wallet */}
         <Typography>
           Do you have an account ?
-          <br />
-          <ThemeProvider theme={theme}>
-            <button
-              id="password"
-              value="password"
-              className="bx bxs-wallet bx-tada"
-              onClick={() => props.sethaveWallet("wallet")}
-              style={{
-                display: "flex",
-                width: "25px",
-                height: "22px",
-                fontSize: "2.7rem",
-                alignItems: "center",
-                marginTop: "25px",
-                marginLeft: "95px",
-                color: "",
-              }}
-            ></button>
-          </ThemeProvider>
+          <Dropdown
+            className="userpassword-item"
+            icon="bx bx-wallet bx-tada"
+            renderFooter={() => <NewWallet />}
+          ></Dropdown>
         </Typography>
       </Paper>
     </Grid>

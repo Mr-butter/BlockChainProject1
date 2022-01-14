@@ -1,48 +1,55 @@
 var express = require("express");
 var router = express.Router();
-const chainedBlock_func = require("../public/chainedBlock");
-const p2pServer_func = require("../public/p2pServer");
-// const { isMainThread, Worker, parentPort } = require("worker_threads");
-// const worker = new Worker("./public/p2pServer.js");
+const chainedBlock = require("../public/chainedBlock");
+const p2pServer = require("../public/p2pServer");
+
+/* GET home page. */
+// router.post("/addPeers", (req, res) => {
+//   const data = req.body.data || [];
+//   connectToPeers(data);
+//   res.send(data);
+// });
+
+// router.post("/peers", (req, res) => {
+//   let sockInfo = [];
+
+//   getSockets().forEach((s) => {
+//     sockInfo.push(s._socket.remoteAddress + ":" + s._socket.remotePort);
+//   });
+//   res.send(sockInfo);
+// });
 
 router.post("/blocks", (req, res) => {
-    const blocks = chainedBlock_func.getBlocks();
-    res.send(blocks);
+    res.send(chainedBlock.getBlocks());
 });
 
+const addPeerPort = [];
 router.post("/addPeer", (req, res) => {
-    const p2pPort = p2pServer_func.getSockets().length + 6000;
-    p2pServer_func.initP2PServer(p2pPort);
-    p2pServer_func.connectToPeer(`ws://localhost:${p2pPort}`);
-    res.send({ message: `${p2pPort}번 포트로 웹소켓 접속` });
+    if (addPeerPort.length === 0) {
+        addPeerPort.push(6000);
+        const addP2pport = addPeerPort[0];
+        const addPeer = `ws://localhost:${addP2pport}`;
+        p2pServer.initP2PServer(addP2pport);
+        p2pServer.connectToPeer(addPeer);
+        res.send(`포트 ${addP2pport}번 에서 열림`);
+    } else {
+        const addP2pport = addPeerPort[addPeerPort.length() - 1] + 1;
+        const addPeer = `ws://localhost:${addP2pport}`;
+        p2pServer.initP2PServer(addP2pport);
+        p2pServer.connectToPeer(addPeer);
+        res.send(`포트 ${addP2pport}번 에서 열림`);
+    }
 });
 
 router.post("/mineBlock", (req, res) => {
-    const switchOnOff = req.body.switchOnOff;
-    // chainedBlock_func.testminning(switchOnOff);
-    // console.log(switchOnOff);
-    chainedBlock_func.testminning(switchOnOff);
-    // switch (switchOnOff) {
-    //     case "on":
-    //         p2pServer.testMinning(switchOnOff);
-    //         return res.send({ message: "마이닝을 시작합니다." });
-    //     case "off":
-    //         // p2pServer.testMinning(switchOnOff);
-    //         return res.send({ message: "마이닝을 종료합니다." });
-    //     default:
-    //         returnres.send({ message: "아직 작업 전입니다." });
-    // }
-    // const newBlock = chainedBlock.addBlock();
-    // if (newBlock === null) {
-    //     res.status(400).send("could not generate block");
-    // } else {
-    //     res.json(newBlock);
-    //     // res.send(ok);
-    // }
+    const addP2pport = req.body.port;
+    const addPeer = `ws://localhost:${addP2pport}`;
+    p2pServer.initP2PServer(addP2pport);
+    p2pServer.connectToPeer(addPeer);
 });
 
 router.post("/version", (req, res) => {
-    res.send(chainedBlock_func.getVersion());
+    res.send(chainedBlock.getVersion());
 });
 
 router.post("/stop", (req, res) => {

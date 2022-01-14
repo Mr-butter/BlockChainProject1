@@ -4,13 +4,12 @@ import { CopyToClipboard } from "copy-to-clipboard";
 import { Avatar, Button, Grid, Paper } from "@material-ui/core";
 import KeyIcon from "@mui/icons-material/Key";
 
-const NewWallet = (props) => {
+const NewWallet = () => {
   const paperStyle = {
     padding: 20,
     height: "45vh",
     width: 280,
-    height: 460,
-    margin: "10px auto",
+    margin: "28px auto",
   };
 
   const avatarStyle = { backgroundColor: "gold" };
@@ -19,14 +18,6 @@ const NewWallet = (props) => {
 
   //   const [value, setValue] = useState("");
   //   const [copied, setCopied] = useState(false);
-
-  // const textInput = useRef();
-
-  // const copy = () => {
-  //   const el = textInput.current;
-  //   el.select();
-  //   document.execCommand("copy");
-  // };
 
   return (
     <div>

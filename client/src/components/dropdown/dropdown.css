@@ -36,7 +36,6 @@
   right: 0;
   width: max-content;
   max-width: 400px;
-  min-height: 500px;
   background-color: vaR(--main-bg);
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
