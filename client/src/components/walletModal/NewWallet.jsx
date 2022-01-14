@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { CopyToClipboard } from "copy-to-clipboard";
 import {
   Avatar,
@@ -27,7 +28,7 @@ const NewWallet = (props) => {
 
   const avatarStyle = { backgroundColor: "gold" };
 
-  const btnstyle = { margin: "2px 1px" };
+  const btnstyle = { margin: "2px 3px" };
 
   //   const [value, setValue] = useState("");
   //   const [copied, setCopied] = useState(false);
@@ -39,7 +40,14 @@ const NewWallet = (props) => {
   //   el.select();
   //   document.execCommand("copy");
   // };
-
+  function mnemonic() {
+    axios.post("/wallet/mnemonic").then((res) => {
+      const mnemonic = res.data.mnemonic;
+      console.log(mnemonic);
+      document.getElementById("mnemonic").innerText = mnemonic;
+      localStorage.setItem("variant", mnemonic);
+    });
+  }
   return (
     <Grid style={gridStyle}>
       <Paper className={8} style={paperStyle} variant="outlined">
@@ -50,45 +58,56 @@ const NewWallet = (props) => {
           <h2>Secret Recovery Phrase</h2>
         </Grid>
         {/* 니모닉 들어갈 자리 */}
-        <FormControl style={{ width: "50px" }}>
+        <FormControl style={{ width: "5px" }}>
           <br />
-          <input
+
+          <div id="mnemonic"></div>
+
+          {/* <input
             type="text"
             value="니모닉 12자리 비밀키 들어올 자리"
             // ref={textInput}
             readOnly
             style={{ fontSize: "15px", width: "250px", height: "60px" }}
-          />
+          /> */}
           <br />
-          <Button
-            // onClick={copy}
-            style={{
-              display: "flex",
-              width: "15px",
-              height: "25px",
-              fontSize: "1rem",
-              alignItems: "center",
-              marginLeft: "95px",
-              background: "gold",
-              color: "black",
-              cursor: "pointer",
-            }}
-          >
-            copy
-          </Button>
+          <Grid align="center">
+            <Button
+              size="medium"
+              style={btnstyle}
+              variant="contained"
+              onClick={() => mnemonic()}
+            >
+              change mneomonic
+            </Button>
+            <Button
+              size="medium"
+              style={avatarStyle}
+              variant="contained"
+              color="inherit"
+              // onClick={() => copy()}
+            >
+              copy
+            </Button>
+          </Grid>
           <br />
+          <FormHelperText id="my-helper-text">
+            니모닉 문구를 아는 사람 누구나 지갑에 접근이 가능하므로 안전하게
+            보관바랍니다. This is the only way you will be able to recover your
+            account. Please store it somewhere safe !
+          </FormHelperText>
         </FormControl>
 
         <p>
           <Button
             type="submit"
-            color="gold"
             style={btnstyle}
             variant="contained"
             fullWidth
             id="createpwd"
             value="createpwd"
             onClick={() => props.sethaveWallet("pwd")}
+            mnemonic={mnemonic}
           >
             Ok, I saved it somewhere
           </Button>
