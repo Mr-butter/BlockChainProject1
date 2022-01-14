@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./css/index.css";
+import "../src/assets/css/index.css";
 
 import { applyMiddleware, createStore } from "redux";
 import promiseMiddleware from "redux-promise";

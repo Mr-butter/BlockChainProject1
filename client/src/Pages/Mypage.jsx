@@ -7,10 +7,10 @@ import Modal from "../components/walletModal/modal";
 // import ModalStyles from "../walletModal/ModalStyles";
 
 const Container = styled.div`
-display: flex;
-justify-content; center;
-align-items: center;
-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;
 
 const Button = styled.button`
