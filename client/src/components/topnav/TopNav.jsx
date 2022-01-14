@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./topnav.css";
 
@@ -13,9 +13,16 @@ import notifications from "../../assets/JsonData/notification.json";
 // import styled from "styled-components";
 
 import Password from "../Password/Password";
+import NewWallet from "../walletModal/NewWallet";
+import Pwd from "../Password/Pwd";
 
-// import Modal from "../walletModal/Modal";
-// import ModalStyles from "../walletModal/ModalStyles";
+import Click from "../topnav/Click";
+
+import { Button, Menu, MenuItem, Box } from "@mui/material";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import Tooltip from "@mui/material/Tooltip";
+import MenuIcon from "@mui/icons-material/Menu";
+import IconButton from "@mui/material/IconButton";
 
 import Toggle from "./Toggle";
 
@@ -37,34 +44,7 @@ const renderNotificationItem = (item, index) => (
   </div>
 );
 
-// import user_image from "../../assets/images/tuat.png";
-
-// import user_menu from "../../assets/JsonData/user_menus.json";
-
-// const curr_user = {
-//   display_name: "cococoin",
-//   image: user_image,
-// };
-
-// const renderUserToggle = (user) => (
-//   <div className="topnav__right-user">
-//     <div className="topnav__right-user__image">
-//       <img src={user.image} alt="" />
-//     </div>
-//     <div className="topnav__right-user__name">{user.display_name}</div>
-//   </div>
-// );
-
-// const renderUserMenu = (item, index) => (
-//   <Link to="/" key={index}>
-//     <div className="notification-item">
-//       <i className={item.icon}></i>
-//       <span>{item.content}</span>
-//     </div>
-//   </Link>
-// );
-
-const Topnav = () => {
+const Topnav = (props) => {
   // const [showModal, setShowModal] = useState(false);
 
   // const openModal = () => {
@@ -72,6 +52,68 @@ const Topnav = () => {
   // };
 
   const [toggled, setToggled] = useState(false);
+
+  const [haveWallet, sethaveWallet] = useState("pass");
+  const [AnchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(AnchorEl);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // const [createWallet, setcreateWallet] = useState("pass");
+
+  // const getHaveWallet = () => {
+  //   sethaveWallet("wallet");
+  // };
+  // // const getHaveCreatepwd = () => {
+  // //   setcreateWallet("createpwd");
+  // // };
+  // useEffect(() => {
+  //   var elem = document.getElementById("password");
+  //   elem.addEventListener("click", () => getHaveWallet());
+  //   console.log(elem);
+  // }, []);
+
+  // useEffect(() => {
+  //   var eleme = document.getElementById("createpwd");
+  //   eleme.addEventListener("click", () => getHaveCreatepwd());
+  //   console.log(eleme);
+  // }, []);
+
+  useEffect(() => {
+    console.log(toggled);
+  }, [toggled]);
+
+  useEffect(() => {
+    console.log(haveWallet);
+  }, [haveWallet]);
+
+  function returnMenu(haveWallet) {
+    switch (haveWallet) {
+      case "pass":
+        return (
+          <Password
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></Password>
+        );
+      case "wallet":
+        return (
+          <NewWallet
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></NewWallet>
+        );
+      case "pwd":
+        return (
+          <Pwd haveWallet={haveWallet} sethaveWallet={sethaveWallet}></Pwd>
+        );
+    }
+  }
 
   return (
     <div className="topnav">
@@ -81,9 +123,40 @@ const Topnav = () => {
       </div>
 
       <div className="topnav__right">
-        <Toggle onChange={(e) => setToggled(e.target.checked)} />
+        <Toggle
+          onChange={(e) => {
+            setToggled(e.target.checked);
+          }}
+        />
         <p>The switch is {toggled ? "on" : "off"}.</p>
       </div>
+      {/* <Box sx={{ flexGrow: 0 }}>
+        <Tooltip title="Open settings">
+          <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+            테스트 버튼
+          </Button>
+        </Tooltip>
+        <Menu
+          sx={{ mt: "45px" }}
+          id="menu-appbar"
+          anchorEl={AnchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={Boolean(AnchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem>
+            <Password></Password>
+          </MenuItem>
+        </Menu>
+      </Box> */}
 
       <div className="topnav__right">
         {/* 추후에 아래 지갑Modal버튼은 지울예정 */}
@@ -93,18 +166,31 @@ const Topnav = () => {
         </div> */}
 
         <div className="topnav__right-item">
-          <Dropdown
-            className="userpassword-item"
-            icon="bx bx-user"
-            // customerToggle={() => renderUserToggle(curr_user)}
-            // contentData={여기에 개인지갑 어드레스 들어와야함}
-            // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={() => (
-              // <Link to="/mypage" onClick={openModal}>
-              // </Link>
-              <Password />
-            )}
-          ></Dropdown>
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+                테스트 버튼
+              </Button>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={AnchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(AnchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem>{returnMenu(haveWallet)}</MenuItem>
+            </Menu>
+          </Box>
         </div>
 
         <div className="topnav__right-item">

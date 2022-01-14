@@ -9,7 +9,8 @@ const NewWallet = (props) => {
     padding: 20,
     height: "45vh",
     width: 280,
-    margin: "28px auto",
+    height: 460,
+    margin: "10px auto",
   };
 
   const avatarStyle = { backgroundColor: "gold" };
@@ -18,6 +19,14 @@ const NewWallet = (props) => {
 
   //   const [value, setValue] = useState("");
   //   const [copied, setCopied] = useState(false);
+
+  // const textInput = useRef();
+
+  // const copy = () => {
+  //   const el = textInput.current;
+  //   el.select();
+  //   document.execCommand("copy");
+  // };
 
   return (
     <div>
