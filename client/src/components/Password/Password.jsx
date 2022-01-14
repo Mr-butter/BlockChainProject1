@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -30,7 +30,12 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 //   }
 // }
 
-const Password = (e) => {
+const Password = (props) => {
+  useEffect(() => {
+    console.log(props.haveWallet);
+    console.log(props.sethaveWallet);
+  }, [props]);
+
   const paperStyle = {
     padding: 20,
     height: "42vh",
@@ -48,10 +53,6 @@ const Password = (e) => {
   const avatarStyle = { backgroundColor: "gold" };
 
   const btnstyle = { margin: "20px 5px" };
-
-  const sendHaveWallet = (e) => {
-    e.getHaveWallet("pass");
-  };
 
   return (
     <Grid>
@@ -97,7 +98,7 @@ const Password = (e) => {
               id="password"
               value="password"
               className="bx bxs-wallet bx-tada"
-              onClick={() => sendHaveWallet(true)}
+              onClick={() => props.sethaveWallet("wallet")}
               style={{
                 display: "flex",
                 width: "25px",

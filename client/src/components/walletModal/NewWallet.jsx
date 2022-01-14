@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import KeyIcon from "@mui/icons-material/Key";
 
-const NewWallet = () => {
+const NewWallet = (props) => {
   const paperStyle = {
     padding: 20,
     height: "42vh",
@@ -34,10 +34,6 @@ const NewWallet = () => {
     const el = textInput.current;
     el.select();
     document.execCommand("copy");
-  };
-
-  const sendcreateWallet = (e) => {
-    e.getHaveCreatepwd("wallet");
   };
 
   return (
@@ -72,7 +68,7 @@ const NewWallet = () => {
             <button
               id="createpwd"
               value="createpwd"
-              onClick={() => sendcreateWallet(true)}
+              onClick={() => props.sethaveWallet("pwd")}
             >
               Ok, I saved it somewhere
             </button>
