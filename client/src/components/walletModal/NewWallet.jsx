@@ -69,13 +69,19 @@ const NewWallet = () => {
             </FormHelperText>
           </FormControl>
           <p>
-            <button
+            <Button
+              type="submit"
+              color="gold"
+              style={btnstyle}
+              variant="contained"
+              fullWidth
               id="createpwd"
               value="createpwd"
               onClick={() => sendcreateWallet(true)}
             >
               Ok, I saved it somewhere
-            </button>
+            </Button>
+            <button>OK</button>
           </p>
         </Paper>
       </Grid>
