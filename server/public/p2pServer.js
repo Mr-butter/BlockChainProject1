@@ -1,40 +1,33 @@
-const p2p_port = process.env.P2P_PORT || 6001;
-
-const WebSocket = require("ws");
-const {
-    getLastBlock,
-    createHash,
-    addBlock,
-    replaceChain,
-} = require("./chainedBlock");
+const port = process.env.PORT || "6001";
+const { WebSocket } = require("ws");
+const chainedBlock_Func = require("./chainedBlock");
+const { isMainThread, Worker, parentPort } = require("worker_threads");
 
 function initP2PServer(port) {
-    const server = new WebSocket.Server({ port: port });
-    server.on("connection", (ws) => {
+    const p2pserver = new WebSocket.Server({ port: port });
+    p2pserver.on("connection", (ws) => {
         initConnection(ws);
     });
-    console.log("웹소켓 서버 포트 : " + port);
+    console.log(`웹소켓 서버 포트 : ${port}.`);
 }
+// initP2PServer(port);
+// connectToPeer("ws://localhost:6001");
 
-// function initP2PServer(server, port) {
-//   const webSocketServer = new WebSocket.Server({ server: server });
-//   webSocketServer.on("connection", (ws) => {
-//     initConnection(ws);
-//   });
-//   console.log("웹소켓 서버 포트 : " + port);
-// }
-
-// function testmessage(peer) {
-//   const ws = new WebSocket(peer);
-//   ws.on("open", () => {
-//     ws.send("클라이언트 접속요청");
-//   });
-//   ws.on("message", (message) => {
-//     console.log(`클라이언트 받은 메세지:${message}`);
-//   });
-//   ws.on("error", (errorType) => {
-//     console.log("connetion Failed!" + errorType);
-//   });
+// function testMinning(onoFF) {
+//     const peer = `ws://localhost:${port}`;
+//     const ws = new WebSocket(peer);
+//     let minningSwitch = onoFF === "on" ? true : false;
+//     console.log(minningSwitch);
+//     ws.on("open", () => {
+//         console.log("접속실행");
+//         initConnection(ws);
+//         while (minningSwitch) {
+//             chainedBlock_Func.addBlock();
+//         }
+//     });
+//     ws.on("error", () => {
+//         console.log("connection failed");
+//     });
 // }
 
 let sockets = [];
@@ -67,10 +60,8 @@ function broadcast(message) {
 function connectToPeer(peer) {
     const ws = new WebSocket(peer);
     ws.on("open", () => {
-        console.log("채굴시작");
-        while (true) {
-            addBlock();
-        }
+        console.log("웹소켓 접속");
+        // initConnection(ws);
     });
     ws.on("error", (errorType) => {
         console.log("connetion Failed!" + errorType);
@@ -170,9 +161,26 @@ function initErrorHandler(ws) {
 }
 
 function closeConnection(ws) {
+    console.log("접속종료");
     console.log(`Connection close ${ws.url}`);
     sockets.splice(sockets.indexOf(ws), 1);
 }
+
+// parentPort.on("message", (message) => {
+//     switch (message) {
+//         case "on":
+//             console.log("워커에서 응답" + message);
+//             setInterval(() => chainedBlock_Func.addBlock());
+//             return;
+//         case "off":
+//             console.log("워커에서 응답" + message);
+//             parentPort.close();
+//             return;
+//         default:
+//             console.log("디폴트 메시지");
+//             return;
+//     }
+// });
 
 module.exports = {
     WebSocket,
