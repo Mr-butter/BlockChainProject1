@@ -1,7 +1,47 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import CryptoJS from "crypto-js";
 
 function Testingboard(props) {
+    const ws = useRef(null);
+    const [socketMessage, setSocketMessage] = useState("");
+    useEffect(() => {
+        ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
+        ws.current.onopen = () => {
+            // connection opened
+            console.log("connected");
+            // send a message
+        };
+
+        ws.current.onmessage = (e) => {
+            // a message was received
+            setSocketMessage(e.data);
+        };
+
+        ws.current.onerror = (e) => {
+            // an error occurred
+            console.log(e.message);
+        };
+        ws.current.onclose = (e) => {
+            // connection closed
+            console.log(e.code, e.reason);
+        };
+
+        return () => {
+            ws.current.close();
+        };
+    }, []);
+
+    useEffect(() => {
+        ws.current.onmessage = (e) => {
+            // a message was received
+            setSocketMessage(e.data);
+        };
+
+        document.getElementById("socket_writefield").innerText =
+            JSON.stringify(socketMessage);
+    }, [socketMessage]);
+
     function block() {
         axios.post("/blocks").then((res) => {
             const data = res.data;
@@ -10,18 +50,19 @@ function Testingboard(props) {
         });
     }
 
-    function mineBlock(portNum) {
-        // console.log(portNum);
-        axios.post("/mineBlock", { port: portNum }).then((res) => {
-            const data = res.data;
-            // document.getElementById("writefield").innerText = JSON.stringify(data);
+    function mineBlock(onOff) {
+        axios.post("/mineBlock", { switchOnOff: onOff }).then((res) => {
+            // const data = res.data;
+            // document.getElementById("writefield").innerText =
+            //     JSON.stringify(data);
+            // const data = res.data.message;
+            // document.getElementById("writefield").innerText = data;
         });
     }
-
     function addPeer() {
         axios.post("/addPeer").then((res) => {
-            const data = res.data;
-            console.log(data);
+            const data = res.data.message;
+            document.getElementById("writefield").innerText = data;
         });
     }
 
@@ -57,14 +98,6 @@ function Testingboard(props) {
         });
     }
 
-    function makeWallet() {
-        axios.post("/initWallet").then((res) => {
-            const data = res.data;
-            document.getElementById("writefield").innerText =
-                JSON.stringify(data);
-        });
-    }
-
     function mnemonic() {
         axios.post("/wallet/mnemonic").then((res) => {
             const data = res.data;
@@ -80,6 +113,29 @@ function Testingboard(props) {
         );
         let mnemonicFromUser = prompt("니모닉을 입력하세요.");
 
+        function encryption(data) {
+            const key = "aaaaaaaaaabbbbbb";
+            const iv = "aaaaaaaaaabbbbbb";
+
+            const keyutf = CryptoJS.enc.Utf8.parse(key);
+            //console.log("키유티에프:", keyutf);
+            const ivutf = CryptoJS.enc.Utf8.parse(iv);
+            //console.log("아이브이유티에프:", ivutf);
+
+            const encObj = CryptoJS.AES.encrypt(JSON.stringify(data), keyutf, {
+                iv: ivutf,
+            });
+            //console.log("key : toString(CryptoJS.enc.Utf8)" + encObj.key.toString(CryptoJS.enc.Utf8));
+            //console.log("iv : toString(CryptoJS.enc.Utf8)" + encObj.iv.toString(CryptoJS.enc.Utf8));
+            //console.log("salt : " + encObj.salt);
+            //console.log("ciphertext : " + encObj.ciphertext);
+
+            const encStr = encObj + "alswn";
+            console.log("encStr : " + encStr);
+
+            return encStr;
+        }
+
         axios
             .post("/wallet/newWallet", {
                 password: walletPwdFromUser,
@@ -88,7 +144,43 @@ function Testingboard(props) {
             .then((res) => {
                 const data = res.data;
 
-                localStorage.setItem("loglevel", JSON.stringify(data));
+                // const key = "aaaaaaaaaabbbbbb";
+                // const iv = "aaaaaaaaaabbbbbb";
+
+                // const keyutf = CryptoJS.enc.Utf8.parse(key);
+                // //console.log("키유티에프:", keyutf);
+                // const ivutf = CryptoJS.enc.Utf8.parse(iv);
+                // //console.log("아이브이유티에프:", ivutf);
+
+                // const encObj = CryptoJS.AES.encrypt(JSON.stringify(data), keyutf, { iv: ivutf });
+                // //console.log("key : toString(CryptoJS.enc.Utf8)" + encObj.key.toString(CryptoJS.enc.Utf8));
+                // //console.log("iv : toString(CryptoJS.enc.Utf8)" + encObj.iv.toString(CryptoJS.enc.Utf8));
+                // //console.log("salt : " + encObj.salt);
+                // //console.log("ciphertext : " + encObj.ciphertext);
+
+                // const encStr = encObj + "alswn";
+                // console.log("encStr : " + encStr);
+
+                // // const test = CryptoJS.enc.Base64.parse(encStr)
+                // // console.log("testestet: ", test);
+
+                const enc = encryption(data);
+                console.log(enc);
+
+                // // CryptoJS AES 128 복호화
+                // const decObj = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encStr) }, keyutf, { iv: ivutf });
+                // // console.log("decObj가 나올라나", decObj);
+
+                // const decStr = CryptoJS.enc.Utf8.stringify(decObj);
+                // console.log("decStr : " + decStr);
+
+                // const decStr = CryptoJS.enc.Utf8.stringify(decObj);
+                // console.log("decStr : " + decStr);
+
+                /////////////////////////////////////////////////////////////////////////////////////
+
+                //localStorage.setItem("loglevel", JSON.stringify(data));
+                localStorage.setItem("loglevel", enc);
 
                 document.getElementById("writefield").innerText =
                     JSON.stringify(data);
@@ -104,10 +196,37 @@ function Testingboard(props) {
         const loglevel = localStorage.getItem("loglevel");
         console.log("로컬스토리지 client 확인 : ", loglevel);
 
+        function decryption(encStr) {
+            const key = "aaaaaaaaaabbbbbb";
+            const iv = "aaaaaaaaaabbbbbb";
+
+            const keyutf = CryptoJS.enc.Utf8.parse(key);
+            //console.log("키유티에프:", keyutf);
+            const ivutf = CryptoJS.enc.Utf8.parse(iv);
+            //console.log("아이브이유티에프:", ivutf);
+
+            //CryptoJS AES 128 복호화
+            const decObj = CryptoJS.AES.decrypt(
+                { ciphertext: CryptoJS.enc.Base64.parse(encStr) },
+                keyutf,
+                { iv: ivutf }
+            );
+            // console.log("decObj가 나올라나", decObj);
+
+            const decStr = CryptoJS.enc.Utf8.stringify(decObj);
+            //console.log("decStr : " + decStr);
+
+            return decStr;
+        }
+
+        const dec = decryption(loglevel);
+        //console.log(dec);
+
         axios
             .post("/wallet/getWallet", {
                 password: walletPwdFromUser,
                 loglevel: loglevel,
+                decryption: dec,
             })
             .then((res) => {
                 const data = res.data;
@@ -131,8 +250,13 @@ function Testingboard(props) {
                     </button>
                 </li>
                 <li>
-                    <button id="mineBlock" onClick={() => mineBlock()}>
-                        mineBlock
+                    <button id="mineBlockon" onClick={() => mineBlock("on")}>
+                        mineBlock(on)
+                    </button>
+                </li>
+                <li>
+                    <button id="mineBlockoff" onClick={() => mineBlock("off")}>
+                        mineBlock(off)
                     </button>
                 </li>
                 <li>
@@ -160,8 +284,16 @@ function Testingboard(props) {
                         newWallet
                     </button>
                 </li>
+                <li>
+                    <button id="getWallet" onClick={() => getWallet()}>
+                        getWallet
+                    </button>
+                </li>
             </ol>
+            <h2>테스트 코드 결과</h2>
             <div id="writefield"></div>
+            <h2>소켓 메세지</h2>
+            <div id="socket_writefield"></div>
         </div>
     );
 }

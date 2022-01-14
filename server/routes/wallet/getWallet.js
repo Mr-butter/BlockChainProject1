@@ -1,43 +1,70 @@
 const express = require("express");
 const router = express.Router();
 const ligthWallet = require('eth-lightwallet')
-const fs = require('fs')
-const path = require('path');
+const isNullOrUndefined = require('util');
 
-router.post("/", async (req, res, next) => {
+router.post('/', function (req, res) {
   const walletPwdFromUser = req.body.password
   const LocalStoreServer = req.body.loglevel
-  console.log('로컬스토리지 server 확인 : ', walletPwdFromUser);
-  console.log('로컬스토리지 server 확인 : ', LocalStoreServer);
+
+  if (LocalStoreServer === null) {
+    return res.json("로컬스토리지에 저장된 지갑이 없네요. 지갑이 있으시다면 복구하세요!")
+  }
+
+  const keystore = new ligthWallet.keystore.deserialize(LocalStoreServer);
+  //console.log(keystore);
+  //console.log('keystore---------------\n', keystore);
+  //console.log('LocalStoreServer---------------\n', LocalStoreServer);
+
+  const address = keystore.getAddresses()
+  console.log('address---------------', address);
 
 
 
+  if (isNullOrUndefined.isNullOrUndefined(keystore)) {
+    let error = {
+      isError: true,
+      msg: "Error read Wallet Json"
+    };
 
+    console.log("error---------------1", error);
+    //res.status(400).json(error);
+  }
 
-  const walletPath = path.join(__dirname, 'default/wallet.json');
-  console.log(walletPath);
+  if (isNullOrUndefined.isNullOrUndefined(walletPwdFromUser)) {
+    let error = {
+      isError: true,
+      msg: "Error read parameter <password>"
+    };
+    console.log("error---------------2", error);
+    //res.status(400).json(error);
+  }
 
-  fs.readFile(walletPath, function (err, data) {
-    if (err) {
-      console.error(err);
+  //let walletJson = JSON.stringify(keystore);
+  //console.log("1111111111111111111111", walletJson);
+  //let ks = new ligthWallet.keystore.deserialize(walletJson);
+  //console.log("222222222222222222", ks);
+  let password = walletPwdFromUser.toString();
+  //console.log(password);
+
+  keystore.keyFromPassword(password, function (err, pwDerivedKey) {
+    if (keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+      let data = {
+        isError: false,
+        address: address
+      }
+      console.log("data-----------------------", data);
+      res.json(data);
     } else {
-      console.log("wallet.json 읽기 성공!", JSON.parse(data));
+      let data = {
+        isError: true,
+        msg: '비밀번호가 달라요!'
+      };
+      console.log("error-----------------------", data);
+      res.json(data);
     }
   });
-
-  const keystore = await ligthWallet.keystore.deserialize(walletPath);
-  console.log('keystore::::::::', keystore);
-
-  const address = await keystore.getAddresses()
-
-  console.log("address::::::::::", address);
-
-
-
-  res.json({
-    password: walletPwdFromUser,
-    LocalStoreServer: LocalStoreServer,
-  })
 });
+
 
 module.exports = router; 
