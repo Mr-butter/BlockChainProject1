@@ -19,38 +19,20 @@ import Dropdown from "../dropdown/Dropdown";
 
 import NewWallet from "../walletModal/NewWallet";
 
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
-
-// function ComponentChange(props) {
-//   const CreateWallet = props.CreateWallet;
-//   if (true) {
-//     return <NewWallet />;
-//   } else {
-//     return null;
-//   }
-// }
-
 const Password = (e) => {
   const paperStyle = {
     padding: 20,
     height: "42vh",
     width: 280,
-    height: 460,
     margin: "10px auto",
   };
-
-  const theme = createMuiTheme({
-    palette: {
-      type: "dark",
-    },
-  });
 
   const avatarStyle = { backgroundColor: "gold" };
 
   const btnstyle = { margin: "20px 5px" };
 
   const sendHaveWallet = (e) => {
-    e.getHaveWallet("pass");
+    e.getHaveWallet(true);
   };
 
   return (
@@ -62,7 +44,8 @@ const Password = (e) => {
             <LockOutlined />
           </Avatar>
           <br />
-          <h2>My 간편 비밀번호</h2>
+          <h2>Create a password</h2>
+          <p>You will use this to unlock your wallet.</p>
         </Grid>
         <TextField
           label="password"
@@ -70,9 +53,15 @@ const Password = (e) => {
           fullwidth
           required
         />
+        <TextField
+          label="confirm password"
+          placeholder="password confirm"
+          fullwidth
+          required
+        />
         <FormControlLabel
           control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
+          label="개인정보 처리 동의"
         />
         <Button
           href="/mypage"
@@ -82,35 +71,8 @@ const Password = (e) => {
           variant="contained"
           fullWidth
         >
-          SIGN IN
+          Save
         </Button>
-        <Typography>
-          <Link href="#">Forgot password ?</Link>
-        </Typography>
-        <br />
-        {/* Create New Wallet */}
-        <Typography>
-          Do you have an account ?
-          <br />
-          <ThemeProvider theme={theme}>
-            <button
-              id="password"
-              value="password"
-              className="bx bxs-wallet bx-tada"
-              onClick={() => sendHaveWallet(true)}
-              style={{
-                display: "flex",
-                width: "25px",
-                height: "22px",
-                fontSize: "2.7rem",
-                alignItems: "center",
-                marginTop: "25px",
-                marginLeft: "95px",
-                color: "",
-              }}
-            ></button>
-          </ThemeProvider>
-        </Typography>
       </Paper>
     </Grid>
   );

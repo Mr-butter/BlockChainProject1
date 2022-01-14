@@ -2,8 +2,9 @@ import React, { useState } from "react";
 // import { withRouter } from "react-router-dom";
 // import axios from "axios";
 import styled from "styled-components";
+import WalletTable from "../components/table/WalletTable";
 
-import Modal from "../components/walletModal/modal";
+// import Modal from "../components/walletModal/modal";
 // import ModalStyles from "../walletModal/ModalStyles";
 
 const Container = styled.div`
@@ -38,10 +39,22 @@ function Mypage(props) {
   //   }
   return (
     <Container>
-      <Button onClick={openModal}>Get Started</Button>
-      <Modal showModal={showModal} setShowModal={setShowModal} />
-      {/* <h2>마이페이지</h2>
-      <button onClick={initWallet()}>개인지갑생성</button> */}
+      <div className="table-wrapper">
+        <h2>My Wallet</h2>
+        <div>
+          <div className="col-8">
+            <div className="card">
+              <div className="card__header">
+                <h3>나만의 은행을 이용하세요.</h3>
+              </div>
+              <div className="card__body">
+                <WalletTable />
+              </div>
+              <div className="card__footer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </Container>
   );
 }

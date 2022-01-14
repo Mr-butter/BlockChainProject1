@@ -17,6 +17,7 @@ const NewWallet = () => {
     padding: 20,
     height: "42vh",
     width: 280,
+    height: 460,
     margin: "10px auto",
   };
 
@@ -34,6 +35,11 @@ const NewWallet = () => {
     el.select();
     document.execCommand("copy");
   };
+
+  const sendcreateWallet = (e) => {
+    e.getHaveCreatepwd("wallet");
+  };
+
   return (
     <div>
       <Grid>
@@ -62,17 +68,15 @@ const NewWallet = () => {
               your account. Please store it somewhere safe !
             </FormHelperText>
           </FormControl>
-
-          <Button
-            href="#"
-            type="submit"
-            color="gold"
-            style={btnstyle}
-            variant="contained"
-            fullWidth
-          >
-            Ok, I saved it somewhere
-          </Button>
+          <p>
+            <button
+              id="createpwd"
+              value="createpwd"
+              onClick={() => sendcreateWallet(true)}
+            >
+              Ok, I saved it somewhere
+            </button>
+          </p>
         </Paper>
       </Grid>
     </div>
@@ -80,21 +84,3 @@ const NewWallet = () => {
 };
 
 export default NewWallet;
-
-{
-  /* <center>
-<input
-  value={value}
-  onChange={({ target: { value } }) => {
-    setValue(value);
-    //   setCopied(false);
-  }}
-/>
-
-<CopyToClipboard text={value} onCopy={() => setCopied(true)}>
-  <button>Copy</button>
-</CopyToClipboard>
-
-{copied ? <span style={{ color: "gold" }}>Copied</span> : null}
-</center> */
-}
