@@ -2,6 +2,7 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
+const { isMainThread, Worker, parentPort } = require("worker_threads");
 const { WebSocket } = require("ws");
 const p2pServer_func = require("./p2pServer");
 
@@ -297,7 +298,7 @@ function isValidNewBlock(newBlock, previousBlock) {
       "0".repeat(64) !== newBlock.header.merkleRoot) ||
     (newBlock.body.length !== 0 &&
       merkle("sha256").sync(newBlock.body).root() !==
-      newBlock.header.merkleRoot)
+        newBlock.header.merkleRoot)
   ) {
     console.log("Invalid merkleRoot");
     return false;
@@ -358,18 +359,67 @@ function addBlock() {
   return null;
 }
 
-function minning(message) {
-  switch (message) {
-    case "on":
-      setInterval(() => addBlock());
-      break;
-    case "off":
-      return process.exit();
+const worker = new Worker(__filename);
+function testminning(message) {
+  if (isMainThread) {
+    console.log("메인에서 응답" + message);
+    // worker.on("message", (message) => {
+    //     console.log(message);
+    // });
+    worker.on("exit", () => {
+      console.log("워커종료");
+    });
+    worker.postMessage(message);
+  } else {
+    parentPort.on("message", (message) => {
+      console.log("워커진입");
+      switch (message) {
+        case "on":
+          const p2pPort = p2pServer_func.getSockets().length + 6000;
+          p2pServer_func.initP2PServer(p2pPort);
+          p2pServer_func.connectToPeer(`ws://localhost:${p2pPort}`);
 
-    default:
-      break;
+          setInterval(() => addBlock());
+          return;
+        case "off":
+          console.log("워커에서 응답" + message);
+          parentPort.close();
+          return;
+
+        default:
+          console.log("디폴트 메시지");
+          return;
+      }
+    });
   }
 }
+testminning();
+
+// const worker = new Worker(__filename);
+// if (isMainThread) {
+//     worker.on("message", (message) => {
+//         console.log(message);
+//     });
+//     worker.on("exit", () => {
+//         console.log("워커종료");
+//     });
+// } else {
+//     parentPort.on("message", (message) => {
+//         switch (message) {
+//             case "on":
+//                 console.log("워커에서 응답" + message);
+//                 setInterval(() => addBlock());
+//                 return;
+//             case "off":
+//                 console.log("워커에서 응답" + message);
+//                 parentPort.close();
+//                 return;
+//             default:
+//                 console.log("디폴트 메시지");
+//                 return;
+//         }
+//     });
+// }
 
 module.exports = {
   Blocks,
@@ -382,5 +432,6 @@ module.exports = {
   hexToBinary,
   hashMatchesDifficulty,
   replaceChain,
-  minning,
+  testminning,
+  worker,
 };
