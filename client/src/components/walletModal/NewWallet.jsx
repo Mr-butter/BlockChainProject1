@@ -72,9 +72,9 @@ const NewWallet = () => {
             ></input> */}
 
             <div id="writefield" ref={textInput}></div>
-            {/* <Button id="mnemonic" onClick={() => mnemonic()} style={btnstyle}>
+            <Button id="mnemonic" onClick={() => mnemonic()} style={btnstyle}>
               create mnemonic
-            </Button> */}
+            </Button>
             <br />
             <Button onClick={copy}>copy</Button>
             <br />
