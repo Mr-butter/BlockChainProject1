@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { CopyToClipboard } from "copy-to-clipboard";
 import {
@@ -10,6 +10,7 @@ import {
   InputLabel,
   Paper,
   Typography,
+  TextField,
 } from "@material-ui/core";
 import KeyIcon from "@mui/icons-material/Key";
 import styled from "styled-components";
@@ -31,23 +32,26 @@ const NewWallet = (props) => {
   const btnstyle = { margin: "2px 3px" };
 
   //   const [value, setValue] = useState("");
-  //   const [copied, setCopied] = useState(false);
+  const [Mnemonic, setMnemonic] = useState("");
 
-  // const textInput = useRef();
+  const words = useRef();
 
-  // const copy = () => {
-  //   const el = textInput.current;
-  //   el.select();
-  //   document.execCommand("copy");
-  // };
-  function mnemonic() {
+  const copy = () => {
+    const el = words.current;
+    el.select();
+    document.execCommand("copy");
+  };
+
+  const getMnemonic = () => {
     axios.post("/wallet/mnemonic").then((res) => {
       const mnemonic = res.data.mnemonic;
-      console.log(mnemonic);
-      document.getElementById("mnemonic").innerText = mnemonic;
+      // console.log(mnemonic);
+      // document.getElementById("mnemonic").innerText = mnemonic;
       localStorage.setItem("variant", mnemonic);
+
+      setMnemonic(mnemonic);
     });
-  }
+  };
   return (
     <Grid style={gridStyle}>
       <Paper className={8} style={paperStyle} variant="outlined">
@@ -58,45 +62,49 @@ const NewWallet = (props) => {
           <h2>Secret Recovery Phrase</h2>
         </Grid>
         {/* 니모닉 들어갈 자리 */}
-        <FormControl style={{ width: "5px" }}>
-          <br />
+        <TextField
+          inputRef={words}
+          onChange={getMnemonic}
+          value={Mnemonic}
+          readOnly
+          fullWidth
+          multiline
+        ></TextField>
 
-          <div id="mnemonic"></div>
-
-          {/* <input
+        {/* <input
             type="text"
             value="니모닉 12자리 비밀키 들어올 자리"
             // ref={textInput}
             readOnly
             style={{ fontSize: "15px", width: "250px", height: "60px" }}
           /> */}
-          <br />
-          <Grid align="center">
-            <Button
-              size="medium"
-              style={btnstyle}
-              variant="contained"
-              onClick={() => mnemonic()}
-            >
-              change mneomonic
-            </Button>
-            <Button
-              size="medium"
-              style={avatarStyle}
-              variant="contained"
-              color="inherit"
-              // onClick={() => copy()}
-            >
-              copy
-            </Button>
-          </Grid>
-          <br />
-          <FormHelperText id="my-helper-text">
-            니모닉 문구를 아는 사람 누구나 지갑에 접근이 가능하므로 안전하게
-            보관바랍니다. This is the only way you will be able to recover your
-            account. Please store it somewhere safe !
-          </FormHelperText>
-        </FormControl>
+        <br />
+        <Grid align="center" justifyContent>
+          <Button
+            size="medium"
+            style={btnstyle}
+            variant="contained"
+            onClick={getMnemonic}
+          >
+            change mneomonic
+          </Button>
+          <Button
+            size="medium"
+            style={avatarStyle}
+            variant="contained"
+            color="inherit"
+            onClick={copy}
+          >
+            copy
+          </Button>
+        </Grid>
+        <br />
+        <InputLabel shrink variant="filled">
+          니모닉 문구를 아는 사람 누구나 지갑에 접근이 가능하므로 안전하게
+          보관바랍니다. This is the only way you will be able to recover your
+          account. Please store it somewhere safe !
+        </InputLabel>
+        <FormControl style={{ width: "5px" }}></FormControl>
 
         <p>
           <Button
@@ -107,7 +115,7 @@ const NewWallet = (props) => {
             id="createpwd"
             value="createpwd"
             onClick={() => props.sethaveWallet("pwd")}
-            mnemonic={mnemonic}
+            mnemonic={getMnemonic}
           >
             Ok, I saved it somewhere
           </Button>
