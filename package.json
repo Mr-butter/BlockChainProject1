@@ -1,16 +1,12 @@
 {
-  "scripts": {
-    "server1": "set HTTP_PORT=5000 && set P2P_PORT=6001 && npm start --prefix server",
-    "server2": "set HTTP_PORT=5001 && set P2P_PORT=6002 && npm start --prefix server",
-    "server3": "set HTTP_PORT=5002 && set P2P_PORT=6003 && npm start --prefix server",
-    "client1": "set PORT=3000 && npm start --prefix client",
-    "client2": "set PORT=3001 && npm start --prefix client",
-    "client3": "set PORT=3002 && npm start --prefix client",
-    "start1": "concurrently \"npm run server1\" \"npm run client1\"",
-    "start2": "concurrently \"npm run server2\" \"npm run client2\"",
-    "start3": "concurrently \"npm run server3\" \"npm run client3\""
-  },
-  "dependencies": {
-    "concurrently": "^7.0.0"
-  }
+    "scripts": {
+        "server1": "set HTTP_PORT=5001 && npm start --prefix server",
+        "client1": "set PORT=3001 && npm start --prefix client",
+        "client2": "set PORT=3002 && npm start --prefix client",
+        "client3": "set PORT=3003 && npm start --prefix client",
+        "start": "concurrently \"npm run server1\" \"npm run client1\" \"npm run client2\" \"npm run client3\""
+    },
+    "dependencies": {
+        "concurrently": "^7.0.0"
+    }
 }
