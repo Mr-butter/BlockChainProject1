@@ -1,11 +1,9 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import { CopyToClipboard } from "copy-to-clipboard";
 import {
   Avatar,
   Button,
   FormControl,
-  FormHelperText,
   Grid,
   InputLabel,
   Paper,
@@ -13,7 +11,8 @@ import {
   TextField,
 } from "@material-ui/core";
 import KeyIcon from "@mui/icons-material/Key";
-import styled from "styled-components";
+import { encryption } from "../../utils/encrypt";
+import { decryption } from "../../utils/decrypt";
 
 const NewWallet = (props) => {
   const gridStyle = {
@@ -44,12 +43,34 @@ const NewWallet = (props) => {
 
   const getMnemonic = () => {
     axios.post("/wallet/mnemonic").then((res) => {
-      const mnemonic = res.data.mnemonic;
-      // console.log(mnemonic);
-      // document.getElementById("mnemonic").innerText = mnemonic;
-      localStorage.setItem("variant", mnemonic);
+      const rawMnemonic = res.data.mnemonic;
+      const encMnemonic = encryption(rawMnemonic);
+      const decMnemonic = decryption(encMnemonic);
 
-      setMnemonic(mnemonic);
+      const variant = localStorage.getItem("variant");
+      console.log("기존 로컬스토리지 variant 확인 : ", variant);
+
+      if (variant) {
+        localStorage.removeItem("variant");
+        localStorage.setItem("variant", encMnemonic);
+        console.log("니모닉 리셋 후 저장", encMnemonic);
+      } else {
+        localStorage.setItem("variant", encMnemonic);
+        console.log("새로운 니모닉 저장", encMnemonic);
+      }
+
+      console.log("디크립트 확인 : ", JSON.parse(decMnemonic));
+      console.log("암호화전 니모닉 :", rawMnemonic);
+
+      setMnemonic(JSON.parse(decMnemonic));
+
+      // if (toString(encMnemonic) === decryption(rawMnemonic)) {
+      //   console.log(toString(encMnemonic) === decryption(rawMnemonic));
+      //   localStorage.setItem("variant", encMnemonic);
+      //   setMnemonic(rawMnemonic);
+      // } else {
+      //   return alert("처리중에 오류가 있습니다. 다시 시도해 주세요!");
+      // }
     });
   };
   return (
@@ -70,14 +91,6 @@ const NewWallet = (props) => {
           fullWidth
           multiline
         ></TextField>
-
-        {/* <input
-            type="text"
-            value="니모닉 12자리 비밀키 들어올 자리"
-            // ref={textInput}
-            readOnly
-            style={{ fontSize: "15px", width: "250px", height: "60px" }}
-          /> */}
         <br />
         <Grid align="center" justifyContent>
           <Button

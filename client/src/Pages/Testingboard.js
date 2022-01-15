@@ -6,7 +6,7 @@ function Testingboard(props) {
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState("");
   useEffect(() => {
-    ws.current = new WebSocket(`ws://127.0.0.1:6005/`);
+    ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
     ws.current.onopen = () => {
       // connection opened
       console.log("connected");
@@ -177,16 +177,21 @@ function Testingboard(props) {
         keyutf,
         { iv: ivutf }
       );
-      // console.log("decObj가 나올라나", decObj);
+      console.log("decObj가 나올라나", decObj);
 
       const decStr = CryptoJS.enc.Utf8.stringify(decObj);
-      //console.log("decStr : " + decStr);
+      //const decStr2 = decObj.toString(CryptoJS.enc.Utf8)
+      console.log("decStr : " + decStr);
+      //console.log("decStr2 : " + decStr2);
+      // const parseded = JSON.parse(decStr)
+      // console.log("parseded : ", parseded);
+      // console.log(parseded.addresses);
 
       return decStr;
     }
 
     const dec = decryption(loglevel);
-    //console.log(dec);
+    console.log(dec);
 
     axios
       .post("/wallet/getWallet", {

@@ -4,19 +4,22 @@ const ligthWallet = require('eth-lightwallet')
 const isNullOrUndefined = require('util');
 
 router.post('/', function (req, res) {
+  console.log(req.body);
   const walletPwdFromUser = req.body.password
-  const LocalStoreServer = req.body.loglevel
+  const LocalStoreServer = req.body.keystore
   const decryption = req.body.decryption
 
+  const parsed = JSON.parse(decryption)
+  //console.log("parsed****************", parsed);
+
   if (LocalStoreServer === null) {
-    return res.json("로컬스토리지에 저장된 지갑이 없네요. 지갑이 있으시다면 복구하세요!")
+    return console.log("로컬스토리지에 저장된 지갑이 없네요. 지갑이 있으시다면 복구하세요!")
   }
 
-  const keystore = new ligthWallet.keystore.deserialize(decryption);
-  //console.log(keystore);
-  //console.log('keystore---------------\n', keystore);
-  //console.log('LocalStoreServer---------------\n', LocalStoreServer);
-
+  const keystore = new ligthWallet.keystore.deserialize(parsed);
+  // console.log(keystore);
+  // console.log('keystore---------------\n', keystore);
+  // console.log('LocalStoreServer---------------\n', LocalStoreServer);
 
   if (isNullOrUndefined.isNullOrUndefined(keystore)) {
     let error = {
@@ -54,14 +57,14 @@ router.post('/', function (req, res) {
         address: address
       }
       console.log("data-----------------------", data);
-      res.json(data);
+      res.send(data);
     } else {
       let data = {
         isError: true,
         msg: '비밀번호가 달라요!'
       };
       console.log("error-----------------------", data);
-      res.json(data);
+      res.send(data);
     }
   });
 });

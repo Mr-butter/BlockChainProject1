@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -14,10 +15,9 @@ import LockOutlined from "@mui/icons-material/LockOutlined";
 import styled from "styled-components";
 
 import Dropdown from "../dropdown/Dropdown";
-
-import NewWallet from "../walletModal/NewWallet";
 import axios from "axios";
-import CryptoJS from "crypto-js";
+import { encryption } from "../../utils/encrypt";
+import { decryption } from "../../utils/decrypt";
 
 const Password = () => {
   const gridStyle = {
@@ -35,12 +35,17 @@ const Password = () => {
   const [Password, setPassword] = useState("");
   const [Mnemonic, setMnemonic] = useState("");
 
+  const history = useHistory();
+
   const getPassword = (event) => {
     setPassword(event.currentTarget.value);
   };
+
   const getMnemonic = () => {
-    const phrase = localStorage.getItem("variant");
-    setMnemonic(phrase);
+    const encMnemonic = localStorage.getItem("variant");
+    const decMnemonic = JSON.parse(decryption(encMnemonic));
+
+    setMnemonic(decMnemonic);
   };
 
   function newWallet() {
@@ -49,38 +54,21 @@ const Password = () => {
       mnemonic: Mnemonic,
     };
 
-    function encryption(data) {
-      const key = "aaaaaaaaaabbbbbb";
-      const iv = "aaaaaaaaaabbbbbb";
-
-      const keyutf = CryptoJS.enc.Utf8.parse(key);
-      //console.log("키유티에프:", keyutf);
-      const ivutf = CryptoJS.enc.Utf8.parse(iv);
-      //console.log("아이브이유티에프:", ivutf);
-
-      const encObj = CryptoJS.AES.encrypt(JSON.stringify(data), keyutf, {
-        iv: ivutf,
-      });
-      //console.log("key : toString(CryptoJS.enc.Utf8)" + encObj.key.toString(CryptoJS.enc.Utf8));
-      //console.log("iv : toString(CryptoJS.enc.Utf8)" + encObj.iv.toString(CryptoJS.enc.Utf8));
-      //console.log("salt : " + encObj.salt);
-      //console.log("ciphertext : " + encObj.ciphertext);
-
-      const encStr = encObj + "alswn";
-      console.log("encStr : " + encStr);
-
-      return encStr;
-    }
-
     axios.post("/wallet/newWallet", variables).then((res) => {
-      const data = res.data;
+      // const data = res.data;
+      // console.log(data);
 
-      const enc = encryption(data);
+      const keystore = res.data.keystore;
+
+      const enc = encryption(keystore);
       console.log(enc);
 
       localStorage.setItem("loglevel", enc);
+      localStorage.removeItem("variant");
 
-      document.getElementById("qweqwe").innerText = JSON.stringify(data);
+      alert("지갑이 성공적으로 생성되었습니다.");
+
+      return history.push("/mypage");
     });
   }
   return (
@@ -117,7 +105,7 @@ const Password = () => {
         <Grid align="center">
           <h2>CHECK AGAIN!</h2>
           <TextField
-            onChange={getMnemonic}
+            // onChange={getMnemonic}
             value={Mnemonic}
             readOnly
           ></TextField>
@@ -139,7 +127,7 @@ const Password = () => {
         </FormControl> */}
         <br />
         <Button
-          href="/mypage"
+          // href="/mypage"
           type="submit"
           color="gold"
           style={btnstyle}
