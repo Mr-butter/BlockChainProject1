@@ -10,13 +10,9 @@ import ThemeMenu from "../themeMenu/ThemeMenu";
 
 import notifications from "../../assets/JsonData/notification.json";
 
-// import styled from "styled-components";
-
 import Password from "../Password/Password";
 import NewWallet from "../walletModal/NewWallet";
 import Pwd from "../Password/Pwd";
-
-// import Click from "../topnav/Click";
 
 import { Button, Menu, MenuItem, Box } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
@@ -52,9 +48,6 @@ const Topnav = (props) => {
                 axios
                     .post("/mineBlock", { switchOnOff: "on", p2pport: p2pport })
                     .then((res) => {
-                        // const data = res.data;
-                        // document.getElementById("writefield").innerText =
-                        //     JSON.stringify(data);
                         const data = res.data.message;
                         console.log(data);
                     });
