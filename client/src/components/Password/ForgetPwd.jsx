@@ -103,7 +103,7 @@ const ForgotPwd = (props) => {
           onChange={getWalletPwdFromUser}
           value={WalletPwdFromUser}
           label="Secret Key(비밀구문)"
-          placeholder="Enter password"
+          placeholder="지갑 비밀 복구 구문 입력"
           fullwidth
           required
           style={{ width: "250px", marginTop: "15px" }}
