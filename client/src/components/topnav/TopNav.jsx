@@ -16,13 +16,11 @@ import Password from "../Password/Password";
 import NewWallet from "../walletModal/NewWallet";
 import Pwd from "../Password/Pwd";
 
-import Click from "../topnav/Click";
+// import Click from "../topnav/Click";
 
 import { Button, Menu, MenuItem, Box } from "@mui/material";
-import MoreIcon from "@mui/icons-material/MoreVert";
 import Tooltip from "@mui/material/Tooltip";
-import MenuIcon from "@mui/icons-material/Menu";
-import IconButton from "@mui/material/IconButton";
+import axios from "axios";
 
 import Toggle from "./Toggle";
 
@@ -38,6 +36,8 @@ const Topnav = (props) => {
   const [haveWallet, sethaveWallet] = useState("pass");
   const [AnchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(AnchorEl);
+
+  const [users, SetUsers] = useState([]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -79,6 +79,7 @@ const Topnav = (props) => {
         return (
           <Pwd haveWallet={haveWallet} sethaveWallet={sethaveWallet}></Pwd>
         );
+      default:
     }
   }
 
@@ -97,6 +98,7 @@ const Topnav = (props) => {
         />
         <p>The switch is {toggled ? "on" : "off"}.</p>
       </div>
+      <div>user로그인시 주소가 뜰 자리</div>
       {/* <Box sx={{ flexGrow: 0 }}>
         <Tooltip title="Open settings">
           <Button onClick={handleMenuOpen} sx={{ p: 0 }}>

@@ -11,7 +11,7 @@ import Testingboard from "../Pages/Testingboard";
 const Routes = () => {
   return (
     <Switch>
-      <Route path="/" exact component={Dashboard} />s
+      <Route path="/" exact component={Dashboard} />
       <Route path="/analytics" component={BlockDetail} />
       <Route path="/mining" component={Mining} />
       <Route path="/mypage" component={Mypage} />
