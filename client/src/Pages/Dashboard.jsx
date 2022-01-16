@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Chart from "react-apexcharts";
 
@@ -105,11 +105,6 @@ const renderCusomerBody = (item, index) => (
   </tr>
 );
 
-const latestOrders = {
-  header: ["Hash", "Time", "Amount", "Data"],
-  body: [],
-};
-
 // const orderStatus = {};
 
 const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
@@ -127,32 +122,128 @@ const renderOrderBody = (item, index) => (
 
 const Dashboard = () => {
   const themeReducer = useSelector((state) => state.ThemeReducer.mode);
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(ThemeAction.getTheme());
+  const ws = useRef(null);
+  const [socketMessage, setSocketMessage] = useState("");
+  const [blockIndex, setBlockIndex] = useState("");
+  const [prevHash, setPrevHash] = useState("");
+  const [blockMerkleRoot, setblockMerkleRoot] = useState("");
+  const [blockTimestamp, setBlockTimestamp] = useState("");
+  const [blockDifficulty, setBlockDifficulty] = useState("");
+  const [blocktNonce, setBlocktNonce] = useState("");
+  const [blocktData, setBlocktData] = useState("");
+  const p2pport = parseInt(window.location.port) + 3000;
+  // const [latestOrders, setlatestOrders] = useState({
+  //     header: ["Hash", "Time", "Amount", "Data"],
+  //     body: [
+  //         { Hash: 1, Time: 1, Amount: 1, Data: 1 },
+  //         { Hash: 2, Time: 2, Amount: 2, Data: 2 },
+  //     ],
   // });
+  let latestOrders = {
+    header: ["Hash", "Time", "Amount", "Data"],
+    body: [
+      { Hash: 1, Time: 1, Amount: 1, Data: 1 },
+      { Hash: 2, Time: 2, Amount: 2, Data: 2 },
+    ],
+  };
 
+  useEffect(() => {
+    ws.current = new WebSocket(`ws://127.0.0.1:${p2pport}/`);
+    ws.current.onopen = () => {
+      // connection opened
+      console.log(`웹소켓 포트 : ${p2pport}번으로 연결`);
+      // send a message
+    };
+
+    ws.current.onmessage = (e) => {
+      // a message was received
+      setSocketMessage(e.data);
+    };
+
+    ws.current.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+    };
+    ws.current.onclose = (e) => {
+      // connection closed
+      console.log(e.code, e.reason);
+    };
+
+    return () => {
+      ws.current.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    ws.current.onmessage = (e) => {
+      // a message was received
+      let reciveData = JSON.parse(JSON.parse(e.data).data);
+      setSocketMessage(reciveData);
+      if (reciveData !== null) {
+        // let latestOrders = {
+        //     header: ["Hash", "Time", "Amount", "Data"],
+        //     body: [
+        //         { Hash: 1, Time: 1, Amount: 1, Data: 1 },
+        //         { Hash: 2, Time: 2, Amount: 2, Data: 2 },
+        //     ],
+        // };
+        // setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
+        setBlockIndex(socketMessage.header.index);
+        setPrevHash(socketMessage.header.previousHash);
+        setblockMerkleRoot(socketMessage.header.merkleRoot);
+        setBlockTimestamp(socketMessage.header.timestamp);
+        setBlockDifficulty(socketMessage.header.difficulty);
+        setBlocktNonce(socketMessage.header.nonce);
+        setBlocktData(socketMessage.body);
+        // latestOrders.body.push({
+        //     Hash: prevHash,
+        //     Time: blockTimestamp,
+        //     Amount: 50,
+        //     Data: blocktData,
+        // });
+        // return latestOrders;
+      }
+    };
+    console.log(latestOrders);
+    // if (latestOrders.header.body === undefined) {
+    // }
+
+    // document.getElementById("socket_writefield").innerText =
+    //     JSON.stringify(socketMessage);
+    // document.getElementById("blockIndex").innerText =
+    //     JSON.stringify(blockIndex);
+    // document.getElementById("prevHash").innerText =
+    //     JSON.stringify(prevHash);
+    // document.getElementById("blockMerkleRoot").innerText =
+    //     JSON.stringify(blockMerkleRoot);
+    // document.getElementById("blockTimestamp").innerText =
+    //     JSON.stringify(blockTimestamp);
+    // document.getElementById("blockDifficulty").innerText =
+    //     JSON.stringify(blockDifficulty);
+    // document.getElementById("blocktNonce").innerText =
+    //     JSON.stringify(blocktNonce);
+    // document.getElementById("blocktData").innerText =
+    //     JSON.stringify(blocktData);
+  }, [socketMessage]);
   return (
     <div>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
-        <div className="col-6">
-          <div className="row">
-            {statusCards.map((item, index) => (
-              <div className="col-6" key={index}>
-                {/* status card here */}
-                {item.title}
-                <StatusCard
-                  icon={item.icon}
-                  count={item.count}
-                  title={item.title}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        {/*  <div className="col-6">
+                    <div className="row">
+                        {statusCards.map((item, index) => (
+                            <div className="col-6" key={index}>*/}
+        {/* status card here */}
+        {/* {item.title}
+                                <StatusCard
+                                    icon={item.icon}
+                                    count={item.count}
+                                    title={item.title}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>*/}
         <div className="col-6">
           <p>CoLink mined</p>
           <div className="card full-height">
@@ -171,7 +262,7 @@ const Dashboard = () => {
               }
               series={chartOptions.series}
               type="line"
-              height="100%"
+              height="180%"
             />
           </div>
         </div>

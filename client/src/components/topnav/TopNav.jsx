@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import axios from "axios";
 import "./topnav.css";
 
 import { Link } from "react-router-dom";
@@ -10,32 +10,15 @@ import ThemeMenu from "../themeMenu/ThemeMenu";
 
 import notifications from "../../assets/JsonData/notification.json";
 
-// import styled from "styled-components";
-
 import Password from "../Password/Password";
 import NewWallet from "../walletModal/NewWallet";
 import Pwd from "../Password/Pwd";
-
-import Click from "../topnav/Click";
+import ForgotPwd from "../Password/ForgetPwd";
 
 import { Button, Menu, MenuItem, Box } from "@mui/material";
-import MoreIcon from "@mui/icons-material/MoreVert";
 import Tooltip from "@mui/material/Tooltip";
-import MenuIcon from "@mui/icons-material/Menu";
-import IconButton from "@mui/material/IconButton";
 
 import Toggle from "./Toggle";
-
-// const Button = styled.button`
-//   padding: 16px 32px;
-//   border-radious: 30%;
-//   background: #333333;
-//   color: gold;
-//   font-size: 24px;
-//   margin-left: 44%;
-//   margin-bottom: 20%;
-//   cursor: pointer;
-// `;
 
 const renderNotificationItem = (item, index) => (
   <div className="notification-item" key={index}>
@@ -45,21 +28,36 @@ const renderNotificationItem = (item, index) => (
 );
 
 const Topnav = (props) => {
+  const p2pport = parseInt(window.location.port) + 3000;
   const [toggled, setToggled] = useState(false);
+
   const [haveWallet, sethaveWallet] = useState("pass");
   const [AnchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(AnchorEl);
-
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    sethaveWallet("pass");
   };
 
   useEffect(() => {
     console.log(toggled);
+    switch (toggled) {
+      case true:
+        axios
+          .post("/mineBlock", { switchOnOff: "on", p2pport: p2pport })
+          .then((res) => {
+            const data = res.data.message;
+            console.log(data);
+          });
+        break;
+
+      default:
+        break;
+    }
   }, [toggled]);
 
   useEffect(() => {
@@ -79,6 +77,13 @@ const Topnav = (props) => {
             sethaveWallet={sethaveWallet}
           ></Password>
         );
+      case "forgot":
+        return (
+          <ForgotPwd
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></ForgotPwd>
+        );
       case "wallet":
         return (
           <NewWallet
@@ -90,6 +95,7 @@ const Topnav = (props) => {
         return (
           <Pwd haveWallet={haveWallet} sethaveWallet={sethaveWallet}></Pwd>
         );
+      default:
     }
   }
 
@@ -99,7 +105,6 @@ const Topnav = (props) => {
         <input type="text" placeholder="Search here..." />
         <i className="bx bx-search"></i>
       </div>
-
       <div className="topnav__right">
         <Toggle
           onChange={(e) => {
@@ -108,41 +113,8 @@ const Topnav = (props) => {
         />
         <p>The switch is {toggled ? "on" : "off"}.</p>
       </div>
-      {/* <Box sx={{ flexGrow: 0 }}>
-        <Tooltip title="Open settings">
-          <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
-            테스트 버튼
-          </Button>
-        </Tooltip>
-        <Menu
-          sx={{ mt: "45px" }}
-          id="menu-appbar"
-          anchorEl={AnchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(AnchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem>
-            <Password></Password>
-          </MenuItem>
-        </Menu>
-      </Box> */}
-
+      <div>user로그인시 주소가 뜰 자리</div>
       <div className="topnav__right">
-        {/* 추후에 아래 지갑Modal버튼은 지울예정 */}
-        {/* -<div className="topnav__right-item">
-          <Button onClick={openModal}>Get Started</Button>
-          <Modal showModal={showModal} setShowModal={setShowModal} />
-        </div> */}
-
         <div className="topnav__right-item">
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -188,5 +160,4 @@ const Topnav = (props) => {
     </div>
   );
 };
-
 export default Topnav;

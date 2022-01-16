@@ -1,10 +1,12 @@
 {
-    "scripts": {
-        "server": "npm start --prefix server",
-        "client": "npm start --prefix client",
-        "start": "concurrently \"npm run server\" \"npm run client\""
-    },
-    "dependencies": {
-        "concurrently": "^7.0.0"
-    }
+  "scripts": {
+    "server1": "export HTTP_PORT=5001 && npm start --prefix server",
+    "client1": "export PORT=3001 && npm start --prefix client",
+    "client2": "export PORT=3002 && npm start --prefix client",
+    "client3": "export PORT=3003 && npm start --prefix client",
+    "start": "concurrently \"npm run server1\" \"npm run client1\" \"npm run client2\" \"npm run client3\""
+  },
+  "dependencies": {
+    "concurrently": "^7.0.0"
+  }
 }

@@ -1,10 +1,10 @@
-.table-wrapper {
-  overflow-y: auto;
+.wallet-wrapper {
+  width: 800px;
 }
 
 table {
-  width: 100%;
-  min-width: 600px;
+  width: 80%;
+  min-width: 200px;
   border-spacing: 0;
 }
 
@@ -19,7 +19,7 @@ tr {
 th,
 td {
   text-transform: capitalize;
-  padding: 10px 10px;
+  padding: 15px 10px;
 }
 
 tbody > tr:hover {

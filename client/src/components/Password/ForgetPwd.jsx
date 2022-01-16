@@ -23,11 +23,17 @@ import axios from "axios";
 
 import { encryption } from "../../utils/encrypt";
 import { decryption } from "../../utils/decrypt";
-import { useDispatch } from "react-redux";
 
-import { loginUser } from "../../redux/actions/index";
+// function ComponentChange(props) {
+//   const CreateWallet = props.CreateWallet;
+//   if (true) {
+//     return <NewWallet />;
+//   } else {
+//     return null;
+//   }
+// }
 
-const Password = (props) => {
+const ForgotPwd = (props) => {
   useEffect(() => {
     console.log(props.haveWallet);
     console.log(props.sethaveWallet);
@@ -36,21 +42,23 @@ const Password = (props) => {
   const gridStyle = {
     padding: 10,
   };
+
   const paperStyle = {
     padding: 20,
     height: 470,
     width: 300,
     margin: "10px auto",
   };
+
   const theme = createMuiTheme({
     palette: {
       type: "dark",
     },
   });
-  const avatarStyle = { backgroundColor: "gold" };
-  const btnstyle = { margin: "20px 5px" };
 
-  const dispatch = useDispatch();
+  const avatarStyle = { backgroundColor: "gold" };
+
+  const btnstyle = { margin: "20px 5px" };
 
   const [WalletPwdFromUser, setWalletPwdFromUser] = useState("");
 
@@ -58,7 +66,7 @@ const Password = (props) => {
     setWalletPwdFromUser(event.currentTarget.value);
   }
 
-  function getWallet(props) {
+  function getWallet() {
     // setWalletPwdFromUser(event.currentTarget.value);
     console.log(WalletPwdFromUser);
 
@@ -68,25 +76,16 @@ const Password = (props) => {
     const dec = decryption(loglevel);
     console.log(dec);
 
-    let dataToSubmit = {
-      password: WalletPwdFromUser,
-      keystore: loglevel,
-      decryption: dec,
-    };
-
-    axios.post("/login", dataToSubmit);
-    dispatch(loginUser(dataToSubmit)).then((res) => {
-      if (res.payload.isAuth) {
-        console.log("로그인되라라라");
-        //props.history.push("/mypage");
-      } else {
-        console.log(res.payload);
-        console.log("로그인 실패");
-      }
-
-      const data = res.data;
-      console.log("받은 데이터 확인 : ", data);
-    });
+    axios
+      .post("/wallet/getWallet", {
+        password: WalletPwdFromUser,
+        keystore: loglevel,
+        decryption: dec,
+      })
+      .then((res) => {
+        const data = res.data;
+        console.log("받은 데이터 확인 : ", data);
+      });
   }
 
   return (
@@ -96,21 +95,38 @@ const Password = (props) => {
           <Avatar style={avatarStyle}>
             <LockOutlined />
           </Avatar>
-          <h2>My 간편 비밀번호</h2>
+          <br />
+          <h2>비밀복구 구문으로</h2>
+          <h2>비밀번호 찾기</h2>
         </Grid>
         <TextField
           onChange={getWalletPwdFromUser}
           value={WalletPwdFromUser}
-          label="password"
+          label="Secret Key(비밀구문)"
+          placeholder="지갑 비밀 복구 구문 입력"
+          fullwidth
+          required
+          style={{ width: "250px", marginTop: "15px" }}
+        />
+        <br />
+        <TextField
+          onChange={getWalletPwdFromUser}
+          value={WalletPwdFromUser}
+          label="새 암호"
           placeholder="Enter password"
           fullwidth
           required
           style={{ width: "250px", marginTop: "15px" }}
         />
         <br />
-        <FormControlLabel
-          control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
+        <TextField
+          onChange={getWalletPwdFromUser}
+          value={WalletPwdFromUser}
+          label="암호 확인"
+          placeholder="Enter password"
+          fullwidth
+          required
+          style={{ width: "250px", marginTop: "15px" }}
         />
         <br />
         <Button
@@ -122,40 +138,11 @@ const Password = (props) => {
           variant="contained"
           fullWidth
         >
-          SIGN IN
+          복구하기
         </Button>
-        <Typography>
-          <Link onClick={() => props.sethaveWallet("forgot")}>
-            Forgot password ?
-          </Link>
-        </Typography>
-        <br />
-        {/* Create New Wallet */}
-        <Typography>
-          Do you have an account ?
-          <br />
-          <ThemeProvider theme={theme}>
-            <button
-              id="password"
-              value="password"
-              className="bx bxs-wallet bx-tada"
-              onClick={() => props.sethaveWallet("wallet")}
-              style={{
-                display: "flex",
-                width: "15px",
-                height: "15px",
-                fontSize: "2.7rem",
-                alignItems: "center",
-                marginTop: "25px",
-                marginLeft: "95px",
-                color: "white",
-              }}
-            ></button>
-          </ThemeProvider>
-        </Typography>
       </Paper>
     </Grid>
   );
 };
 
-export default Password;
+export default ForgotPwd;
