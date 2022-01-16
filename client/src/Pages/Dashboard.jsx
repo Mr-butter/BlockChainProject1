@@ -138,43 +138,6 @@ const Dashboard = () => {
     <div>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
-        <div className="col-6">
-          <div className="row">
-            {statusCards.map((item, index) => (
-              <div className="col-6" key={index}>
-                {/* status card here */}
-                {item.title}
-                <StatusCard
-                  icon={item.icon}
-                  count={item.count}
-                  title={item.title}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="col-6">
-          <p>CoLink mined</p>
-          <div className="card full-height">
-            {/* 누적채굴량 차트넣을자리 */}
-            <Chart
-              options={
-                themeReducer === "theme-mode-dark"
-                  ? {
-                      ...chartOptions.options,
-                      theme: { mode: "dark" },
-                    }
-                  : {
-                      ...chartOptions.options,
-                      theme: { mode: "light" },
-                    }
-              }
-              series={chartOptions.series}
-              type="line"
-              height="100%"
-            />
-          </div>
-        </div>
         <div className="col-4">
           <div className="card">
             <div className="card__header">
@@ -213,6 +176,43 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <div className="col-6">
+        <p>CoLink mined</p>
+        <div className="card full-height">
+          {/* 누적채굴량 차트넣을자리 */}
+          <Chart
+            options={
+              themeReducer === "theme-mode-dark"
+                ? {
+                    ...chartOptions.options,
+                    theme: { mode: "dark" },
+                  }
+                : {
+                    ...chartOptions.options,
+                    theme: { mode: "light" },
+                  }
+            }
+            series={chartOptions.series}
+            type="line"
+            height="200%"
+          />
+        </div>
+      </div>
+
+      {/* <div className="col-6">
+        <div className="row">
+          {statusCards.map((item, index) => (
+            <div className="col-6" key={index}> */}
+      {/* status card here */}
+      {/* {item.title}
+              <StatusCard
+                icon={item.icon}
+                count={item.count}
+                title={item.title}
+              />
+            </div>
+          ))}
+        </div> */}
     </div>
   );
 };

@@ -90,7 +90,7 @@ input:focus {
 }
 
 .card {
-  padding: 30px;
+  padding: 25px 30px;
   margin-bottom: 30px;
   background-color: var(--main-bg);
   box-shadow: var(--box-shadow);
@@ -104,7 +104,7 @@ input:focus {
 }
 
 .card.full-height {
-  height: calc(100% - 80px);
+  height: calc(100%);
   z-index: 1;
 }
 

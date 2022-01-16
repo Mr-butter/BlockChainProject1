@@ -24,12 +24,12 @@ import axios from "axios";
 
 import Toggle from "./Toggle";
 
-const renderNotificationItem = (item, index) => (
-  <div className="notification-item" key={index}>
-    <i className={item.icon}></i>
-    <span>{item.content}</span>
-  </div>
-);
+// const renderNotificationItem = (item, index) => (
+//   <div className="notification-item" key={index}>
+//     <i className={item.icon}></i>
+//     <span>{item.content}</span>
+//   </div>
+// );
 
 const Topnav = (props) => {
   const [toggled, setToggled] = useState(false);
@@ -45,6 +45,7 @@ const Topnav = (props) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setAnchorEl("pass");
   };
 
   useEffect(() => {
@@ -156,7 +157,7 @@ const Topnav = (props) => {
           </Box>
         </div>
 
-        <div className="topnav__right-item">
+        {/* <div className="topnav__right-item">
           <Dropdown
             icon="bx bx-bell"
             badge="12"
@@ -164,7 +165,7 @@ const Topnav = (props) => {
             renderItems={(item, index) => renderNotificationItem(item, index)}
             renderFooter={() => <Link to="/">View All</Link>}
           />
-        </div>
+        </div> */}
 
         <div className="topnav__right-item">
           <ThemeMenu />
