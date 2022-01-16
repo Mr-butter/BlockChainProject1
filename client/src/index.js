@@ -21,9 +21,9 @@ import Layout from "./components/layout/Layout";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 
 const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-  },
+    palette: {
+        type: "dark",
+    },
 });
 
 const store = createStore(rootReducer);
@@ -31,19 +31,22 @@ const store = createStore(rootReducer);
 document.title = "CoLink";
 
 const createStoreWithMiddleware = applyMiddleware(
-  promiseMiddleware,
-  ReduxThunk
+    promiseMiddleware,
+    ReduxThunk
 )(createStore);
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <Provider
-      store={createStoreWithMiddleware(rootReducer, composeWithDevTools())}
-    >
-      <BrowserRouter>
-        <Layout />
-      </BrowserRouter>
-    </Provider>
-  </ThemeProvider>,
-  document.getElementById("root")
+    <ThemeProvider theme={theme}>
+        <Provider
+            store={createStoreWithMiddleware(
+                rootReducer,
+                composeWithDevTools()
+            )}
+        >
+            <BrowserRouter>
+                <Layout />
+            </BrowserRouter>
+        </Provider>
+    </ThemeProvider>,
+    document.getElementById("root")
 );

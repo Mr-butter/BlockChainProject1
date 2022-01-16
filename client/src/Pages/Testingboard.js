@@ -5,6 +5,13 @@ import CryptoJS from "crypto-js";
 function Testingboard(props) {
     const ws = useRef(null);
     const [socketMessage, setSocketMessage] = useState("");
+    const [blockIndex, setBlockIndex] = useState("");
+    const [prevHash, setPrevHash] = useState("");
+    const [blockMerkleRoot, setblockMerkleRoot] = useState("");
+    const [blockTimestamp, setBlockTimestamp] = useState("");
+    const [blockDifficulty, setBlockDifficulty] = useState("");
+    const [blocktNonce, setBlocktNonce] = useState("");
+    const [blocktData, setBlocktData] = useState("");
     const p2pport = parseInt(window.location.port) + 3000;
     useEffect(() => {
         ws.current = new WebSocket(`ws://127.0.0.1:${p2pport}/`);
@@ -36,11 +43,36 @@ function Testingboard(props) {
     useEffect(() => {
         ws.current.onmessage = (e) => {
             // a message was received
-            setSocketMessage(e.data);
+            let reciveData = JSON.parse(JSON.parse(e.data).data);
+            setSocketMessage(reciveData);
+            if (reciveData !== null) {
+                setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
+                setBlockIndex(socketMessage.header.index);
+                setPrevHash(socketMessage.header.previousHash);
+                setblockMerkleRoot(socketMessage.header.merkleRoot);
+                setBlockTimestamp(socketMessage.header.timestamp);
+                setBlockDifficulty(socketMessage.header.difficulty);
+                setBlocktNonce(socketMessage.header.nonce);
+                setBlocktData(socketMessage.body);
+            }
         };
 
         document.getElementById("socket_writefield").innerText =
             JSON.stringify(socketMessage);
+        document.getElementById("blockIndex").innerText =
+            JSON.stringify(blockIndex);
+        document.getElementById("prevHash").innerText =
+            JSON.stringify(prevHash);
+        document.getElementById("blockMerkleRoot").innerText =
+            JSON.stringify(blockMerkleRoot);
+        document.getElementById("blockTimestamp").innerText =
+            JSON.stringify(blockTimestamp);
+        document.getElementById("blockDifficulty").innerText =
+            JSON.stringify(blockDifficulty);
+        document.getElementById("blocktNonce").innerText =
+            JSON.stringify(blocktNonce);
+        document.getElementById("blocktData").innerText =
+            JSON.stringify(blocktData);
     }, [socketMessage]);
 
     function block() {
@@ -297,6 +329,20 @@ function Testingboard(props) {
             <div id="writefield"></div>
             <h2>소켓 메세지</h2>
             <div id="socket_writefield"></div>
+            <div>blockIndex</div>
+            <div id="blockIndex"></div>
+            <div>prevHash</div>
+            <div id="prevHash"></div>
+            <div>blockMerkleRoot</div>
+            <div id="blockMerkleRoot"></div>
+            <div>blockTimestamp</div>
+            <div id="blockTimestamp"></div>
+            <div>blockDifficulty</div>
+            <div id="blockDifficulty"></div>
+            <div>blocktNonce</div>
+            <div id="blocktNonce"></div>
+            <div>blocktData</div>
+            <div id="blocktData"></div>
         </div>
     );
 }

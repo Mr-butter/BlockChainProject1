@@ -5,7 +5,6 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
-  Icon,
   Link,
   Paper,
   TextField,
@@ -20,6 +19,10 @@ import Dropdown from "../dropdown/Dropdown";
 import NewWallet from "../walletModal/NewWallet";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import axios from "axios";
+
+import { encryption } from "../../utils/encrypt";
+import { decryption } from "../../utils/decrypt";
 
 // function ComponentChange(props) {
 //   const CreateWallet = props.CreateWallet;
@@ -57,18 +60,46 @@ const Password = (props) => {
 
   const btnstyle = { margin: "20px 5px" };
 
+  const [WalletPwdFromUser, setWalletPwdFromUser] = useState("");
+
+  function getWalletPwdFromUser(event) {
+    setWalletPwdFromUser(event.currentTarget.value);
+  }
+
+  function getWallet() {
+    // setWalletPwdFromUser(event.currentTarget.value);
+    console.log(WalletPwdFromUser);
+
+    const loglevel = localStorage.getItem("loglevel");
+    console.log("로컬스토리지 client 확인 : ", loglevel);
+
+    const dec = decryption(loglevel);
+    console.log(dec);
+
+    axios
+      .post("/wallet/getWallet", {
+        password: WalletPwdFromUser,
+        keystore: loglevel,
+        decryption: dec,
+      })
+      .then((res) => {
+        const data = res.data;
+        console.log("받은 데이터 확인 : ", data);
+      });
+  }
+
   return (
     <Grid style={gridStyle}>
       <Paper className={10} style={paperStyle} variant="outlined">
-        <br />
         <Grid align="center">
           <Avatar style={avatarStyle}>
             <LockOutlined />
           </Avatar>
-          <br />
           <h2>My 간편 비밀번호</h2>
         </Grid>
         <TextField
+          onChange={getWalletPwdFromUser}
+          value={WalletPwdFromUser}
           label="password"
           placeholder="Enter password"
           fullwidth
@@ -82,7 +113,8 @@ const Password = (props) => {
         />
         <br />
         <Button
-          href="/mypage"
+          onClick={getWallet}
+          href="#"
           type="submit"
           color="gold"
           style={btnstyle}
