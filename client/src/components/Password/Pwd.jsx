@@ -20,10 +20,14 @@ import Dropdown from "../dropdown/Dropdown";
 import NewWallet from "../walletModal/NewWallet";
 
 const Password = (e) => {
+  const gridStyle = {
+    padding: 10,
+  };
+
   const paperStyle = {
     padding: 20,
-    height: "42vh",
-    width: 280,
+    height: 470,
+    width: 300,
     margin: "10px auto",
   };
 
@@ -36,7 +40,7 @@ const Password = (e) => {
   };
 
   return (
-    <Grid>
+    <Grid style={gridStyle}>
       <Paper className={10} style={paperStyle} variant="outlined">
         <br />
         <Grid align="center">
@@ -45,24 +49,32 @@ const Password = (e) => {
           </Avatar>
           <br />
           <h2>Create a password</h2>
-          <p>You will use this to unlock your wallet.</p>
+          <p style={{ fontSize: "12px" }}>
+            You will use this to unlock your wallet.
+          </p>
         </Grid>
         <TextField
           label="password"
           placeholder="Enter password"
           fullwidth
           required
+          style={{ width: "250px" }}
         />
+        <br />
         <TextField
           label="confirm password"
           placeholder="password confirm"
           fullwidth
           required
+          style={{ width: "250px" }}
         />
+        <br />
         <FormControlLabel
           control={<Checkbox name="checkedB" color="primary" />}
           label="개인정보 처리 동의"
+          size="small"
         />
+        <br />
         <Button
           href="/mypage"
           type="submit"
