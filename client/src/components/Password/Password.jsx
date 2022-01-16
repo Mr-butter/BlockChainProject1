@@ -23,15 +23,9 @@ import axios from "axios";
 
 import { encryption } from "../../utils/encrypt";
 import { decryption } from "../../utils/decrypt";
+import { useDispatch } from "react-redux";
 
-// function ComponentChange(props) {
-//   const CreateWallet = props.CreateWallet;
-//   if (true) {
-//     return <NewWallet />;
-//   } else {
-//     return null;
-//   }
-// }
+import { loginUser } from "../../redux/actions/index";
 
 const Password = (props) => {
   useEffect(() => {
@@ -42,23 +36,21 @@ const Password = (props) => {
   const gridStyle = {
     padding: 10,
   };
-
   const paperStyle = {
     padding: 20,
     height: 470,
     width: 300,
     margin: "10px auto",
   };
-
   const theme = createMuiTheme({
     palette: {
       type: "dark",
     },
   });
-
   const avatarStyle = { backgroundColor: "gold" };
-
   const btnstyle = { margin: "20px 5px" };
+
+  const dispatch = useDispatch();
 
   const [WalletPwdFromUser, setWalletPwdFromUser] = useState("");
 
@@ -66,7 +58,7 @@ const Password = (props) => {
     setWalletPwdFromUser(event.currentTarget.value);
   }
 
-  function getWallet() {
+  function getWallet(props) {
     // setWalletPwdFromUser(event.currentTarget.value);
     console.log(WalletPwdFromUser);
 
@@ -76,16 +68,25 @@ const Password = (props) => {
     const dec = decryption(loglevel);
     console.log(dec);
 
-    axios
-      .post("/wallet/getWallet", {
-        password: WalletPwdFromUser,
-        keystore: loglevel,
-        decryption: dec,
-      })
-      .then((res) => {
-        const data = res.data;
-        console.log("받은 데이터 확인 : ", data);
-      });
+    let dataToSubmit = {
+      password: WalletPwdFromUser,
+      keystore: loglevel,
+      decryption: dec,
+    };
+
+    axios.post("/login", dataToSubmit);
+    dispatch(loginUser(dataToSubmit)).then((res) => {
+      if (res.payload.isAuth) {
+        console.log("로그인되라라라");
+        //props.history.push("/mypage");
+      } else {
+        console.log(res.payload);
+        console.log("로그인 실패");
+      }
+
+      const data = res.data;
+      console.log("받은 데이터 확인 : ", data);
+    });
   }
 
   return (

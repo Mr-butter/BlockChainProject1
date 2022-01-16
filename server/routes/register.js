@@ -4,7 +4,7 @@ const multer = require("multer");
 const fs = require("fs");
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
-const { isNotLoggedIn } = require("../models/middlewares");
+
 
 const router = express.Router();
 
