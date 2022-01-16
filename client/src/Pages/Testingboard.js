@@ -3,77 +3,77 @@ import React, { useEffect, useRef, useState } from "react";
 import CryptoJS from "crypto-js";
 
 function Testingboard(props) {
-    // const ws = useRef(null);
-    // const [socketMessage, setSocketMessage] = useState("");
-    // const [blockIndex, setBlockIndex] = useState("");
-    // const [prevHash, setPrevHash] = useState("");
-    // const [blockMerkleRoot, setblockMerkleRoot] = useState("");
-    // const [blockTimestamp, setBlockTimestamp] = useState("");
-    // const [blockDifficulty, setBlockDifficulty] = useState("");
-    // const [blocktNonce, setBlocktNonce] = useState("");
-    // const [blocktData, setBlocktData] = useState("");
+    const ws = useRef(null);
+    const [socketMessage, setSocketMessage] = useState("");
+    const [blockIndex, setBlockIndex] = useState("");
+    const [prevHash, setPrevHash] = useState("");
+    const [blockMerkleRoot, setblockMerkleRoot] = useState("");
+    const [blockTimestamp, setBlockTimestamp] = useState("");
+    const [blockDifficulty, setBlockDifficulty] = useState("");
+    const [blocktNonce, setBlocktNonce] = useState("");
+    const [blocktData, setBlocktData] = useState("");
     const p2pport = parseInt(window.location.port) + 3000;
-    // useEffect(() => {
-    //     ws.current = new WebSocket(`ws://127.0.0.1:${p2pport}/`);
-    //     ws.current.onopen = () => {
-    //         // connection opened
-    //         console.log(`웹소켓 포트 : ${p2pport}번으로 연결`);
-    //         // send a message
-    //     };
+    useEffect(() => {
+        ws.current = new WebSocket(`ws://127.0.0.1:${p2pport}/`);
+        ws.current.onopen = () => {
+            // connection opened
+            console.log(`웹소켓 포트 : ${p2pport}번으로 연결`);
+            // send a message
+        };
 
-    //     ws.current.onmessage = (e) => {
-    //         // a message was received
-    //         setSocketMessage(e.data);
-    //     };
+        ws.current.onmessage = (e) => {
+            // a message was received
+            setSocketMessage(e.data);
+        };
 
-    //     ws.current.onerror = (e) => {
-    //         // an error occurred
-    //         console.log(e.message);
-    //     };
-    //     ws.current.onclose = (e) => {
-    //         // connection closed
-    //         console.log(e.code, e.reason);
-    //     };
+        ws.current.onerror = (e) => {
+            // an error occurred
+            console.log(e.message);
+        };
+        ws.current.onclose = (e) => {
+            // connection closed
+            console.log(e.code, e.reason);
+        };
 
-    //     return () => {
-    //         ws.current.close();
-    //     };
-    // }, []);
+        return () => {
+            ws.current.close();
+        };
+    }, []);
 
-    // useEffect(() => {
-    //     ws.current.onmessage = (e) => {
-    //         // a message was received
-    //         let reciveData = JSON.parse(JSON.parse(e.data).data);
-    //         setSocketMessage(reciveData);
-    //         if (reciveData !== null) {
-    //             setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-    //             setBlockIndex(socketMessage.header.index);
-    //             setPrevHash(socketMessage.header.previousHash);
-    //             setblockMerkleRoot(socketMessage.header.merkleRoot);
-    //             setBlockTimestamp(socketMessage.header.timestamp);
-    //             setBlockDifficulty(socketMessage.header.difficulty);
-    //             setBlocktNonce(socketMessage.header.nonce);
-    //             setBlocktData(socketMessage.body);
-    //         }
-    //     };
+    useEffect(() => {
+        ws.current.onmessage = (e) => {
+            // a message was received
+            let reciveData = JSON.parse(JSON.parse(e.data).data);
+            setSocketMessage(reciveData);
+            if (reciveData !== null) {
+                setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
+                setBlockIndex(socketMessage.header.index);
+                setPrevHash(socketMessage.header.previousHash);
+                setblockMerkleRoot(socketMessage.header.merkleRoot);
+                setBlockTimestamp(socketMessage.header.timestamp);
+                setBlockDifficulty(socketMessage.header.difficulty);
+                setBlocktNonce(socketMessage.header.nonce);
+                setBlocktData(socketMessage.body);
+            }
+        };
 
-    //     document.getElementById("socket_writefield").innerText =
-    //         JSON.stringify(socketMessage);
-    //     document.getElementById("blockIndex").innerText =
-    //         JSON.stringify(blockIndex);
-    //     document.getElementById("prevHash").innerText =
-    //         JSON.stringify(prevHash);
-    //     document.getElementById("blockMerkleRoot").innerText =
-    //         JSON.stringify(blockMerkleRoot);
-    //     document.getElementById("blockTimestamp").innerText =
-    //         JSON.stringify(blockTimestamp);
-    //     document.getElementById("blockDifficulty").innerText =
-    //         JSON.stringify(blockDifficulty);
-    //     document.getElementById("blocktNonce").innerText =
-    //         JSON.stringify(blocktNonce);
-    //     document.getElementById("blocktData").innerText =
-    //         JSON.stringify(blocktData);
-    // }, [socketMessage]);
+        document.getElementById("socket_writefield").innerText =
+            JSON.stringify(socketMessage);
+        document.getElementById("blockIndex").innerText =
+            JSON.stringify(blockIndex);
+        document.getElementById("prevHash").innerText =
+            JSON.stringify(prevHash);
+        document.getElementById("blockMerkleRoot").innerText =
+            JSON.stringify(blockMerkleRoot);
+        document.getElementById("blockTimestamp").innerText =
+            JSON.stringify(blockTimestamp);
+        document.getElementById("blockDifficulty").innerText =
+            JSON.stringify(blockDifficulty);
+        document.getElementById("blocktNonce").innerText =
+            JSON.stringify(blocktNonce);
+        document.getElementById("blocktData").innerText =
+            JSON.stringify(blocktData);
+    }, [socketMessage]);
 
     function block() {
         axios.post("/blocks").then((res) => {

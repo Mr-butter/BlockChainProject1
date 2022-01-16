@@ -20,7 +20,6 @@ import Pwd from "../Password/Pwd";
 
 import { Button, Menu, MenuItem, Box } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import axios from "axios";
 
 import Toggle from "./Toggle";
 

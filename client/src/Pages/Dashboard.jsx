@@ -139,13 +139,13 @@ const Dashboard = () => {
     //         { Hash: 2, Time: 2, Amount: 2, Data: 2 },
     //     ],
     // });
-    // let latestOrders = {
-    //     header: ["Hash", "Time", "Amount", "Data"],
-    //     body: [
-    //         { Hash: 1, Time: 1, Amount: 1, Data: 1 },
-    //         { Hash: 2, Time: 2, Amount: 2, Data: 2 },
-    //     ],
-    // };
+    let latestOrders = {
+        header: ["Hash", "Time", "Amount", "Data"],
+        body: [
+            { Hash: 1, Time: 1, Amount: 1, Data: 1 },
+            { Hash: 2, Time: 2, Amount: 2, Data: 2 },
+        ],
+    };
 
     useEffect(() => {
         ws.current = new WebSocket(`ws://127.0.0.1:${p2pport}/`);
@@ -180,14 +180,14 @@ const Dashboard = () => {
             let reciveData = JSON.parse(JSON.parse(e.data).data);
             setSocketMessage(reciveData);
             if (reciveData !== null) {
-                let latestOrders = {
-                    header: ["Hash", "Time", "Amount", "Data"],
-                    body: [
-                        { Hash: 1, Time: 1, Amount: 1, Data: 1 },
-                        { Hash: 2, Time: 2, Amount: 2, Data: 2 },
-                    ],
-                };
-                setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
+                // let latestOrders = {
+                //     header: ["Hash", "Time", "Amount", "Data"],
+                //     body: [
+                //         { Hash: 1, Time: 1, Amount: 1, Data: 1 },
+                //         { Hash: 2, Time: 2, Amount: 2, Data: 2 },
+                //     ],
+                // };
+                // setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
                 setBlockIndex(socketMessage.header.index);
                 setPrevHash(socketMessage.header.previousHash);
                 setblockMerkleRoot(socketMessage.header.merkleRoot);
@@ -195,13 +195,13 @@ const Dashboard = () => {
                 setBlockDifficulty(socketMessage.header.difficulty);
                 setBlocktNonce(socketMessage.header.nonce);
                 setBlocktData(socketMessage.body);
-                latestOrders.body.push({
-                    Hash: prevHash,
-                    Time: blockTimestamp,
-                    Amount: 50,
-                    Data: blocktData,
-                });
-                return latestOrders;
+                // latestOrders.body.push({
+                //     Hash: prevHash,
+                //     Time: blockTimestamp,
+                //     Amount: 50,
+                //     Data: blocktData,
+                // });
+                // return latestOrders;
             }
         };
         console.log(latestOrders);
