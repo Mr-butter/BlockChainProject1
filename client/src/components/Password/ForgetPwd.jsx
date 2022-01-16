@@ -33,7 +33,7 @@ import { decryption } from "../../utils/decrypt";
 //   }
 // }
 
-const Password = (props) => {
+const ForgotPwd = (props) => {
   useEffect(() => {
     console.log(props.haveWallet);
     console.log(props.sethaveWallet);
@@ -95,21 +95,38 @@ const Password = (props) => {
           <Avatar style={avatarStyle}>
             <LockOutlined />
           </Avatar>
-          <h2>My 간편 비밀번호</h2>
+          <br />
+          <h2>비밀복구 구문으로</h2>
+          <h2>비밀번호 찾기</h2>
         </Grid>
         <TextField
           onChange={getWalletPwdFromUser}
           value={WalletPwdFromUser}
-          label="password"
+          label="Secret Key(비밀구문)"
           placeholder="Enter password"
           fullwidth
           required
           style={{ width: "250px", marginTop: "15px" }}
         />
         <br />
-        <FormControlLabel
-          control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
+        <TextField
+          onChange={getWalletPwdFromUser}
+          value={WalletPwdFromUser}
+          label="새 암호"
+          placeholder="Enter password"
+          fullwidth
+          required
+          style={{ width: "250px", marginTop: "15px" }}
+        />
+        <br />
+        <TextField
+          onChange={getWalletPwdFromUser}
+          value={WalletPwdFromUser}
+          label="암호 확인"
+          placeholder="Enter password"
+          fullwidth
+          required
+          style={{ width: "250px", marginTop: "15px" }}
         />
         <br />
         <Button
@@ -121,40 +138,11 @@ const Password = (props) => {
           variant="contained"
           fullWidth
         >
-          SIGN IN
+          복구하기
         </Button>
-        <Typography>
-          <Link onClick={() => props.sethaveWallet("forgot")}>
-            Forgot password ?
-          </Link>
-        </Typography>
-        <br />
-        {/* Create New Wallet */}
-        <Typography>
-          Do you have an account ?
-          <br />
-          <ThemeProvider theme={theme}>
-            <button
-              id="password"
-              value="password"
-              className="bx bxs-wallet bx-tada"
-              onClick={() => props.sethaveWallet("wallet")}
-              style={{
-                display: "flex",
-                width: "15px",
-                height: "15px",
-                fontSize: "2.7rem",
-                alignItems: "center",
-                marginTop: "25px",
-                marginLeft: "95px",
-                color: "white",
-              }}
-            ></button>
-          </ThemeProvider>
-        </Typography>
       </Paper>
     </Grid>
   );
 };
 
-export default Password;
+export default ForgotPwd;
