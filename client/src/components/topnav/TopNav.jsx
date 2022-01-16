@@ -39,6 +39,7 @@ const Topnav = (props) => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+        sethaveWallet("pass");
     };
 
     useEffect(() => {
