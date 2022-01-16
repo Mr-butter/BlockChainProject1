@@ -345,7 +345,7 @@ let transectionArry = [];
 setInterval(() => {
     const transection = { addTransection: parseInt(Math.random() * 1000) };
     transectionArry.push(transection);
-}, Math.random() * 10000);
+}, Math.random() * 1000);
 //////////////////////////////////////
 
 function addBlock() {
@@ -361,7 +361,7 @@ function addBlock() {
 function minning(message) {
     switch (message) {
         case "on":
-            setInterval(() => addBlock());
+            setInterval(() => addBlock(), 2000);
             break;
         case "off":
             return process.exit();
