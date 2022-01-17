@@ -6,21 +6,20 @@ var logger = require("morgan");
 const { sequelize } = require("./models");
 let cors = require("cors");
 const dotenv = require("dotenv");
-const passport = require("passport");
+
 const session = require("express-session");
-const passportConfig = require("./passport");
+
 
 dotenv.config();
 
 var main = require("./routes/main");
 var register = require("./routes/register");
-var initWallet = require("./routes/initWallet");
 var login = require("./routes/login");
 var socketServer = require("./routes/socketServer");
 var wallet = require("./routes/wallet");
 
 var app = express();
-passportConfig(); // 패스포트 설정
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -47,12 +46,10 @@ app.use(
     })
 );
 app.use(cors());
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 app.use("/", main);
 app.use("/register", register);
-app.use("/initWallet", initWallet);
 app.use("/login", login);
 app.use("/socketServer", socketServer);
 app.use("/wallet", wallet);
