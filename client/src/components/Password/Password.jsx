@@ -25,7 +25,8 @@ import { encryption } from "../../utils/encrypt";
 import { decryption } from "../../utils/decrypt";
 import { useDispatch } from "react-redux";
 
-import { loginUser } from "../../redux/actions/index";
+import { auth, loginUser, logoutUser } from "../../redux/actions/";
+import { useHistory } from "react-router";
 
 const Password = (props) => {
   useEffect(() => {
@@ -49,6 +50,8 @@ const Password = (props) => {
   });
   const avatarStyle = { backgroundColor: "gold" };
   const btnstyle = { margin: "20px 5px" };
+
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -77,15 +80,16 @@ const Password = (props) => {
     axios.post("/login", dataToSubmit);
     dispatch(loginUser(dataToSubmit)).then((res) => {
       if (res.payload.isAuth) {
+        localStorage.setItem("login", "true");
+        dispatch(auth());
         console.log("로그인되라라라");
-        //props.history.push("/mypage");
+        console.log(props.history);
+        console.log(history);
+        history.push("/mypage");
       } else {
-        console.log(res.payload);
+        localStorage.setItem("login", "false");
         console.log("로그인 실패");
       }
-
-      const data = res.data;
-      console.log("받은 데이터 확인 : ", data);
     });
   }
 

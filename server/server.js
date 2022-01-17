@@ -37,7 +37,7 @@ app.use(
     session({
         resave: false,
         saveUninitialized: false,
-        secret: process.env.COOKIE_SECRET,
+        secret: process.env.COOKIE_SECRET || 'cookiesecret',
         cookie: {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 2,
@@ -53,6 +53,8 @@ app.use("/register", register);
 app.use("/login", login);
 app.use("/socketServer", socketServer);
 app.use("/wallet", wallet);
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

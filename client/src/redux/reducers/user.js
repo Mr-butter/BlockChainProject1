@@ -1,9 +1,8 @@
 import { LOGIN_USER, LOGOUT_USER, AUTH_USER } from "../actions";
 
 const initialState = {
-    // login: false,
-    // wallet: "",
-    // loginSucces: ""
+    login: false,
+    wallet: "",
 };
 
 export default function (state = initialState, action) {
@@ -12,8 +11,7 @@ export default function (state = initialState, action) {
             return {
                 ...initialState,
                 login: action.payload.isAuth,
-                address: action.payload.address,
-
+                wallet: action.payload.address,
             };
         case LOGOUT_USER:
             return {
@@ -24,7 +22,8 @@ export default function (state = initialState, action) {
         case AUTH_USER:
             return {
                 ...initialState,
-                userData: action.payload
+                login: action.payload.login,
+                wallet: action.payload.wallet,
             }
         default:
             return state;

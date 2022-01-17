@@ -1,4 +1,5 @@
 import axios from "axios";
+import { decryption } from "../../utils/decrypt";
 
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGOUT_USER = "LOGOUT_USER";
@@ -25,13 +26,36 @@ export async function logoutUser() {
     };
 }
 
-export function auth() {
-    const data = axios.get(`/auth`)
-        .then(res => res.data);
+export async function auth() {
+    const ligthWallet = require('eth-lightwallet')
 
-    return {
-        type: AUTH_USER,
-        payload: data
+    const decStr = JSON.parse(decryption(localStorage.getItem('loglevel')))
+    const keystore = new ligthWallet.keystore.deserialize(decStr);
+    const address = keystore.getAddresses()
+    console.log('address---------------', address);
+
+    if (localStorage.getItem('login')) {
+
+        const data = {
+            login: localStorage.getItem('login'),
+            wallet: address[0],
+        }
+
+        return {
+            type: AUTH_USER,
+            payload: data
+        }
+
+    } else {
+
+        const data = {
+            login: localStorage.getItem('login'),
+            wallet: "",
+        }
+
+        return {
+            type: AUTH_USER,
+            payload: data
+        }
     }
 }
-
