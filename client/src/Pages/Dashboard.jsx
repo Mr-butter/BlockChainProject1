@@ -229,25 +229,22 @@ const Dashboard = () => {
     <div>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
-        {/*  <div className="col-6">
-                    <div className="row">
-                        {statusCards.map((item, index) => (
-                            <div className="col-6" key={index}>*/}
-        {/* status card here */}
-        {/* {item.title}
-                                <StatusCard
-                                    icon={item.icon}
-                                    count={item.count}
-                                    title={item.title}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>*/}
         <div className="col-6">
-          <p>CoLink mined</p>
+          <div className="row">
+            {statusCards.map((item, index) => (
+              <div className="col-6" key={index}>
+                <StatusCard
+                  icon={item.icon}
+                  count={item.count}
+                  title={item.title}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="col-6">
           <div className="card full-height">
-            {/* 누적채굴량 차트넣을자리 */}
+            {/* chart */}
             <Chart
               options={
                 themeReducer === "theme-mode-dark"
@@ -262,7 +259,7 @@ const Dashboard = () => {
               }
               series={chartOptions.series}
               type="line"
-              height="180%"
+              height="100%"
             />
           </div>
         </div>
@@ -281,7 +278,7 @@ const Dashboard = () => {
               />
             </div>
             <div className="card__footer">
-              <Link to="/">View all</Link>
+              <Link to="/">view all</Link>
             </div>
           </div>
         </div>
