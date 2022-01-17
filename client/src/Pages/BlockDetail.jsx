@@ -33,7 +33,7 @@ const BlockDetail = () => {
         <h2 className="page-header">Blocks</h2>
         <div className="row">
           <div className="col-12">
-            <div className="card">
+            <div className="card" style={{ marginRight: "50px" }}>
               <div className="card__body">
                 <Table
                   limit="10"
