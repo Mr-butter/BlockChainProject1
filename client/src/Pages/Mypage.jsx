@@ -39,7 +39,7 @@ function Mypage(props) {
   //   }
   return (
     <Container>
-      <div className="table-wrapper">
+      <div className="table-wrapper" style={{ marginBottom: "200px" }}>
         <h2>My Wallet</h2>
         <br />
         <div>
