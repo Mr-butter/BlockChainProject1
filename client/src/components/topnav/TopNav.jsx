@@ -22,10 +22,10 @@ import Tooltip from "@mui/material/Tooltip";
 import Toggle from "./Toggle";
 
 const renderNotificationItem = (item, index) => (
-    <div className="notification-item" key={index}>
-        <i className={item.icon}></i>
-        <span>{item.content}</span>
-    </div>
+  <div className="notification-item" key={index}>
+    <i className={item.icon}></i>
+    <span>{item.content}</span>
+  </div>
 );
 
 const Topnav = (props) => {
@@ -46,77 +46,35 @@ const Topnav = (props) => {
   const p2pport = parseInt(window.location.port) + 3000;
   const [toggled, setToggled] = useState(false);
 
-    const [haveWallet, sethaveWallet] = useState("pass");
-    const [AnchorEl, setAnchorEl] = useState(null);
-    const isMenuOpen = Boolean(AnchorEl);
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  const [haveWallet, sethaveWallet] = useState("pass");
+  const [AnchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(AnchorEl);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        sethaveWallet("pass");
-    };
-
-    useEffect(() => {
-        switch (toggled) {
-            case true:
-                axios
-                    .post("/mineBlock", { switchOnOff: "on", p2pport: p2pport })
-                    .then((res) => {
-                        const data = res.data.message;
-                        console.log(data);
-                    });
-                break;
-
-            default:
-                break;
-        }
-    }, [toggled]);
-
-    useEffect(() => {}, [haveWallet]);
-
-    const usericon = {
-        fontSize: 37,
-        color: "#dbd5d5",
-    };
-    function returnMenu(haveWallet) {
-        switch (haveWallet) {
-            case "pass":
-                return (
-                    <Password
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></Password>
-                );
-            case "forgot":
-                return (
-                    <ForgotPwd
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></ForgotPwd>
-                );
-            case "wallet":
-                return (
-                    <NewWallet
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></NewWallet>
-                );
-            case "pwd":
-                return (
-                    <Pwd
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></Pwd>
-                );
-            default:
-        }
-    }
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    sethaveWallet("pass");
+  };
 
   useEffect(() => {
-    console.log(haveWallet);
-  }, [haveWallet]);
+    switch (toggled) {
+      case true:
+        axios
+          .post("/mineBlock", { switchOnOff: "on", p2pport: p2pport })
+          .then((res) => {
+            const data = res.data.message;
+            console.log(data);
+          });
+        break;
+
+      default:
+        break;
+    }
+  }, [toggled]);
+
+  useEffect(() => {}, [haveWallet]);
 
   const usericon = {
     fontSize: 37,
@@ -124,6 +82,41 @@ const Topnav = (props) => {
   };
   function returnMenu(haveWallet) {
     switch (haveWallet) {
+      case "pass":
+        return (
+          <Password
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></Password>
+        );
+      case "forgot":
+        return (
+          <ForgotPwd
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></ForgotPwd>
+        );
+      case "wallet":
+        return (
+          <NewWallet
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></NewWallet>
+        );
+      case "pwd":
+        return (
+          <Pwd haveWallet={haveWallet} sethaveWallet={sethaveWallet}></Pwd>
+        );
+      default:
+    }
+  }
+
+  useEffect(() => {
+    console.log(haveWallet);
+  }, [haveWallet]);
+
+  function returnMenu(haveWallet) {
+    switch (haveWallet) {``
       case "pass":
         return (
           <Password
@@ -207,11 +200,11 @@ const Topnav = (props) => {
           />
         </div> */}
 
-                <div className="topnav__right-item">
-                    <ThemeMenu />
-                </div>
-            </div>
+        <div className="topnav__right-item">
+          <ThemeMenu />
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 export default Topnav;
