@@ -61,23 +61,23 @@ const chartOptions = {
 
 const LatestBlocks = {
   head: [
-    "blockIndex",
-    "prevHash",
-    "blockMerkleRoot",
-    "blockTimestamp",
+    "index",
+    "previousHash",
+    "merkleRoot",
+    "timestamp",
     "blockDifficulty",
-    "blocktNonce",
-    "blocktData",
+    "nonce",
+    "version",
   ],
   body: [
     {
-      blockIndex: "717701",
-      prevHash: "5555555",
-      blockMerkleRoot: "sgsfsf",
-      blockTimestamp: "1231545 bytes",
-      blockDifficulty: "1231545 bytes",
-      blocktNonce: "1231545 bytes",
-      blocktData: "1231545 bytes",
+      index: "717701",
+      previousHash: "5555555",
+      merkleRoot: "sgsfsf",
+      timestamp: "1231545 bytes",
+      difficulty: "1231545 bytes",
+      nonce: "1231545 bytes",
+      version: "dsds",
     },
   ],
 };
@@ -86,13 +86,13 @@ const renderCustomerHead = (item, index) => <th key={index}>{item}</th>;
 
 const renderCusomerBody = (item, index) => (
   <tr key={index}>
-    <td>{item.blockIndex}</td>
-    <td>{item.prevHash}</td>
-    <td>{item.blockMerkleRoot}</td>
-    <td>{item.blockTimestamp}</td>
-    <td>{item.blockDifficulty}</td>
-    <td>{item.blocktNonce}</td>
-    <td>{item.blocktData}</td>
+    <td>{item.index}</td>
+    <td>{item.previousHash}</td>
+    <td>{item.merkleRoot}</td>
+    <td>{item.timestamp}</td>
+    <td>{item.difficulty}</td>
+    <td>{item.nonce}</td>
+    <td>{item.version}</td>
   </tr>
 );
 
@@ -180,24 +180,12 @@ const Dashboard = () => {
       //else 이용해서 앞의 블록 달라고 메세지?
     };
 
-    document.getElementById("socket_writefield").innerText =
+    document.getElementById("socketLog_writefield").innerText =
       JSON.stringify(socketMessageLog);
   }, [socketMessageLog]);
 
-  /////////////////////////////////////////////////////
   function forblock() {
-    console.log("날것", socketMessageLog);
-    console.log("스트링파이", JSON.stringify(socketMessageLog));
-    console.log("다시 파서", JSON.parse(JSON.stringify(socketMessageLog)));
     const list = JSON.parse(JSON.stringify(socketMessageLog));
-    console.log(list[1].reciveData);
-    console.log(JSON.stringify(list[1].reciveData));
-    const test = JSON.stringify(list[1].reciveData);
-
-    console.log(JSON.parse(test));
-    console.log(JSON.parse(test)[0].header); //푸쉬할 대상.
-    console.log(JSON.parse(test)[0].header.index);
-    console.log(JSON.parse(test)[0].body[0]);
 
     const fisrt = [];
     for (let i = 0; i < socketMessageLog.length; i++) {
@@ -205,19 +193,6 @@ const Dashboard = () => {
       fisrt.push(test);
     }
     console.log("첫번째 변환", fisrt);
-    console.log(JSON.parse(fisrt[1])); //인덱스 증가
-    const ppp = JSON.parse(fisrt[1]);
-    const ppp2 = JSON.parse(fisrt[1])[0]; //뒤의 인덱스는 무조건 영
-    console.log(ppp[0]);
-    console.log(ppp2);
-    console.log(ppp2.header);
-    console.log(ppp2.body);
-
-    const test2 = JSON.parse(fisrt[1])[0].header;
-    console.log(test2); //필요한것
-
-    // console.log(JSON.parse(fisrt[1]).header); //인덱스 고정
-    // console.log(JSON.parse(fisrt[1]).body[0]);
 
     const second = [];
 
@@ -226,8 +201,21 @@ const Dashboard = () => {
       second.push(test);
     }
     console.log("두번째 변환", second);
+
+    // return {
+    //   head: [
+    //     "index",
+    //     "previousHash",
+    //     "merkleRoot",
+    //     "timestamp",
+    //     "blockDifficulty",
+    //     "nonce",
+    //     "version",
+    //   ],
+    //   body: [second],
+    // };
   }
-  ////////////////////////////////////////////////////////////////////
+
   function block() {
     axios.post(`${serverUrl}/blocks`).then((res) => {
       const data = res.data;
