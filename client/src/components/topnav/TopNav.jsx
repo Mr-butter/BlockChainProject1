@@ -29,9 +29,9 @@ const renderNotificationItem = (item, index) => (
 );
 
 const Topnav = (props) => {
-  // const loginInfo = useSelector((state) => state.user);
+  const loginInfo = useSelector((state) => state.user);
   // const islogged = loginInfo.login;
-  // const address = loginInfo.wallet;
+  const address = loginInfo.wallet;
   // console.log(islogged, address);
   // function userbutton() {
   //   if (islogged) {
@@ -128,7 +128,7 @@ const Topnav = (props) => {
         />
         <p>The switch is {toggled ? "on" : "off"}.</p>
       </div>
-      {/* <div>{islogged ? address : ""}</div> */}
+      <div>{address}</div>
       <div className="topnav__right">
         <div className="topnav__right-item">
           <Box sx={{ flexGrow: 0 }}>
