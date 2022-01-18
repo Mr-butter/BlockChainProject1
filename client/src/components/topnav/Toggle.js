@@ -34,7 +34,7 @@ cursor: pointer;
 width: 50px;
 height: 25px;
 border-radius: 100px;
-background-color; red;
+background-color: red;
 position: background-color 0.2s;
 margin-right: 10px;
 transition: background-color 0.2s, box-shadow 0.2s;

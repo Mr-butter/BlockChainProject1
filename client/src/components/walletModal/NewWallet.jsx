@@ -105,18 +105,12 @@ const NewWallet = (props) => {
             size="medium"
             style={avatarStyle}
             variant="contained"
-            color="inherit"
             onClick={copy}
           >
             copy
           </Button>
         </Grid>
         <br />
-        <InputLabel shrink variant="filled">
-          니모닉 문구를 아는 사람 누구나 지갑에 접근이 가능하므로 안전하게
-          보관바랍니다. This is the only way you will be able to recover your
-          account. Please store it somewhere safe !
-        </InputLabel>
         <FormControl style={{ width: "5px" }}></FormControl>
 
         <p>

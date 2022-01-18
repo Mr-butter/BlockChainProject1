@@ -198,42 +198,9 @@ function Testingboard(props) {
             .then((res) => {
                 const data = res.data;
 
-                // const key = "aaaaaaaaaabbbbbb";
-                // const iv = "aaaaaaaaaabbbbbb";
-
-                // const keyutf = CryptoJS.enc.Utf8.parse(key);
-                // //console.log("키유티에프:", keyutf);
-                // const ivutf = CryptoJS.enc.Utf8.parse(iv);
-                // //console.log("아이브이유티에프:", ivutf);
-
-                // const encObj = CryptoJS.AES.encrypt(JSON.stringify(data), keyutf, { iv: ivutf });
-                // //console.log("key : toString(CryptoJS.enc.Utf8)" + encObj.key.toString(CryptoJS.enc.Utf8));
-                // //console.log("iv : toString(CryptoJS.enc.Utf8)" + encObj.iv.toString(CryptoJS.enc.Utf8));
-                // //console.log("salt : " + encObj.salt);
-                // //console.log("ciphertext : " + encObj.ciphertext);
-
-                // const encStr = encObj + "alswn";
-                // console.log("encStr : " + encStr);
-
-                // // const test = CryptoJS.enc.Base64.parse(encStr)
-                // // console.log("testestet: ", test);
-
                 const enc = encryption(data);
                 console.log(enc);
 
-                // // CryptoJS AES 128 복호화
-                // const decObj = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encStr) }, keyutf, { iv: ivutf });
-                // // console.log("decObj가 나올라나", decObj);
-
-                // const decStr = CryptoJS.enc.Utf8.stringify(decObj);
-                // console.log("decStr : " + decStr);
-
-                // const decStr = CryptoJS.enc.Utf8.stringify(decObj);
-                // console.log("decStr : " + decStr);
-
-                /////////////////////////////////////////////////////////////////////////////////////
-
-                //localStorage.setItem("loglevel", JSON.stringify(data));
                 localStorage.setItem("loglevel", enc);
 
                 document.getElementById("writefield").innerText =
@@ -286,6 +253,59 @@ function Testingboard(props) {
                 const data = res.data;
                 document.getElementById("writefield").innerText =
                     JSON.stringify(data);
+            });
+    }
+    function restoreWallet() {
+
+        let walletPwdFromUser = prompt(
+            "새로운 비밀번호를 입력하세요",
+            "1234"
+        );
+        let mnemonicFromUser = prompt(
+            "지갑을 복구하기 위한 니모닉을 입력하세요",
+            "soft wedding roof real apple evil excuse despair fragile ahead repair pluck"
+        );
+
+        // function encryption(data, key, iv) {
+        function encryption(data) {
+
+            const key = "aaaaaaaaaabbbbbb";
+            const iv = "aaaaaaaaaabbbbbb";
+
+            const keyutf = CryptoJS.enc.Utf8.parse(key);
+            console.log("키유티에프:", keyutf);
+            const ivutf = CryptoJS.enc.Utf8.parse(iv);
+            console.log("아이브이유티에프:", ivutf);
+
+            const encObj = CryptoJS.AES.encrypt(JSON.stringify(data), keyutf, { iv: ivutf });
+            //console.log("key : toString(CryptoJS.enc.Utf8)" + encObj.key.toString(CryptoJS.enc.Utf8));
+            //console.log("iv : toString(CryptoJS.enc.Utf8)" + encObj.iv.toString(CryptoJS.enc.Utf8));
+            //console.log("salt : " + encObj.salt);
+            //console.log("ciphertext : " + encObj.ciphertext);
+
+            const encStr = encObj + "alswn";
+            console.log("encStr : " + encStr);
+
+            return encStr
+
+        }
+
+        axios
+            .post("/wallet/restoreWallet", {
+                password: walletPwdFromUser,
+                mnemonic: mnemonicFromUser,
+            })
+            .then((res) => {
+                const data = res.data;
+                console.log(data.keystore);
+
+                const enc = encryption(data.keystore)
+
+                localStorage.setItem("loglevel", enc);
+
+                document.getElementById("writefield").innerText =
+                    JSON.stringify(data);
+
             });
     }
 
@@ -341,6 +361,11 @@ function Testingboard(props) {
                 <li>
                     <button id="getWallet" onClick={() => getWallet()}>
                         getWallet
+                    </button>
+                </li>
+                <li>
+                    <button id="restoreWallet" onClick={() => restoreWallet()}>
+                        restoreWallet
                     </button>
                 </li>
             </ol>

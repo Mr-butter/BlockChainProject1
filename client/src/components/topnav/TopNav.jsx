@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import "./topnav.css";
 
@@ -28,8 +29,22 @@ const renderNotificationItem = (item, index) => (
 );
 
 const Topnav = (props) => {
-    const p2pport = parseInt(window.location.port) + 3000;
-    const [toggled, setToggled] = useState(false);
+  const loginInfo = useSelector((state) => state.user);
+  // const islogged = loginInfo.login;
+  const address = loginInfo.wallet;
+  // console.log(islogged, address);
+  // function userbutton() {
+  //   if (islogged) {
+  //     return (
+  //       <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+  //         <i class="bx bx-user" style={usericon} />
+  //       </Button>
+  //     );
+  //   }
+  // }
+
+  const p2pport = parseInt(window.location.port) + 3000;
+  const [toggled, setToggled] = useState(false);
 
     const [haveWallet, sethaveWallet] = useState("pass");
     const [AnchorEl, setAnchorEl] = useState(null);
@@ -99,60 +114,98 @@ const Topnav = (props) => {
         }
     }
 
-    return (
-        <div className="topnav">
-            <div className="topnav__search">
-                <input type="text" placeholder="Search here..." />
-                <i className="bx bx-search"></i>
-            </div>
-            <div className="topnav__right">
-                <Toggle
-                    onChange={(e) => {
-                        setToggled(e.target.checked);
-                    }}
-                />
-                <p>The switch is {toggled ? "on" : "off"}.</p>
-            </div>
-            <div>user로그인시 주소가 뜰 자리</div>
-            <div className="topnav__right">
-                <div className="topnav__right-item">
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
-                                <i class="bx bx-user" style={usericon} />
-                            </Button>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: "45px" }}
-                            id="menu-appbar"
-                            anchorEl={AnchorEl}
-                            anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            open={Boolean(AnchorEl)}
-                            onClose={handleMenuClose}
-                        >
-                            <MenuItem>{returnMenu(haveWallet)}</MenuItem>
-                        </Menu>
-                    </Box>
-                </div>
-                {/* <div className="topnav__right-item">
-                    <Dropdown
-                        icon="bx bx-bell"
-                        badge="12"
-                        contentData={notifications}
-                        renderItems={(item, index) =>
-                            renderNotificationItem(item, index)
-                        }
-                        renderFooter={() => <Link to="/">View All</Link>}
-                    />
-                </div> */}
+  useEffect(() => {
+    console.log(haveWallet);
+  }, [haveWallet]);
+
+  const usericon = {
+    fontSize: 37,
+    color: "#dbd5d5",
+  };
+  function returnMenu(haveWallet) {
+    switch (haveWallet) {
+      case "pass":
+        return (
+          <Password
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></Password>
+        );
+      case "forgot":
+        return (
+          <ForgotPwd
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></ForgotPwd>
+        );
+      case "wallet":
+        return (
+          <NewWallet
+            haveWallet={haveWallet}
+            sethaveWallet={sethaveWallet}
+          ></NewWallet>
+        );
+      case "pwd":
+        return (
+          <Pwd haveWallet={haveWallet} sethaveWallet={sethaveWallet}></Pwd>
+        );
+      default:
+    }
+  }
+
+  return (
+    <div className="topnav">
+      <div className="topnav__search">
+        <input type="text" placeholder="Search here..." />
+        <i className="bx bx-search"></i>
+      </div>
+      <div className="topnav__right">
+        <Toggle
+          onChange={(e) => {
+            setToggled(e.target.checked);
+          }}
+        />
+        <p>The switch is {toggled ? "on" : "off"}.</p>
+      </div>
+      <div>{address}</div>
+      <div className="topnav__right">
+        <div className="topnav__right-item">
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+                <i class="bx bx-user" style={usericon} />
+              </Button>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={AnchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(AnchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem>{returnMenu(haveWallet)}</MenuItem>
+            </Menu>
+          </Box>
+        </div>
+        {/* 
+        <div className="topnav__right-item">
+          <Dropdown
+            icon="bx bx-bell"
+            badge="12"
+            contentData={notifications}
+            renderItems={(item, index) => renderNotificationItem(item, index)}
+            renderFooter={() => <Link to="/">View All</Link>}
+          />
+        </div> */}
 
                 <div className="topnav__right-item">
                     <ThemeMenu />

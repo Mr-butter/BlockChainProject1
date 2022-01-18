@@ -61,30 +61,30 @@ const ForgotPwd = (props) => {
   const btnstyle = { margin: "20px 5px" };
 
   const [WalletPwdFromUser, setWalletPwdFromUser] = useState("");
+  const [MnemonicFromUser, setMnemonicFromUser] = useState("");
 
   function getWalletPwdFromUser(event) {
     setWalletPwdFromUser(event.currentTarget.value);
   }
+  function getMnemonicFromUser(event) {
+    setMnemonicFromUser(event.currentTarget.value);
+  }
 
-  function getWallet() {
-    // setWalletPwdFromUser(event.currentTarget.value);
-    console.log(WalletPwdFromUser);
-
-    const loglevel = localStorage.getItem("loglevel");
-    console.log("로컬스토리지 client 확인 : ", loglevel);
-
-    const dec = decryption(loglevel);
-    console.log(dec);
-
+  function restoreWallet() {
     axios
-      .post("/wallet/getWallet", {
+      .post("/wallet/restoreWallet", {
         password: WalletPwdFromUser,
-        keystore: loglevel,
-        decryption: dec,
+        mnemonic: MnemonicFromUser,
       })
       .then((res) => {
         const data = res.data;
-        console.log("받은 데이터 확인 : ", data);
+        console.log(data.keystore);
+
+        const enc = encryption(data.keystore);
+
+        localStorage.setItem("loglevel", enc);
+
+        decryption(enc);
       });
   }
 
@@ -97,11 +97,11 @@ const ForgotPwd = (props) => {
           </Avatar>
           <br />
           <h2>비밀복구 구문으로</h2>
-          <h2>비밀번호 찾기</h2>
+          <h2>내 지갑 찾기</h2>
         </Grid>
         <TextField
-          onChange={getWalletPwdFromUser}
-          value={WalletPwdFromUser}
+          onChange={getMnemonicFromUser}
+          value={MnemonicFromUser}
           label="Secret Key(비밀구문)"
           placeholder="지갑 비밀 복구 구문 입력"
           fullwidth
@@ -110,8 +110,6 @@ const ForgotPwd = (props) => {
         />
         <br />
         <TextField
-          onChange={getWalletPwdFromUser}
-          value={WalletPwdFromUser}
           label="새 암호"
           placeholder="Enter password"
           fullwidth
@@ -130,7 +128,7 @@ const ForgotPwd = (props) => {
         />
         <br />
         <Button
-          onClick={getWallet}
+          onClick={restoreWallet}
           href="#"
           type="submit"
           color="gold"
