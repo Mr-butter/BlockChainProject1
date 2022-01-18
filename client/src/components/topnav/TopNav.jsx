@@ -118,10 +118,6 @@ const Topnav = (props) => {
         console.log(haveWallet);
     }, [haveWallet]);
 
-    // const usericon = {
-    //   fontSize: 37,
-    //   color: "#dbd5d5",
-    // };
     function returnMenu(haveWallet) {
         switch (haveWallet) {
             case "pass":
@@ -176,7 +172,7 @@ const Topnav = (props) => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
-                                <i class="bx bx-user" />
+                                <i class="bx bx-user" style={usericon} />
                             </Button>
                         </Tooltip>
                         <Menu
