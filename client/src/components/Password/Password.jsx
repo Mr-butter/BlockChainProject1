@@ -60,37 +60,32 @@ const Password = (props) => {
     }
 
     function getWallet(props) {
-        // setWalletPwdFromUser(event.currentTarget.value);
-        console.log(WalletPwdFromUser);
-
-        const loglevel = localStorage.getItem("loglevel");
-        console.log("로컬스토리지 client 확인 : ", loglevel);
-
-        const dec = decryption(loglevel);
-        console.log(dec);
-
-        let dataToSubmit = {
-            password: WalletPwdFromUser,
-            keystore: loglevel,
-            decryption: dec,
-        };
-
-        // axios.post(`${serverUrl}/login`, dataToSubmit);
-
-        dispatch(loginUser(dataToSubmit)).then((res) => {
-            if (res.payload.isAuth) {
-                localStorage.setItem("login", "true");
-                dispatch(auth());
-                console.log("로그인되라라라");
-                console.log(props.history);
-                console.log(history);
-                history.push("/");
-                props.handleMenuClose();
-            } else {
-                localStorage.setItem("login", "false");
-                console.log("로그인 실패");
-            }
-        });
+        if (localStorage.getItem("loglevel") === null) {
+            alert("지갑을 먼저 생성하세요");
+        } else {
+            const loglevel = localStorage.getItem("loglevel");
+            const dec = decryption(loglevel);
+            let dataToSubmit = {
+                password: WalletPwdFromUser,
+                keystore: loglevel,
+                decryption: dec,
+            };
+            dispatch(loginUser(dataToSubmit));
+            // dispatch(loginUser(dataToSubmit)).then((res) => {
+            //     if (res.payload.isAuth) {
+            //         localStorage.setItem("login", "true");
+            //         dispatch(auth());
+            //         console.log("로그인되라라라");
+            //         console.log(props.history);
+            //         console.log(history);
+            //         history.push("/");
+            //         props.handleMenuClose();
+            //     } else {
+            //         localStorage.setItem("login", "false");
+            //         console.log("로그인 실패");
+            //     }
+            // });
+        }
     }
 
     return (

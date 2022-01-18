@@ -328,8 +328,6 @@ function isValidChain(newBlocks) {
     if (JSON.stringify(newBlocks[0]) !== JSON.stringify(Blocks[0])) {
         return false;
     }
-    console.log("반응보자");
-    console.log(newBlocks.length);
     var tempBlocks = [newBlocks[0]];
     for (var i = 1; i < newBlocks.length; i++) {
         if (isValidNewBlock(newBlocks[i], tempBlocks[i - 1])) {

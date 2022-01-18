@@ -9,10 +9,9 @@ const serverPort = parseInt(window.location.port) + 2000;
 const serverUrl = `http://127.0.0.1:${serverPort}`;
 
 export async function loginUser(dataToSubmit) {
+    console.log("들어오나");
     const data = await axios
-        .post(`${serverUrl}/login`, dataToSubmit, {
-            withCredentials: true,
-        })
+        .post(`${serverUrl}/login`, dataToSubmit)
         .then((res) => res.data);
     return {
         type: LOGIN_USER,

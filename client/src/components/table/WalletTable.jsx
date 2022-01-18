@@ -33,6 +33,8 @@ const WalletTable = () => {
     }
 
     const decStr = JSON.parse(decryption(localStorage.getItem("loglevel")));
+    console.log("decStr");
+    console.log(decStr);
     const keystore = new ligthWallet.keystore.deserialize(decStr);
     const address = keystore.getAddresses();
 

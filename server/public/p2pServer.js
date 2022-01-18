@@ -159,9 +159,9 @@ function initErrorHandler(ws) {
 }
 
 function closeConnection(ws) {
-    console.log("접속종료");
     console.log(`Connection close ${ws.url}`);
     sockets.splice(sockets.indexOf(ws), 1);
+    connectToPeer(6001);
 }
 
 // parentPort.on("message", (message) => {

@@ -3,13 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import "./topnav.css";
 
-import { Link } from "react-router-dom";
-
-import Dropdown from "../dropdown/Dropdown";
-
 import ThemeMenu from "../themeMenu/ThemeMenu";
-
-import notifications from "../../assets/JsonData/notification.json";
 
 import Password from "../Password/Password";
 import NewWallet from "../walletModal/NewWallet";
@@ -21,28 +15,9 @@ import Tooltip from "@mui/material/Tooltip";
 
 import Toggle from "./Toggle";
 
-const renderNotificationItem = (item, index) => (
-    <div className="notification-item" key={index}>
-        <i className={item.icon}></i>
-        <span>{item.content}</span>
-    </div>
-);
-
 const Topnav = (props) => {
     const loginInfo = useSelector((state) => state.user);
-    // const islogged = loginInfo.login;
     const address = loginInfo.wallet;
-    // console.log(islogged, address);
-    // function userbutton() {
-    //   if (islogged) {
-    //     return (
-    //       <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
-    //         <i class="bx bx-user" style={usericon} />
-    //       </Button>
-    //     );
-    //   }
-    // }
-
     const p2pport = parseInt(window.location.port) + 3000;
     const [toggled, setToggled] = useState(false);
 
@@ -87,7 +62,7 @@ const Topnav = (props) => {
                     <Password
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
-                        handleMenuClose={handleMenuClose}
+                        setAnchorEl={setAnchorEl}
                     ></Password>
                 );
             case "forgot":
@@ -95,7 +70,7 @@ const Topnav = (props) => {
                     <ForgotPwd
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
-                        handleMenuClose={handleMenuClose}
+                        setAnchorEl={setAnchorEl}
                     ></ForgotPwd>
                 );
             case "wallet":
@@ -103,7 +78,7 @@ const Topnav = (props) => {
                     <NewWallet
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
-                        handleMenuClose={handleMenuClose}
+                        setAnchorEl={setAnchorEl}
                     ></NewWallet>
                 );
             case "pwd":
@@ -111,45 +86,7 @@ const Topnav = (props) => {
                     <Pwd
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
-                        handleMenuClose={handleMenuClose}
-                    ></Pwd>
-                );
-            default:
-        }
-    }
-
-    useEffect(() => {
-        console.log(haveWallet);
-    }, [haveWallet]);
-
-    function returnMenu(haveWallet) {
-        switch (haveWallet) {
-            case "pass":
-                return (
-                    <Password
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></Password>
-                );
-            case "forgot":
-                return (
-                    <ForgotPwd
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></ForgotPwd>
-                );
-            case "wallet":
-                return (
-                    <NewWallet
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
-                    ></NewWallet>
-                );
-            case "pwd":
-                return (
-                    <Pwd
-                        haveWallet={haveWallet}
-                        sethaveWallet={sethaveWallet}
+                        setAnchorEl={setAnchorEl}
                     ></Pwd>
                 );
             default:
@@ -199,17 +136,6 @@ const Topnav = (props) => {
                         </Menu>
                     </Box>
                 </div>
-                {/* 
-        <div className="topnav__right-item">
-          <Dropdown
-            icon="bx bx-bell"
-            badge="12"
-            contentData={notifications}
-            renderItems={(item, index) => renderNotificationItem(item, index)}
-            renderFooter={() => <Link to="/">View All</Link>}
-          />
-        </div> */}
-
                 <div className="topnav__right-item">
                     <ThemeMenu />
                 </div>
