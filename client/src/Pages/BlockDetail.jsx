@@ -93,11 +93,11 @@ const BlockDetail = (props) => {
       JSON.stringify(blockDifficulty);
     document.getElementById("blocktNonce").innerText =
       JSON.stringify(blocktNonce);
-    document.getElementById("blocktData").innerText =
-      JSON.stringify(blocktData);
+    // document.getElementById("blocktData").innerText =
+    //   JSON.stringify(blocktData);
   }, [socketMessage]);
 
-  // const blockBox = [];
+  const blockBox = [];
   // blockBox[0] = JSON.stringify(blockIndex);
 
   // blockBox.push(blockIndex);
@@ -122,7 +122,7 @@ const BlockDetail = (props) => {
       "blockTimestamp",
       "blockDifficulty",
       "blocktNonce",
-      "blocktData",
+      // "blocktData",
     ],
     // body: [blockBox],
   };
@@ -138,7 +138,7 @@ const BlockDetail = (props) => {
       <td>{item.time}</td>
       <td>{item.diffi}</td>
       <td>{item.nonce}</td>
-      <td>{item.data}</td>
+      {/* <td>{item.data}</td> */}
     </tr>;
   };
 
@@ -181,7 +181,7 @@ const BlockDetail = (props) => {
                   {/* <div>blocktNonce</div> */}
                   <td id="blocktNonce"></td>
                   {/* <div>blocktData</div> */}
-                  <td id="blocktData"></td>
+                  {/* <td id="blocktData"></td> */}
                 </tbody>
               </div>
             </div>
