@@ -2,9 +2,6 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
-const { isMainThread, Worker, parentPort } = require("worker_threads");
-const { WebSocket } = require("ws");
-const p2pServer_func = require("./p2pServer");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -45,7 +42,7 @@ function createGenesisBlock() {
     const version = getVersion();
     const index = 0;
     const previousHash = "0".repeat(64);
-    const timestamp = Math.round(new Date().getTime() / 1000);
+    const timestamp = 1231006505;
 
     const body = [
         "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks",
@@ -153,7 +150,7 @@ function nextBlock(bodyData) {
 
 function replaceChain(newBlocks) {
     const { broadcast, responseLatestMsg } = require("./p2pServer");
-
+    console.log(isValidChain(newBlocks));
     if (isValidChain(newBlocks)) {
         if (
             newBlocks.length > Blocks.length ||
@@ -326,10 +323,13 @@ function isValidTimestamp(newBlock, previousBlock) {
 }
 
 function isValidChain(newBlocks) {
-    if (JSON.stringify(newBlocsk[0]) !== JSON.stringify(Blocks[0])) {
+    console.log(JSON.stringify(newBlocks[0]));
+    console.log(JSON.stringify(Blocks[0]));
+    if (JSON.stringify(newBlocks[0]) !== JSON.stringify(Blocks[0])) {
         return false;
     }
-
+    console.log("반응보자");
+    console.log(newBlocks.length);
     var tempBlocks = [newBlocks[0]];
     for (var i = 1; i < newBlocks.length; i++) {
         if (isValidNewBlock(newBlocks[i], tempBlocks[i - 1])) {
@@ -341,82 +341,53 @@ function isValidChain(newBlocks) {
     return true;
 }
 //////////////////////////////////////임의거래장부
-let transectionArry = [];
+// let transectionArry = [];
 
-setInterval(() => {
-    const transection = { addTransection: parseInt(Math.random() * 1000) };
-    transectionArry.push(transection);
-}, Math.random() * 10000);
+// setInterval(() => {
+//     const transection = { addTransection: parseInt(Math.random() * 1000) };
+//     transectionArry.push(transection);
+// }, Math.random() * 1000);
 //////////////////////////////////////
 
-function addBlock() {
-    const newBlock = nextBlock(transectionArry);
+// const newBlock = nextBlock(["transectionArry"]);
+function addBlock(newBlock) {
     if (isValidNewBlock(newBlock, getLastBlock())) {
-        transectionArry = [];
+        // transectionArry = [];
         Blocks.push(newBlock);
         return newBlock;
     }
     return null;
 }
 
-function testminning(message) {
-    if (isMainThread) {
-        console.log("메인에서 응답" + message);
-        const worker = new Worker(__filename);
-        // worker.on("message", (message) => {
-        //     console.log(message);
-        // });
-        worker.on("exit", () => {
-            console.log("워커종료");
-        });
-        worker.postMessage(message);
-    } else {
-        parentPort.on("message", (message) => {
-            switch (message) {
-                case "on":
-                    const p2pPort = p2pServer_func.getSockets().length + 6000;
-                    p2pServer_func.initP2PServer(p2pPort);
-                    p2pServer_func.connectToPeer(`ws://localhost:${p2pPort}`);
+const p2pServer_func = require("./p2pServer");
+function minning(message) {
+    console.log("들어가니?");
+    addBlock(nextBlock(["bodyData"]));
+    // switch (message) {
+    //     case "on":
+    //         // setInterval(() => addBlock(), 1000);
+    //         return p2pServer_func.connectToPeer(6001);
+    //     case "block":
+    //         return addBlock(nextBlock(["bodyData"]));
+    //     case "off":
+    //         return;
 
-                    setInterval(() => addBlock());
-                    return;
-                case "off":
-                    console.log("워커에서 응답" + message);
-                    parentPort.close();
-                    return;
-                default:
-                    console.log("디폴트 메시지");
-                    return;
-            }
-        });
-    }
+    //     default:
+    //         return;
+    // }
 }
-testminning();
 
-// const worker = new Worker(__filename);
-// if (isMainThread) {
-//     worker.on("message", (message) => {
-//         console.log(message);
-//     });
-//     worker.on("exit", () => {
-//         console.log("워커종료");
-//     });
-// } else {
-//     parentPort.on("message", (message) => {
-//         switch (message) {
-//             case "on":
-//                 console.log("워커에서 응답" + message);
-//                 setInterval(() => addBlock());
-//                 return;
-//             case "off":
-//                 console.log("워커에서 응답" + message);
-//                 parentPort.close();
-//                 return;
-//             default:
-//                 console.log("디폴트 메시지");
-//                 return;
-//         }
-//     });
+// function minning(message) {
+//     switch (message) {
+//         case "on":
+//             setInterval(() => addBlock(), 1000);
+//             break;
+//         case "off":
+//             return process.exit();
+
+//         default:
+//             break;
+//     }
 // }
 
 module.exports = {
@@ -430,5 +401,5 @@ module.exports = {
     hexToBinary,
     hashMatchesDifficulty,
     replaceChain,
-    testminning,
+    minning,
 };

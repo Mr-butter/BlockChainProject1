@@ -85,12 +85,15 @@ input:focus {
 
 .page-header {
   margin-bottom: 40px;
+  margin-left: 20px;
   text-transform: capitalize;
   z-index: 1;
 }
 
 .card {
-  padding: 30px;
+  width: 720px;
+  padding: 30px 40px;
+  /* margin-left: 20px; */
   margin-bottom: 30px;
   background-color: var(--main-bg);
   box-shadow: var(--box-shadow);
@@ -104,7 +107,7 @@ input:focus {
 }
 
 .card.full-height {
-  height: calc(100% - 80px);
+  height: calc(100%);
   z-index: 1;
 }
 

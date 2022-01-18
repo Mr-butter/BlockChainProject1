@@ -8,11 +8,12 @@ import Sidebar from "../sidebar/Sidebar";
 import TopNav from "../topnav/TopNav";
 import Routes from "../Routes";
 
-import { BrowserRouter, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
 import ThemeAction from "../../redux/actions/ThemeAction";
+import { auth } from "../../redux/actions/index";
 
 const Layout = () => {
   const themeReducer = useSelector((state) => state.ThemeReducer);
@@ -24,27 +25,28 @@ const Layout = () => {
 
     const colorClass = localStorage.getItem("colorMode", "theme-mode-light");
 
-    dispatch(ThemeAction.setMode(themeClass));
+    // const loginClass = localStorage.getItem("login", "true");
+    // console.log(loginClass);
 
+    dispatch(ThemeAction.setMode(themeClass));
     dispatch(ThemeAction.setColor(colorClass));
+    dispatch(auth());
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
-      <Route
-        render={(props) => (
-          <div className={`layout ${themeReducer.mode} ${themeReducer.color}`}>
-            <Sidebar {...props} />
-            <div className="layout__content">
-              <TopNav />
-              <div className="layout__content-main">
-                <Routes />
-              </div>
+    <Route
+      render={(props) => (
+        <div className={`layout ${themeReducer.mode} ${themeReducer.color}`}>
+          <Sidebar {...props} />
+          <div className="layout__content">
+            <TopNav />
+            <div className="layout__content-main">
+              <Routes />
             </div>
           </div>
-        )}
-      />
-    </BrowserRouter>
+        </div>
+      )}
+    />
   );
 };
 

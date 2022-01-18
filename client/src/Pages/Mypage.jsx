@@ -8,10 +8,10 @@ import WalletTable from "../components/table/WalletTable";
 // import ModalStyles from "../walletModal/ModalStyles";
 
 const Container = styled.div`
-display: flex;
-justify-content; center;
-align-items: center;
-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;
 
 const Button = styled.button`
@@ -39,15 +39,16 @@ function Mypage(props) {
   //   }
   return (
     <Container>
-      <div className="table-wrapper">
+      <div className="table-wrapper" style={{ marginBottom: "200px" }}>
         <h2>My Wallet</h2>
+        <br />
         <div>
-          <div className="col-8">
-            <div className="card">
+          <div className="col-8" style={{ width: "1100px" }}>
+            <div className="card" style={{ width: "900px" }}>
               <div className="card__header">
                 <h3>나만의 은행을 이용하세요.</h3>
               </div>
-              <div className="card__body">
+              <div className="card__body" style={{ width: "500px" }}>
                 <WalletTable />
               </div>
               <div className="card__footer"></div>

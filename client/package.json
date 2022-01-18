@@ -53,10 +53,10 @@
     "ws": "^8.4.0"
   },
   "scripts": {
+    "client1": "set PORT=3001 && react-scripts start",
+    "client2": "set PORT=3002 && react-scripts start",
+    "client3": "set PORT=3003 && react-scripts start",
     "start": "react-scripts start",
-    "server1": "set PORT=3000 && react-scripts start",
-    "server2": "set PORT=3001 && react-scripts start",
-    "server3": "set PORT=3002 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -79,7 +79,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:5000/",
   "devDependencies": {
     "redux-logger": "^3.0.6"
   }

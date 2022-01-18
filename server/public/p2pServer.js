@@ -1,34 +1,23 @@
-const port = process.env.PORT || "6001";
+const p2pport = process.env.P2P_PORT || "6001";
 const { WebSocket } = require("ws");
-const chainedBlock_Func = require("./chainedBlock");
-const { isMainThread, Worker, parentPort } = require("worker_threads");
 
 function initP2PServer(port) {
     const p2pserver = new WebSocket.Server({ port: port });
     p2pserver.on("connection", (ws) => {
         initConnection(ws);
+        console.log(`${port}번 포트 웹소켓 서버에 접속하셨습니다.`);
     });
-    console.log(`웹소켓 서버 포트 : ${port}.`);
+    console.log(`${port}번 포트로 웹소켓 서버 생성되었습니다.`);
 }
-// initP2PServer(port);
-// connectToPeer("ws://localhost:6001");
 
-// function testMinning(onoFF) {
-//     const peer = `ws://localhost:${port}`;
-//     const ws = new WebSocket(peer);
-//     let minningSwitch = onoFF === "on" ? true : false;
-//     console.log(minningSwitch);
-//     ws.on("open", () => {
-//         console.log("접속실행");
-//         initConnection(ws);
-//         while (minningSwitch) {
-//             chainedBlock_Func.addBlock();
-//         }
-//     });
-//     ws.on("error", () => {
-//         console.log("connection failed");
-//     });
-// }
+function initHttpP2PServer(server, port) {
+    const p2pserver = new WebSocket.Server({ server });
+    p2pserver.on("connection", (ws) => {
+        // initConnection(ws);
+        console.log(`${port}번 포트 웹소켓 서버에 접속하셨습니다.`);
+    });
+    console.log(`${port}번 포트로 웹소켓 서버 생성되었습니다.`);
+}
 
 let sockets = [];
 
@@ -57,14 +46,18 @@ function broadcast(message) {
 }
 ///////////////////////////////////////////////////////////
 
-function connectToPeer(peer) {
+function connectToPeer(port) {
+    const peer = `ws://localhost:${port}`;
     const ws = new WebSocket(peer);
     ws.on("open", () => {
-        console.log("웹소켓 접속");
-        // initConnection(ws);
+        console.log("피어연결완료");
+        initConnection(ws);
     });
     ws.on("error", () => {
-        console.log("connection failed");
+        console.log("피어연결실패");
+        console.log("웹소켓 서버를 새로 생성합니다.");
+        initP2PServer(port);
+        connectToPeer(port);
     });
 }
 
@@ -94,6 +87,7 @@ function initMessageHandler(ws) {
 }
 
 function responseLatestMsg() {
+    const chainedBlock_Func = require("./chainedBlock");
     return {
         type: MessageType.RESPONSE_BLOCKCHAIN,
         data: JSON.stringify([chainedBlock_Func.getLastBlock()]),
@@ -101,19 +95,14 @@ function responseLatestMsg() {
 }
 
 function responseAllChainMsg() {
+    const chainedBlock_Func = require("./chainedBlock");
     return {
         type: MessageType.RESPONSE_BLOCKCHAIN,
         data: JSON.stringify(chainedBlock_Func.getBlocks()),
     };
 }
-function startMinningMsg() {
-    return {
-        type: MessageType.START_MINNING,
-        data: true,
-    };
-}
-
 function handleBlockChainResponse(message) {
+    const chainedBlock_Func = require("./chainedBlock");
     const receiveBlocks = JSON.parse(message.data);
     const latestReceiveBlock = receiveBlocks[receiveBlocks.length - 1];
     const latesMyBlock = chainedBlock_Func.getLastBlock();
@@ -121,11 +110,13 @@ function handleBlockChainResponse(message) {
     // 데이터로 받은 블럭 중에 마지막 블럭의 인덱스가
     // 내가 보유 중인 마지막 블럭의 인덱스보다 클 때 / 작을 때
     if (latestReceiveBlock.header.index > latesMyBlock.header.index) {
+        console.log("//////////////////////////////////////////////////");
         // 받은 마지막 블록의 이전 해시값이 내 마지막 블럭일 때
         if (
-            createHash(latesMyBlock) === latestReceiveBlock.header.previousHash
+            chainedBlock_Func.createHash(latesMyBlock) ===
+            latestReceiveBlock.header.previousHash
         ) {
-            if (addBlock(latestReceiveBlock)) {
+            if (chainedBlock_Func.addBlock(latestReceiveBlock)) {
                 broadcast(responseLatestMsg());
             } else {
                 console.log("Invalid Block!!");
@@ -174,24 +165,28 @@ function closeConnection(ws) {
 }
 
 // parentPort.on("message", (message) => {
+//     const chainedBlock_func = require("./chainedBlock");
 //     switch (message) {
 //         case "on":
-//             console.log("워커에서 응답" + message);
-//             setInterval(() => chainedBlock_Func.addBlock());
+//             connectToPeer(6001);
+//             setInterval(() => chainedBlock_func.addBlock(), 1000);
+//             break;
+//         case "block":
+//             chainedBlock_func.addBlock();
 //             return;
 //         case "off":
-//             console.log("워커에서 응답" + message);
 //             parentPort.close();
 //             return;
+
 //         default:
-//             console.log("디폴트 메시지");
-//             return;
+//             break;
 //     }
 // });
 
 module.exports = {
     WebSocket,
     initP2PServer,
+    initHttpP2PServer,
     connectToPeer,
     initMessageHandler,
     getSockets,
