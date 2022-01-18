@@ -165,7 +165,7 @@ const Dashboard = () => {
                             }
                             series={chartOptions.series}
                             type="line"
-                            height="100%"
+                            height="150%"
                         />
                     </div>
                 </div>
