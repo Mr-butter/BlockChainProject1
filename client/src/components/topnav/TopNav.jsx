@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import "./topnav.css";
 
@@ -28,6 +29,20 @@ const renderNotificationItem = (item, index) => (
 );
 
 const Topnav = (props) => {
+  // const loginInfo = useSelector((state) => state.user);
+  // const islogged = loginInfo.login;
+  // const address = loginInfo.wallet;
+  // console.log(islogged, address);
+  // function userbutton() {
+  //   if (islogged) {
+  //     return (
+  //       <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+  //         <i class="bx bx-user" style={usericon} />
+  //       </Button>
+  //     );
+  //   }
+  // }
+
   const p2pport = parseInt(window.location.port) + 3000;
   const [toggled, setToggled] = useState(false);
 
@@ -113,7 +128,7 @@ const Topnav = (props) => {
         />
         <p>The switch is {toggled ? "on" : "off"}.</p>
       </div>
-      <div>user로그인시 주소가 뜰 자리</div>
+      {/* <div>{islogged ? address : ""}</div> */}
       <div className="topnav__right">
         <div className="topnav__right-item">
           <Box sx={{ flexGrow: 0 }}>

@@ -102,40 +102,36 @@ const Password = (props) => {
           </Avatar>
           <h2>My 간편 비밀번호</h2>
         </Grid>
+        <br />
         <TextField
+          type={"password"}
           onChange={getWalletPwdFromUser}
           value={WalletPwdFromUser}
           label="password"
           placeholder="Enter password"
           fullwidth
           required
-          style={{ width: "250px", marginTop: "15px" }}
+          style={{ width: "250px", marginTop: "15px", marginLeft: "0.4rem" }}
         />
         <br />
-        <FormControlLabel
-          control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
-        />
         <br />
         <Button
           onClick={getWallet}
-          href="#"
           type="submit"
-          color="gold"
           style={btnstyle}
           variant="contained"
           fullWidth
         >
           SIGN IN
         </Button>
-        <Typography>
-          <Link onClick={() => props.sethaveWallet("forgot")}>
+        <Typography align={"center"}>
+          <Link onClick={() => props.sethaveWallet("forgot")} color="black">
             Forgot password ?
           </Link>
         </Typography>
         <br />
         {/* Create New Wallet */}
-        <Typography>
+        <Typography align={"center"}>
           Do you have an account ?
           <br />
           <ThemeProvider theme={theme}>
