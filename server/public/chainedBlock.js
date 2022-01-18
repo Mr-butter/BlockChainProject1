@@ -354,10 +354,18 @@ function addBlock(newBlock) {
     if (isValidNewBlock(newBlock, getLastBlock())) {
         // transectionArry = [];
         Blocks.push(newBlock);
-        return newBlock;
+        return true;
     }
-    return null;
+    return false;
 }
+// function addBlock(newBlock) {
+//     if (isValidNewBlock(newBlock, getLastBlock())) {
+//         // transectionArry = [];
+//         Blocks.push(newBlock);
+//         return newBlock;
+//     }
+//     return false;
+// }
 
 const p2pServer_func = require("./p2pServer");
 function minning(message) {

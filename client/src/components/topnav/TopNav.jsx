@@ -87,6 +87,7 @@ const Topnav = (props) => {
                     <Password
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
+                        handleMenuClose={handleMenuClose}
                     ></Password>
                 );
             case "forgot":
@@ -94,6 +95,7 @@ const Topnav = (props) => {
                     <ForgotPwd
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
+                        handleMenuClose={handleMenuClose}
                     ></ForgotPwd>
                 );
             case "wallet":
@@ -101,6 +103,7 @@ const Topnav = (props) => {
                     <NewWallet
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
+                        handleMenuClose={handleMenuClose}
                     ></NewWallet>
                 );
             case "pwd":
@@ -108,6 +111,7 @@ const Topnav = (props) => {
                     <Pwd
                         haveWallet={haveWallet}
                         sethaveWallet={sethaveWallet}
+                        handleMenuClose={handleMenuClose}
                     ></Pwd>
                 );
             default:
