@@ -2,6 +2,7 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
+const BlockChainDB = require("../models/blocks");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -295,7 +296,7 @@ function isValidNewBlock(newBlock, previousBlock) {
       "0".repeat(64) !== newBlock.header.merkleRoot) ||
     (newBlock.body.length !== 0 &&
       merkle("sha256").sync(newBlock.body).root() !==
-        newBlock.header.merkleRoot)
+      newBlock.header.merkleRoot)
   ) {
     console.log("Invalid merkleRoot");
     return false;
@@ -347,12 +348,52 @@ function isValidChain(newBlocks) {
 // }, Math.random() * 1000);
 //////////////////////////////////////
 
-// const newBlock = nextBlock(["transectionArry"]);
-function addBlock(newBlock) {
+
+async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-    // transectionArry = [];
+
     Blocks.push(newBlock);
-    return true;
+    const checkGene = await BlockChainDB.findAll({
+      where: { index: 0 },
+    });
+
+    if (checkGene[0] === undefined) {
+      BlockChainDB.create({
+        index: "0",
+        version: "0.0.1",
+        previousHash:
+          "0000000000000000000000000000000000000000000000000000000000000000",
+        timestamp: "1231006505",
+        merkleRoot:
+          "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
+        difficulty: "0",
+        nonce: "0",
+        body: `["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]`,
+      });
+      BlockChainDB.create({
+        index: JSON.stringify(newBlock.header.index),
+        version: newBlock.header.version,
+        previousHash: newBlock.header.previousHash,
+        timestamp: JSON.stringify(newBlock.header.timestamp),
+        merkleRoot: newBlock.header.merkleRoot,
+        difficulty: JSON.stringify(newBlock.header.difficulty),
+        nonce: JSON.stringify(newBlock.header.nonce),
+        body: JSON.stringify(newBlock.body),
+      });
+      return true;
+    } else {
+      BlockChainDB.create({
+        index: JSON.stringify(newBlock.header.index),
+        version: newBlock.header.version,
+        previousHash: newBlock.header.previousHash,
+        timestamp: JSON.stringify(newBlock.header.timestamp),
+        merkleRoot: newBlock.header.merkleRoot,
+        difficulty: JSON.stringify(newBlock.header.difficulty),
+        nonce: JSON.stringify(newBlock.header.nonce),
+        body: JSON.stringify(newBlock.body),
+      });
+      return true;
+    }
   }
   return false;
 }

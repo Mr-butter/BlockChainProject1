@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 
 /* 사용자 정보 DB */
-module.exports = class BlcokChainDB extends Sequelize.Model {
+module.exports = class BlockChainDB extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -11,28 +11,46 @@ module.exports = class BlcokChainDB extends Sequelize.Model {
                     primaryKey: true,
                     autoIncrement: true,
                     },
-                    
                 */
-        CONUM: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          primaryKey: true,
+        index: {
+          type: Sequelize.STRING(),
           allowNull: false,
-          autoIncrement: true,
         },
-
-        BlockChain: {
-          type: Sequelize.JSON,
+        version: {
+          type: Sequelize.STRING(15),
           allowNull: false,
-          // defaultValue: `{"header":{"version":"0.0.1","index":0,"previousHash":"0000000000000000000000000000000000000000000000000000000000000000","timestamp":1231006505,"merkleRoot":"A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098","difficulty":0,"nonce":0},"body":["The Times 03/Jan/2009 Chancellor
-          // on brink of second bailout for banks"]}`,
+        },
+        previousHash: {
+          type: Sequelize.STRING(100),
+          allowNull: false,
+        },
+        timestamp: {
+          type: Sequelize.STRING(200),
+          allowNull: false,
+        },
+        merkleRoot: {
+          type: Sequelize.STRING(200),
+          allowNull: false,
+        },
+        difficulty: {
+          type: Sequelize.STRING(200),
+          allowNull: false,
+        },
+        nonce: {
+          type: Sequelize.STRING(200),
+          allowNull: false,
+        },
+        body: {
+          type: Sequelize.STRING(200),
+          allowNull: false,
         },
       },
       {
         sequelize,
         timestamps: false,
         underscored: false,
-        modelName: "COLINK1",
-        tableName: "COLINK1",
+        modelName: "BlockChainDB",
+        tableName: "blockChainDBs",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -40,5 +58,5 @@ module.exports = class BlcokChainDB extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) { }
 };
