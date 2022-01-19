@@ -411,8 +411,7 @@ function minning(message) {
   switch (message) {
     case "on":
       p2pServer_func.connectToPeer(6001);
-      // setInterval(() => addBlock(nextBlock(["bodyData"])), 3000);
-      addBlock(nextBlock(["bodyData"]))
+      setInterval(() => addBlock(nextBlock(["bodyData"])), 3000);
       return;
     case "block":
       addBlock(nextBlock(["bodyData"]));
