@@ -365,27 +365,25 @@ async function addBlock(newBlock) {
 
     const checkcoco = [];
     //   const checkGene = await BlcokChainDB.toArray();
-    const checkGene = await BlcokChainDB.findOne({
-      where: {
-        BlockChain: `{"header":{"version":"0.0.1","index":0,"previousHash":"0000000000000000000000000000000000000000000000000000000000000000","timestamp":1231006505,"merkleRoot":"A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098","difficulty":0,"nonce":0},"body":["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]}`,
-      },
+    const checkGene = await BlcokChainDB.findAll({
+      where: { BlockChain },
     });
-    console.log(checkGene + ".//////////////////////////");
-    if (checkcoco.length === 0) {
-      //   Blocks.push(createGenesisBlock());
+    console.log(checkGene);
+
+    if (checkGene === null) {
+      //   BlocksBlcokChainDB.push(createGenesisBlock());
       BlcokChainDB.create({ BlockChain: createGenesisBlock() });
       Blocks.push(newBlock);
+      console.log("null 진입");
       BlcokChainDB.create({
         BlockChain: newBlock,
       });
-      console.log("/////////////////////////");
       return true;
     } else {
       Blocks.push(newBlock);
       BlcokChainDB.create({
         BlockChain: newBlock,
       });
-      console.log("1234567890-");
       return true;
     }
   }

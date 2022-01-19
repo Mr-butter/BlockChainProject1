@@ -17,8 +17,15 @@ const BlockDetail = (props) => {
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
 
-  const [chainBlocks, setChainBlocks] = useState({});
+  const [chainBlocks, setChainBlocks] = useState([]);
   const colink = [...chainBlocks].reverse();
+  console.log(colink + "sfgkdjlrmwkgdhjgsjlk");
+
+  const connect = async () => {
+    await axios
+      .get(`http://127.0.0.1:${serverPort}/analytics`)
+      .then((req) => setChainBlocks(req.data));
+  };
 
   return (
     <div className="row">
