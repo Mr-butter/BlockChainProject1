@@ -1,83 +1,81 @@
 const express = require("express");
 const router = express.Router();
-const { keystore } = require("eth-lightwallet");
-const fs = require("fs");
-const CryptoJS = require("crypto-js");
-const UserWallet = require("../../models/userWallet");
-
-function encryption(data) {
-  const key = "aaaaaaaaaabbbbbb";
-  const iv = "aaaaaaaaaabbbbbb";
-
-  const keyutf = CryptoJS.enc.Utf8.parse(key);
-  //console.log("키유티에프:", keyutf);
-  const ivutf = CryptoJS.enc.Utf8.parse(iv);
-  //console.log("아이브이유티에프:", ivutf);
-
-  const encObj = CryptoJS.AES.encrypt(JSON.stringify(data), keyutf, {
-    iv: ivutf,
-  });
-  //console.log("key : toString(CryptoJS.enc.Utf8)" + encObj.key.toString(CryptoJS.enc.Utf8));
-  //console.log("iv : toString(CryptoJS.enc.Utf8)" + encObj.iv.toString(CryptoJS.enc.Utf8));
-  //console.log("salt : " + encObj.salt);
-  //console.log("ciphertext : " + encObj.ciphertext);
-
-  const encStr = encObj + "";
-  console.log("encStr : " + encStr);
-
-  return encStr;
-}
+const ligthWallet = require('eth-lightwallet')
+const fs = require('fs')
 
 router.post("/", async (req, res, next) => {
+  console.log(req.body);
   const password = req.body.password;
   const mnemonic = req.body.mnemonic;
-  const checkMnemonic = await UserWallet.findOne({
-    where: {
-      mnemonic: mnemonic,
-    },
-  });
-  if (checkMnemonic === null) {
-    try {
-      keystore.createVault(
-        {
-          password: password,
-          seedPhrase: mnemonic,
-          hdPathString: "m/0'/0'/0'",
-        },
-        function (err, ks) {
-          ks.keyFromPassword(password, async function (err, pwDerivedKey) {
-            if (!ks.isDerivedKeyCorrect(pwDerivedKey)) {
-              throw new Error("Incorrect derived key!");
-            }
-            ks.generateNewAddress(pwDerivedKey, 1);
-            const address = ks.getAddresses().toString();
-            const keystore = ks.serialize();
 
-            const encryptkey = encryption(keystore);
-            await UserWallet.create({
-              address: address,
-              password: password,
-              keystore: keystore,
-              mnemonic: mnemonic,
-              point: 1000,
-            });
+  // const privateKeyLocation = "routes/wallet/" + (process.env.PRIVATE_KEY || "default");
+  // const privateKeyFile = privateKeyLocation + "/wallet.json";
 
-            res.send({
-              registerSuccess: true,
-              message: "지갑생성완료",
-              encryptkey: encryptkey,
-            });
+  // function checkWalletPath() {
+  //   if (fs.existsSync(privateKeyFile)) {
+  //     console.log("기존 지갑 경로 : " + privateKeyFile);
+  //     //return { message: "기존지갑경로가 있습니다." };
+  //     return res.send(fs.readFileSync(privateKeyFile).toString())
+  //   }
+  //   if (!fs.existsSync("routes/wallet")) {
+  //     fs.mkdirSync("routes/wallet");
+  //   }
+  //   if (!fs.existsSync(privateKeyLocation)) {
+  //     fs.mkdirSync(privateKeyLocation);
+  //   }
+  // }
+
+  // function saveWallet(keystore) {
+
+  //   if (!fs.existsSync(privateKeyFile)) {
+  //     fs.writeFileSync(privateKeyFile, keystore, (err, data) => {
+  //       if (err) {
+  //         console.log('지갑생성 실패');
+  //       }
+  //       else {
+  //         console.log("새로운 지갑경로 생성 경로 : " + privateKeyFile);
+  //         return res.json({ keystore: keystore });
+  //         //return { message: "지갑이 잘 생성되었습니다." };
+  //       }
+  //     });
+  //   }
+  // }
+
+  try {
+
+    // checkWalletPath()
+
+    //새로운 lightwallet 키저장소를 생성해 주는 메서드
+    ligthWallet.keystore.createVault(
+      {
+        password: password,
+        seedPhrase: mnemonic,
+        hdPathString: "m/0'/0'/0'"
+      },
+      function (err, ks) {
+
+        ks.keyFromPassword(password, function (err, pwDerivedKey) {
+          if (!ks.isDerivedKeyCorrect(pwDerivedKey)) {
+            throw new Error("Incorrect derived key!");
+          }
+          ks.generateNewAddress(pwDerivedKey, 1);
+          const address = (ks.getAddresses()).toString();
+          const keystore = ks.serialize();
+
+          //saveWallet(keystore)
+          console.log("keystore************", keystore);
+          console.log("address*************", address);
+
+          res.send({
+            keystore: keystore,
+            address: address
           });
-        }
-      );
-    } catch (exception) {
-      console.log("NewWallet ==>>>> " + exception);
-    }
-  } else {
-    res.send({
-      registerSuccess: false,
-      message: "같은 니모닉 문구가 있습니다.",
-    });
+
+        });
+      }
+    );
+  } catch (exception) {
+    console.log("NewWallet ==>>>> " + exception);
   }
 });
 

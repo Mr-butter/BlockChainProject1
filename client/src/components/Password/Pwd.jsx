@@ -19,7 +19,7 @@ import axios from "axios";
 import { encryption } from "../../utils/encrypt";
 import { decryption } from "../../utils/decrypt";
 
-const Password = (props) => {
+const Password = () => {
     const serverPort = parseInt(window.location.port) + 2000;
     const serverUrl = `http://127.0.0.1:${serverPort}`;
     const gridStyle = {
@@ -50,23 +50,29 @@ const Password = (props) => {
         setMnemonic(decMnemonic);
     };
 
-    function newWallet(props) {
+    function newWallet() {
         const variables = {
             password: Password,
             mnemonic: Mnemonic,
         };
 
         axios.post(`${serverUrl}/wallet/newWallet`, variables).then((res) => {
-            if (res.data.registerSuccess) {
-                localStorage.setItem("loglevel", res.data.encryptkey);
-                alert(res.data.message);
-            } else {
-                alert(res.data.message);
-            }
+            // const data = res.data;
+            // console.log(data);
+
+            const keystore = res.data.keystore;
+
+            const enc = encryption(keystore);
+            console.log(enc);
+
+            localStorage.setItem("login", false);
+            localStorage.setItem("loglevel", enc);
+            localStorage.removeItem("variant");
+
+            alert("지갑이 성공적으로 생성되었습니다.");
+
+            return history.push("/");
         });
-        props.setAnchorEl(null);
-        props.sethaveWallet("pass");
-        history.push("/");
     }
     return (
         <Grid style={gridStyle}>
@@ -130,7 +136,7 @@ const Password = (props) => {
                     style={btnstyle}
                     variant="contained"
                     fullWidth
-                    onClick={() => newWallet(props)}
+                    onClick={() => newWallet()}
                 >
                     Save
                 </Button>
