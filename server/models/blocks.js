@@ -49,8 +49,8 @@ module.exports = class BlockChainDB extends Sequelize.Model {
         sequelize,
         timestamps: false,
         underscored: false,
-        modelName: "Block",
-        tableName: "blocks",
+        modelName: "BlockChainDB",
+        tableName: "blockChainDBs",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -58,5 +58,5 @@ module.exports = class BlockChainDB extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) { }
 };

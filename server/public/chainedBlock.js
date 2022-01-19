@@ -1,11 +1,8 @@
 const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
-
-const BlcokChainDB = require("../models/blocks");
 const random = require("random");
 const BlockChainDB = require("../models/blocks");
-const { stringify } = require("querystring");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -152,7 +149,7 @@ function nextBlock(bodyData) {
   }
 }
 
-async function replaceChain(newBlocks) {
+function replaceChain(newBlocks) {
   const { broadcast, responseLatestMsg } = require("./p2pServer");
   console.log(isValidChain(newBlocks));
   if (isValidChain(newBlocks)) {
@@ -162,12 +159,6 @@ async function replaceChain(newBlocks) {
     ) {
       Blocks = newBlocks;
       broadcast(responseLatestMsg());
-
-      //   BlcokChainDB.destroy({ where: {}, truncate: true });
-
-      //   for (let i = 0; i < newBlocks.length; i++) {
-      //     await BlcokChainDB.create({ BlockChian: newBlocks[i] });
-      //   }
     }
   } else {
     console.log("받은 원장에 문제가 있음");
@@ -338,8 +329,6 @@ function isValidChain(newBlocks) {
   if (JSON.stringify(newBlocks[0]) !== JSON.stringify(Blocks[0])) {
     return false;
   }
-  console.log("반응보자");
-  console.log(newBlocks.length);
   var tempBlocks = [newBlocks[0]];
   for (var i = 1; i < newBlocks.length; i++) {
     if (isValidNewBlock(newBlocks[i], tempBlocks[i - 1])) {
@@ -359,21 +348,12 @@ function isValidChain(newBlocks) {
 // }, Math.random() * 1000);
 //////////////////////////////////////
 
-// const newBlock = nextBlock(["transectionArry"]);
 async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-    // transectionArry = [];
     Blocks.push(newBlock);
-
-    console.log(Blocks);
-
-    console.log(typeof Blocks + "flkdjslgrsfsd");
-
-    const checkGene = await BlcokChainDB.findAll({
+    const checkGene = await BlockChainDB.findAll({
       where: { index: 0 },
     });
-    console.log(checkGene);
-    console.log(checkGene[0]);
 
     if (checkGene[0] === undefined) {
       BlockChainDB.create({
@@ -415,33 +395,6 @@ async function addBlock(newBlock) {
   }
   return false;
 }
-// console.log("///////////////////////");
-// console.log(JSON.stringify(checkGene));
-// console.log("///////////////////////");
-// if (checkGene !== "{}") {
-//   Blocks.push(newBlock);
-//   BlcokChainDB.create({
-//     BlockChain: newBlock,
-//   });
-// } else {
-//   Blocks.push(createGenesisBlock());
-//   BlcokChainDB.create({ BlockChain: createGenesisBlock() });
-
-//   Blocks.push(newBlock);
-//   BlcokChainDB.create({
-//     BlockChain: newBlock,
-//   });
-// }
-//////////////////////////////////////////////
-// let index = [];
-// if (index.length === 0 ) {
-
-//     console.log()
-//     BlcokChainDB.create({ creatGenesisBlock() });
-// }else {BlcokChainDB.create({
-//   BlockChain: newBlock,
-// })}
-
 // function addBlock(newBlock) {
 //     if (isValidNewBlock(newBlock, getLastBlock())) {
 //         // transectionArry = [];
@@ -451,59 +404,25 @@ async function addBlock(newBlock) {
 //     return false;
 // }
 
-function dbBlockCheck(COLINK) {
-  let bc = [];
-  COLINK.forEach((blocks) => {
-    bc.push(JSON.parse(JSON.parse(blocks.data).data));
-  });
-
-  if (bc.length === 0) {
-    BlcokChainDB.create({ BlockChian: createGenesisBlock() });
-    bc.push(createGenesisBlock());
-  }
-  const CoBlock = bc[bc.length - 1];
-  const latesCoBlock = getLastBlock();
-
-  if (CoBlock.header.index < latesCoBlock.header.index) {
-    console.log(
-      "db시작전 \n" +
-        `DB 블록의 index값 ${CoBlock.header.index}\n` +
-        `내가 가지고 있는 블럭의 index 값 ${latesCoBlock.header.index}\n`
-    );
-
-    if (createHash(CoBlock) === latesCoBlock.header.previousHash) {
-      console.log(`1.db에 다음블럭 연결`);
-      BlcokChainDB.create({
-        BlockChian: latesCoBlock,
-      }).catch((err) => {
-        console.log(err);
-        throw err;
-      });
-    } else {
-      console.log(`2.db 최신화 진행`);
-      replaceChain(getBlocks()); // 전체변경함수
-    }
-  } else {
-    console.log("DB 블럭이 이미 최신화 된 상태입니다. /// The End ///");
-    Blocks = bc;
-  }
-}
-
 function minning(message) {
-  console.log("들어가니?");
-  addBlock(nextBlock(["bodyData"]));
-  // switch (message) {
-  //     case "on":
-  //         // setInterval(() => addBlock(), 1000);
-  //         return p2pServer_func.connectToPeer(6001);
-  //     case "block":
-  //         return addBlock(nextBlock(["bodyData"]));
-  //     case "off":
-  //         return;
+  const p2pServer_func = require("./p2pServer");
+  // console.log("들어가니?");
+  // addBlock(nextBlock(["bodyData"]));
+  switch (message) {
+    case "on":
+      p2pServer_func.connectToPeer(6001);
+      setInterval(() => addBlock(nextBlock(["bodyData"])), 3000);
+      return;
+    case "block":
+      addBlock(nextBlock(["bodyData"]));
+      return;
+    case "connectPeer":
+      p2pServer_func.connectToPeer(6001);
+      return;
 
-  //     default:
-  //         return;
-  // }
+    default:
+      return;
+  }
 }
 
 // function minning(message) {
@@ -531,5 +450,4 @@ module.exports = {
   hashMatchesDifficulty,
   replaceChain,
   minning,
-  dbBlockCheck,
 };
