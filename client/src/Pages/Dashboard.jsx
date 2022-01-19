@@ -61,23 +61,23 @@ const chartOptions = {
 
 const LatestBlocks = {
   head: [
-    "index",
-    "previousHash",
-    "merkleRoot",
-    "timestamp",
-    "blockDifficulty",
-    "nonce",
     "version",
+    "previousHash",
+    "timestamp",
+    "merkleRoot",
+    "difficulty",
+    "nonce",
+    "body",
   ],
   body: [
     {
-      index: "717701",
+      version: "717701",
       previousHash: "5555555",
-      merkleRoot: "sgsfsf",
-      timestamp: "1231545 bytes",
+      timestamp: "sgsfszfgdssf",
+      merkleRoot: "1231545 bytes",
       difficulty: "1231545 bytes",
       nonce: "1231545 bytes",
-      version: "dsds",
+      body: "dszdfgjgkrlwe;wlgjaiieyorklhtu9py4ojwkrlangzdfhiprkds",
     },
   ],
 };
@@ -254,41 +254,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>테스트 코드 결과</h2>
-      <div id="writefield"></div>
-      <h2>소켓 메세지</h2>
-      <div id="socket_writefield"></div>
-      ----------------------------------------------------------------------
-      <h2>소켓 메세지</h2>
       <div id="socketLog_writefield"></div>
-      {/* {socketMessageLog} */}
-      <ol>
-        <li>
-          <button id="blocks" onClick={() => block()}>
-            get blocks
-          </button>
-        </li>
-        <li>
-          <button id="inputPort" onClick={() => inputPort()}>
-            inputPort_mine
-          </button>
-        </li>
-        <li>
-          <button id="mineBlockon" onClick={() => mineBlock("on")}>
-            mineBlock(on)
-          </button>
-        </li>
-        <li>
-          <button id="version" onClick={() => version()}>
-            version
-          </button>
-        </li>
-        <li>
-          <button id="forblock" onClick={() => forblock()}>
-            forblock
-          </button>
-        </li>
-      </ol>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
         <div className="col-6">
@@ -325,24 +291,26 @@ const Dashboard = () => {
             />
           </div>
         </div>
+
         <div className="col-8">
           <div className="card-1">
             <div className="card__header">
               <h3>Latest Blocks</h3>
               <br />
               <h5>The most recently mined blocks</h5>
-              <br />
             </div>
-            <div className="card__body">
+            <br />
+            <div className="card__body" style={{ mixWidth: "1200px" }}>
               <Table
-                headData={latestOrders.header}
-                renderHead={(item, index) => renderOrderHead(item, index)}
-                bodyData={latestOrders.body}
-                renderBody={(item, index) => renderOrderBody(item, index)}
+                headData={LatestBlocks.head}
+                renderHead={(item, index) => renderCustomerHead(item, index)}
+                bodyData={LatestBlocks.body}
+                renderBody={(item, index) => renderCusomerBody(item, index)}
               />
             </div>
+            <br />
             <div className="card__footer">
-              <Link to="/">view all</Link>
+              <Link to="/analytics">view all</Link>
             </div>
           </div>
         </div>
