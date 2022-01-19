@@ -10,7 +10,7 @@ import WalletTable from "../components/table/WalletTable";
 
 const Container = styled.div`
   display: flex;
-  margin-left: 150px
+  margin-left: 150px;
   justify-content: center;
   align-items: center;
   height: 100vh;
