@@ -15,6 +15,14 @@ import ThemeAction from "../redux/actions/ThemeAction";
 
 import { Link } from "@mui/material";
 
+import Paper from "@mui/material/Paper";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+
 const chartOptions = {
   series: [
     {
@@ -113,6 +121,9 @@ const renderOrderBody = (item, index) => (
 
 const Dashboard = () => {
   const themeReducer = useSelector((state) => state.ThemeReducer.mode);
+  const [chainBlocks, setChainBlocks] = useState([]);
+  const reverse = [...chainBlocks].reverse();
+  console.log(chainBlocks);
 
   let latestOrders = {
     header: ["Hash", "Time", "Amount", "Data"],
@@ -125,7 +136,7 @@ const Dashboard = () => {
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState("");
   const [socketMessageLog, setSocketMessageLog] = useState([]);
-  // const [blockIndex, setBlockIndex] = useState("");
+  const [blockIndex, setBlockIndex] = useState("");
   // const [prevHash, setPrevHash] = useState("");
   // const [blockMerkleRoot, setblockMerkleRoot] = useState("");
   // const [blockTimestamp, setBlockTimestamp] = useState("");
@@ -169,7 +180,7 @@ const Dashboard = () => {
       setSocketMessageLog((arr) => [...arr, { reciveData }]);
       if (reciveData !== null) {
         setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-        // setBlockIndex(socketMessage.header.index);
+        setBlockIndex(socketMessage.header.index);
         // setPrevHash(socketMessage.header.previousHash);
         // setblockMerkleRoot(socketMessage.header.merkleRoot);
         // setBlockTimestamp(socketMessage.header.timestamp);
@@ -183,6 +194,12 @@ const Dashboard = () => {
     document.getElementById("socketLog_writefield").innerText =
       JSON.stringify(socketMessageLog);
   }, [socketMessageLog]);
+
+  // useEffect(() => {
+  //   (function () {
+  //     // .then((res) => setChainBlocks(res.data.allBlocks))
+  //   })();
+  // }, []);
 
   function forblock() {
     const list = JSON.parse(JSON.stringify(socketMessageLog));
@@ -202,18 +219,8 @@ const Dashboard = () => {
     }
     console.log("두번째 변환", second);
 
-    // return {
-    //   head: [
-    //     "index",
-    //     "previousHash",
-    //     "merkleRoot",
-    //     "timestamp",
-    //     "blockDifficulty",
-    //     "nonce",
-    //     "version",
-    //   ],
-    //   body: [second],
-    // };
+    setChainBlocks(second);
+    console.log("메세지....", socketMessage.header.index);
   }
 
   function block() {
@@ -325,37 +332,47 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        <div className="col-4">
-          <div className="card">
+        <div className="col-8">
+          <div className="card-1">
             <div className="card__header">
               <h3>Latest Blocks</h3>
+              <br />
               <h5>The most recently mined blocks</h5>
+              <br />
             </div>
             <div className="card__body">
-              <Table
-                headData={LatestBlocks.head}
-                renderHead={(item, index) => renderCustomerHead(item, index)}
-                bodyData={LatestBlocks.body}
-                renderBody={(item, index) => renderCusomerBody(item, index)}
-              />
-            </div>
-            <div className="card__footer">
-              <Link to="/">view all</Link>
-            </div>
-          </div>
-        </div>
-        <div className="col-8">
-          <div className="card">
-            <div className="card__header">
-              <h3>Latest Transactions</h3>
-            </div>
-            <div className="card__body">
-              <Table
-                headData={latestOrders.header}
-                renderHead={(item, index) => renderOrderHead(item, index)}
-                bodyData={latestOrders.body}
-                renderBody={(item, index) => renderOrderBody(item, index)}
-              />
+              <div className="colinkBox">
+                <Paper sx={{ width: "99%", overflow: "hidden" }}>
+                  <TableContainer sx={{ maxHeight: 800 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
+                        <TableRow>
+                          <td>version</td>
+                          <td>previousHash</td>
+                          <td>timestamp</td>
+                          <td>merkleRoot</td>
+                          <td>difficulty</td>
+                          <td>nonce</td>
+                          <td>body</td>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {reverse.map((data) => (
+                          <tr key={data.index}>
+                            <td>{data.version}</td>
+                            <td>{data.previousHash}</td>
+                            <td>{data.timestamp}</td>
+                            <td>{data.merkleRoot}</td>
+                            <td>{data.difficulty}</td>
+                            <td>{data.nonce}</td>
+                            <td>{data.body}</td>
+                          </tr>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </div>
             </div>
             <div className="card__footer">
               <Link to="/">view all</Link>

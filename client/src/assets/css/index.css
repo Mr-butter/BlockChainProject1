@@ -101,6 +101,17 @@ input:focus {
   z-index: 1;
 }
 
+.card-1 {
+  width: 1200px;
+  padding: 30px 40px;
+  /* margin-left: 20px; */
+  margin-bottom: 30px;
+  background-color: var(--main-bg);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  z-index: 1;
+}
+
 .full-height {
   height: 100%;
   z-index: 1;
