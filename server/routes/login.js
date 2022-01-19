@@ -1,47 +1,48 @@
 const express = require("express");
 const router = express.Router();
-const ligthWallet = require("eth-lightwallet");
+const { keystore } = require("eth-lightwallet");
+const CryptoJS = require("crypto-js");
+const UserWallet = require("../models/userWallet");
 
-router.post("/", function (req, res) {
-    console.log("서버에 들어오나");
-    const walletPwdFromUser = req.body.password;
-    const decryption = req.body.decryption;
-    const parsed = JSON.parse(decryption);
+function decryption(encStr) {
+  const key = "aaaaaaaaaabbbbbb";
+  const iv = "aaaaaaaaaabbbbbb";
 
-    const keystore = new ligthWallet.keystore.deserialize(parsed);
+  const keyutf = CryptoJS.enc.Utf8.parse(key);
+  const ivutf = CryptoJS.enc.Utf8.parse(iv);
 
-    const password = walletPwdFromUser.toString();
-    const address = keystore.getAddresses();
-    console.log(address);
-    console.log(password);
-    console.log(keystore);
-    res.json("안녕");
+  //CryptoJS AES 128 복호화
+  const decObj = CryptoJS.AES.decrypt(
+    { ciphertext: CryptoJS.enc.Base64.parse(encStr) },
+    keyutf,
+    { iv: ivutf }
+  );
 
-    // keystore.keyFromPassword(password, function (err, pwDerivedKey) {
-    //     if (keystore.isDerivedKeyCorrect(pwDerivedKey)) {
-    //         const seed = keystore.getSeed(pwDerivedKey);
+  const decStr = CryptoJS.enc.Utf8.stringify(decObj);
 
-    //         let data = {
-    //             isError: false,
-    //             msg: "지갑 주소 입니다.",
-    //             address: address,
-    //             isAuth: true,
-    //             seed: seed,
-    //         };
+  return decStr;
+}
 
-    //         return res.send(data);
-    //     } else {
-    //         let data = {
-    //             isError: true,
-    //             msg: "비밀번호가 달라요!",
-    //             address: "",
-    //             isAuth: false,
-    //             seed: "",
-    //         };
+router.post("/", async function (req, res) {
+  const walletPwdFromUser = req.body.password;
+  const decloglevel = JSON.parse(decryption(req.body.loglevel));
+  const checkKeystore = new keystore.deserialize(decloglevel);
+  const address = checkKeystore.getAddresses().toString();
+  const checkWallet = await UserWallet.findOne({ where: { address: address } });
 
-    //         return res.send(data);
-    //     }
-    // });
+  if (checkWallet !== null && address === checkWallet.address) {
+    let data = {
+      address: checkWallet.address,
+      isAuth: true,
+    };
+    return res.send(data);
+  } else {
+    let data = {
+      address: "",
+      isAuth: false,
+    };
+    return res.send(data);
+  }
 });
 
 module.exports = router;
