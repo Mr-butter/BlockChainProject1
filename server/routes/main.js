@@ -1,9 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const { WebSocket } = require("ws");
-const blcokChainDB = require("../models/blocks");
+const UserWallet = require("../models/userWallet");
 
-router.post("/blocks", (req, res) => {
+router.post("/blocks", async (req, res) => {
   const chainedBlock_func = require("../public/chainedBlock");
   const blocks = chainedBlock_func.getBlocks();
   res.send(blocks);
