@@ -363,16 +363,20 @@ async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
     // transectionArry = [];
     Blocks.push(newBlock);
+
+    console.log("111111111", newBlock);
+    console.log("22222222", newBlock.header);
+    console.log("3333333333", newBlock.header.version);
+
     BlockChainDB.create({
-      index: 0,
-      version: "0.0.1",
-      previousHash:
-        "0000000000000000000000000000000000000000000000000000000000000000",
-      timestamp: 1231006505,
-      merkleRoot:
-        "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
-      difficulty: 0,
-      nonce: 0,
+      index: newBlock.header.index,
+      version: newBlock.header.version,
+      // previousHash: newBlock.header.previousHash,
+      // timestamp: newBlock.header.timestamp,
+      // merkleRoot: newBlock.header.merkleRoot,
+      // difficulty: newBlock.header.difficulty,
+      // nonce: newBlock.header.nonce,
+      // body: newBlock.body,
     });
     return true;
   }
