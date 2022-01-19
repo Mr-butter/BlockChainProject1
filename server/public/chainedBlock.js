@@ -363,6 +363,7 @@ async function addBlock(newBlock) {
     // transectionArry = [];
     // const checkGene = await BlcokChainDB.findOne({ where: { index: "0" } });
 
+    const checkcoco = [];
     //   const checkGene = await BlcokChainDB.toArray();
     const checkGene = await BlcokChainDB.findOne({
       where: {
@@ -370,7 +371,7 @@ async function addBlock(newBlock) {
       },
     });
     console.log(checkGene + ".//////////////////////////");
-    if (checkGene === 0) {
+    if (checkcoco.length === 0) {
       //   Blocks.push(createGenesisBlock());
       BlcokChainDB.create({ BlockChain: createGenesisBlock() });
       Blocks.push(newBlock);
