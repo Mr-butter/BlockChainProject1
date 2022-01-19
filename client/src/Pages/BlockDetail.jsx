@@ -8,6 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import { Button } from "@mui/material";
 // import Table from "../components/table/Table";
 // const blockTableHead = ["Hash", "Timestamp", "Amount", "Data"];
 
@@ -17,9 +18,16 @@ const BlockDetail = (props) => {
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
 
-  const [chainBlocks, setChainBlocks] = useState({});
-  const colink = [...chainBlocks].reverse();
+  const [chainBlocks, setChainBlocks] = useState([]);
 
+  console.log(chainBlocks);
+
+  const connect = async () => {
+    await axios
+      .post(`${serverUrl}/analytics`)
+      .then((res) => setChainBlocks(res.data.allBlocks))
+      .catch((error) => console.error(`ERROR: ${error}`));
+  };
   return (
     <div className="row">
       <div>
@@ -35,13 +43,13 @@ const BlockDetail = (props) => {
                   // bodyData={blockTableBody} // 추후 데이터 베이스 불러와야함.
                   // renderBody={(item, index) => renderBody(item, index)}
                 /> */}
-                <h2>소켓 메세지</h2>
+                <h2></h2>
                 <div className="colinkBox">
                   <Paper sx={{ width: "100%", overflow: "hidden" }}>
                     <TableContainer sx={{ maxHeight: 500 }}>
                       <Table stickyHeader aria-label="sticky table">
                         <TableHead>
-                          <TableRow>
+                          {/* <TableRow>
                             {columns.map((column) => (
                               <TableCell
                                 key={column.id}
@@ -49,9 +57,9 @@ const BlockDetail = (props) => {
                                 style={{ minWidth: column.minWidth }}
                               ></TableCell>
                             ))}
-                          </TableRow>
+                          </TableRow>*/}
                         </TableHead>
-                        <TableBody>
+                        {/* <TableBody>
                           {colink.map((coco) => {
                             return (
                               <tr>
@@ -66,7 +74,13 @@ const BlockDetail = (props) => {
                               </tr>
                             );
                           })}
-                        </TableBody>
+                        </TableBody> */}
+                        <Button
+                          style={{ marginLeft: 30, color: "gold" }}
+                          onClick={connect}
+                        >
+                          블록체인 목록 불러오기
+                        </Button>
                       </Table>
                     </TableContainer>
                   </Paper>
