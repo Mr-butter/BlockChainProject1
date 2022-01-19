@@ -3,7 +3,6 @@ const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
 const BlockChainDB = require("../models/blocks");
-const { stringify } = require("querystring");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -297,7 +296,7 @@ function isValidNewBlock(newBlock, previousBlock) {
       "0".repeat(64) !== newBlock.header.merkleRoot) ||
     (newBlock.body.length !== 0 &&
       merkle("sha256").sync(newBlock.body).root() !==
-        newBlock.header.merkleRoot)
+      newBlock.header.merkleRoot)
   ) {
     console.log("Invalid merkleRoot");
     return false;
@@ -349,21 +348,14 @@ function isValidChain(newBlocks) {
 // }, Math.random() * 1000);
 //////////////////////////////////////
 
-// const newBlock = nextBlock(["transectionArry"]);
-function addBlock(newBlock) {
+
+async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-    // transectionArry = [];
+
     Blocks.push(newBlock);
-
-    console.log(Blocks);
-
-    console.log(typeof Blocks + "flkdjslgrsfsd");
-
-    const checkGene = await BlcokChainDB.findAll({
+    const checkGene = await BlockChainDB.findAll({
       where: { index: 0 },
     });
-    console.log(checkGene);
-    console.log(checkGene[0]);
 
     if (checkGene[0] === undefined) {
       BlockChainDB.create({
