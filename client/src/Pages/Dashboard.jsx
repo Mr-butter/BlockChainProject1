@@ -325,29 +325,13 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        <div className="col-4">
-          <div className="card">
+        <div className="col-8">
+          <div className="card-1">
             <div className="card__header">
               <h3>Latest Blocks</h3>
+              <br />
               <h5>The most recently mined blocks</h5>
-            </div>
-            <div className="card__body">
-              <Table
-                headData={LatestBlocks.head}
-                renderHead={(item, index) => renderCustomerHead(item, index)}
-                bodyData={LatestBlocks.body}
-                renderBody={(item, index) => renderCusomerBody(item, index)}
-              />
-            </div>
-            <div className="card__footer">
-              <Link to="/">view all</Link>
-            </div>
-          </div>
-        </div>
-        <div className="col-8">
-          <div className="card">
-            <div className="card__header">
-              <h3>Latest Transactions</h3>
+              <br />
             </div>
             <div className="card__body">
               <Table

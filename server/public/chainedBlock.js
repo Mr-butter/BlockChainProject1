@@ -296,7 +296,7 @@ function isValidNewBlock(newBlock, previousBlock) {
       "0".repeat(64) !== newBlock.header.merkleRoot) ||
     (newBlock.body.length !== 0 &&
       merkle("sha256").sync(newBlock.body).root() !==
-      newBlock.header.merkleRoot)
+        newBlock.header.merkleRoot)
   ) {
     console.log("Invalid merkleRoot");
     return false;
@@ -348,10 +348,8 @@ function isValidChain(newBlocks) {
 // }, Math.random() * 1000);
 //////////////////////////////////////
 
-
 async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-
     Blocks.push(newBlock);
     const checkGene = await BlockChainDB.findAll({
       where: { index: 0 },
@@ -413,7 +411,8 @@ function minning(message) {
   switch (message) {
     case "on":
       p2pServer_func.connectToPeer(6001);
-      setInterval(() => addBlock(nextBlock(["bodyData"])), 3000);
+      // setInterval(() => addBlock(nextBlock(["bodyData"])), 3000);
+      addBlock(nextBlock(["bodyData"]));
       return;
     case "block":
       addBlock(nextBlock(["bodyData"]));
