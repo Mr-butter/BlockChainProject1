@@ -4,15 +4,9 @@ const { WebSocket } = require("ws");
 const UserWallet = require("../models/userWallet");
 
 router.post("/blocks", async (req, res) => {
-  // const chainedBlock_func = require("../public/chainedBlock");
-  // const blocks = chainedBlock_func.getBlocks();
-  // res.send(blocks);
-  const wallettt = await UserWallet.findOne({
-    where: {
-      password: 1244,
-    },
-  });
-  res.json(wallettt);
+  const chainedBlock_func = require("../public/chainedBlock");
+  const blocks = chainedBlock_func.getBlocks();
+  res.send(blocks);
 });
 router.post("/inputport", (req, res) => {
   const p2pServer_func = require("../public/p2pServer");

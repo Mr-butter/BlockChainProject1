@@ -365,22 +365,25 @@ function addBlock(newBlock) {
 //     return false;
 // }
 
-const p2pServer_func = require("./p2pServer");
 function minning(message) {
-  console.log("들어가니?");
-  addBlock(nextBlock(["bodyData"]));
-  // switch (message) {
-  //     case "on":
-  //         // setInterval(() => addBlock(), 1000);
-  //         return p2pServer_func.connectToPeer(6001);
-  //     case "block":
-  //         return addBlock(nextBlock(["bodyData"]));
-  //     case "off":
-  //         return;
+  const p2pServer_func = require("./p2pServer");
+  // console.log("들어가니?");
+  // addBlock(nextBlock(["bodyData"]));
+  switch (message) {
+    case "on":
+      p2pServer_func.connectToPeer(6001);
+      setInterval(() => addBlock(nextBlock(["bodyData"])), 1000);
+      return;
+    case "block":
+      addBlock(nextBlock(["bodyData"]));
+      return;
+    case "connectPeer":
+      p2pServer_func.connectToPeer(6001);
+      return;
 
-  //     default:
-  //         return;
-  // }
+    default:
+      return;
+  }
 }
 
 // function minning(message) {

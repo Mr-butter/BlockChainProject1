@@ -1,80 +1,90 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import CryptoJS from "crypto-js";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Snackbar,
+  TextField,
+} from "@material-ui/core";
 
 function Testingboard(props) {
-  // const ws = useRef(null);
-  // const [socketMessage, setSocketMessage] = useState("");
-  // const [blockIndex, setBlockIndex] = useState("");
-  // const [prevHash, setPrevHash] = useState("");
-  // const [blockMerkleRoot, setblockMerkleRoot] = useState("");
-  // const [blockTimestamp, setBlockTimestamp] = useState("");
-  // const [blockDifficulty, setBlockDifficulty] = useState("");
-  // const [blocktNonce, setBlocktNonce] = useState("");
-  // const [blocktData, setBlocktData] = useState("");
+  const ws = useRef(null);
+  const [socketMessage, setSocketMessage] = useState("");
+  const [blockIndex, setBlockIndex] = useState("");
+  const [prevHash, setPrevHash] = useState("");
+  const [blockMerkleRoot, setblockMerkleRoot] = useState("");
+  const [blockTimestamp, setBlockTimestamp] = useState("");
+  const [blockDifficulty, setBlockDifficulty] = useState("");
+  const [blocktNonce, setBlocktNonce] = useState("");
+  const [blocktData, setBlocktData] = useState("");
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
-  // useEffect(() => {
-  //     ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
-  //     ws.current.onopen = () => {
-  //         // connection opened
-  //         console.log(`웹소켓 포트 : 6001 번으로 연결`);
-  //         // send a message
-  //     };
+  useEffect(() => {
+    ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
+    ws.current.onopen = () => {
+      // connection opened
+      console.log(`웹소켓 포트 : 6001 번으로 연결`);
+      // send a message
+    };
 
-  //     ws.current.onmessage = (e) => {
-  //         // a message was received
-  //         setSocketMessage(e.data);
-  //     };
+    ws.current.onmessage = (e) => {
+      // a message was received
+      setSocketMessage(e.data);
+    };
 
-  //     ws.current.onerror = (e) => {
-  //         // an error occurred
-  //         console.log(e.message);
-  //     };
-  //     ws.current.onclose = (e) => {
-  //         // connection closed
-  //         console.log(e.code, e.reason);
-  //     };
+    ws.current.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+    };
+    ws.current.onclose = (e) => {
+      // connection closed
+      console.log(e.code, e.reason);
+    };
 
-  //     return () => {
-  //         ws.current.close();
-  //     };
-  // }, []);
+    return () => {
+      ws.current.close();
+    };
+  }, []);
 
-  // useEffect(() => {
-  //     ws.current.onmessage = (e) => {
-  //         // a message was received
-  //         let reciveData = JSON.parse(JSON.parse(e.data).data);
-  //         setSocketMessage(reciveData);
-  //         if (reciveData !== null) {
-  //             setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-  //             // setBlockIndex(socketMessage.header.index);
-  //             // setPrevHash(socketMessage.header.previousHash);
-  //             // setblockMerkleRoot(socketMessage.header.merkleRoot);
-  //             // setBlockTimestamp(socketMessage.header.timestamp);
-  //             // setBlockDifficulty(socketMessage.header.difficulty);
-  //             // setBlocktNonce(socketMessage.header.nonce);
-  //             // setBlocktData(socketMessage.body);
-  //         }
-  //     };
+  useEffect(() => {
+    ws.current.onmessage = (e) => {
+      // a message was received
+      let reciveData = JSON.parse(JSON.parse(e.data).data);
+      setSocketMessage(reciveData);
+      if (reciveData !== null) {
+        setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
+        // setBlockIndex(socketMessage.header.index);
+        // setPrevHash(socketMessage.header.previousHash);
+        // setblockMerkleRoot(socketMessage.header.merkleRoot);
+        // setBlockTimestamp(socketMessage.header.timestamp);
+        // setBlockDifficulty(socketMessage.header.difficulty);
+        // setBlocktNonce(socketMessage.header.nonce);
+        // setBlocktData(socketMessage.body);
+      }
+    };
 
-  //     document.getElementById("socket_writefield").innerText =
-  //         JSON.stringify(socketMessage);
-  //     // document.getElementById("blockIndex").innerText =
-  //     //     JSON.stringify(blockIndex);
-  //     // document.getElementById("prevHash").innerText =
-  //     //     JSON.stringify(prevHash);
-  //     // document.getElementById("blockMerkleRoot").innerText =
-  //     //     JSON.stringify(blockMerkleRoot);
-  //     // document.getElementById("blockTimestamp").innerText =
-  //     //     JSON.stringify(blockTimestamp);
-  //     // document.getElementById("blockDifficulty").innerText =
-  //     //     JSON.stringify(blockDifficulty);
-  //     // document.getElementById("blocktNonce").innerText =
-  //     //     JSON.stringify(blocktNonce);
-  //     // document.getElementById("blocktData").innerText =
-  //     //     JSON.stringify(blocktData);
-  // }, [socketMessage]);
+    document.getElementById("socket_writefield").innerText =
+      JSON.stringify(socketMessage);
+    // document.getElementById("blockIndex").innerText =
+    //     JSON.stringify(blockIndex);
+    // document.getElementById("prevHash").innerText =
+    //     JSON.stringify(prevHash);
+    // document.getElementById("blockMerkleRoot").innerText =
+    //     JSON.stringify(blockMerkleRoot);
+    // document.getElementById("blockTimestamp").innerText =
+    //     JSON.stringify(blockTimestamp);
+    // document.getElementById("blockDifficulty").innerText =
+    //     JSON.stringify(blockDifficulty);
+    // document.getElementById("blocktNonce").innerText =
+    //     JSON.stringify(blocktNonce);
+    // document.getElementById("blocktData").innerText =
+    //     JSON.stringify(blocktData);
+  }, [socketMessage]);
 
   function block() {
     axios.post(`${serverUrl}/blocks`).then((res) => {
@@ -292,62 +302,42 @@ function Testingboard(props) {
       <h2>테스트 코드</h2>
       <ol>
         <li>
-          <button id="blocks" onClick={() => block()}>
+          <Button color="primary" id="blocks" onClick={() => block()}>
             get blocks
-          </button>
+          </Button>
         </li>
         <li>
-          <button id="inputPort" onClick={() => inputPort()}>
+          <Button color="primary" id="inputPort" onClick={() => inputPort()}>
             inputPort_mine
-          </button>
+          </Button>
         </li>
         <li>
-          <button id="mineBlockon" onClick={() => mineBlock("on")}>
+          <Button
+            color="primary"
+            id="mineBlockon"
+            onClick={() => mineBlock("on")}
+          >
             mineBlock(on)
-          </button>
+          </Button>
         </li>
         <li>
-          <button
+          <Button
+            color="primary"
             id="socket"
             onClick={() => {
               getsocket();
             }}
           >
             socket
-          </button>
+          </Button>
         </li>
         <li>
-          <button id="version" onClick={() => version()}>
+          <Button color="primary" id="version" onClick={() => version()}>
             version
-          </button>
-        </li>
-        <li>
-          <button id="initwallet" onClick={() => makeWallet()}>
-            initwallet
-          </button>
-        </li>
-        <li>
-          <button id="mnemonic" onClick={() => mnemonic()}>
-            mnemonic
-          </button>
-        </li>
-        <li>
-          <button id="newWallet" onClick={() => newWallet()}>
-            newWallet
-          </button>
-        </li>
-        <li>
-          <button id="getWallet" onClick={() => getWallet()}>
-            getWallet
-          </button>
-        </li>
-        <li>
-          <button id="restoreWallet" onClick={() => restoreWallet()}>
-            restoreWallet
-          </button>
+          </Button>
         </li>
       </ol>
-      <h2>테스트 코드 결과</h2>
+      <h2>서버 응답 결과</h2>
       <div id="writefield"></div>
       <h2>소켓 메세지</h2>
       <div id="socket_writefield"></div>
