@@ -10,9 +10,11 @@ module.exports = class BlcokChainDB extends Sequelize.Model {
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true,
-                    },                */
-                    {
-        COLINK :{type: Sequelize.INTEGER.UNSIGNED,
+                    },
+                    
+                */
+        CONUM: {
+          type: Sequelize.INTEGER.UNSIGNED,
           primaryKey: true,
           allowNull: false,
           autoIncrement: true,
@@ -21,8 +23,8 @@ module.exports = class BlcokChainDB extends Sequelize.Model {
         BlockChain: {
           type: Sequelize.JSON,
           allowNull: false,
-          defaultValue: `{"header":{"version":"0.0.1","index":0,"previousHash":"0000000000000000000000000000000000000000000000000000000000000000","timestamp":1231006505,"merkleRoot":"A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098","difficulty":0,"nonce":0},"body":["The Times 03/Jan/2009 Chancellor 
-          on brink of second bailout for banks"]}`,
+          // defaultValue: `{"header":{"version":"0.0.1","index":0,"previousHash":"0000000000000000000000000000000000000000000000000000000000000000","timestamp":1231006505,"merkleRoot":"A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098","difficulty":0,"nonce":0},"body":["The Times 03/Jan/2009 Chancellor
+          // on brink of second bailout for banks"]}`,
         },
       },
       {
