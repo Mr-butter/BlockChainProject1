@@ -69,23 +69,23 @@ const chartOptions = {
 
 const LatestBlocks = {
   head: [
-    "index",
-    "previousHash",
-    "merkleRoot",
-    "timestamp",
-    "blockDifficulty",
-    "nonce",
     "version",
+    "previousHash",
+    "timestamp",
+    "merkleRoot",
+    "difficulty",
+    "nonce",
+    "body",
   ],
   body: [
     {
-      index: "717701",
+      version: "717701",
       previousHash: "5555555",
-      merkleRoot: "sgsfsf",
-      timestamp: "1231545 bytes",
+      timestamp: "sgsfszfgdssf",
+      merkleRoot: "1231545 bytes",
       difficulty: "1231545 bytes",
       nonce: "1231545 bytes",
-      version: "dsds",
+      body: "dszdfgjgkrlwe;wlgjaiieyorklhtu9py4ojwkrlangzdfhiprkds",
     },
   ],
 };
@@ -261,41 +261,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>테스트 코드 결과</h2>
-      <div id="writefield"></div>
-      <h2>소켓 메세지</h2>
-      <div id="socket_writefield"></div>
-      ----------------------------------------------------------------------
-      <h2>소켓 메세지</h2>
       <div id="socketLog_writefield"></div>
-      {/* {socketMessageLog} */}
-      <ol>
-        <li>
-          <button id="blocks" onClick={() => block()}>
-            get blocks
-          </button>
-        </li>
-        <li>
-          <button id="inputPort" onClick={() => inputPort()}>
-            inputPort_mine
-          </button>
-        </li>
-        <li>
-          <button id="mineBlockon" onClick={() => mineBlock("on")}>
-            mineBlock(on)
-          </button>
-        </li>
-        <li>
-          <button id="version" onClick={() => version()}>
-            version
-          </button>
-        </li>
-        <li>
-          <button id="forblock" onClick={() => forblock()}>
-            forblock
-          </button>
-        </li>
-      </ol>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
         <div className="col-6">
@@ -340,42 +306,18 @@ const Dashboard = () => {
               <h5>The most recently mined blocks</h5>
               <br />
             </div>
-            <div className="card__body">
-              <div className="colinkBox">
-                <Paper sx={{ width: "99%", overflow: "hidden" }}>
-                  <TableContainer sx={{ maxHeight: 800 }}>
-                    <Table stickyHeader aria-label="sticky table">
-                      <TableHead>
-                        <TableRow>
-                          <td>version</td>
-                          <td>previousHash</td>
-                          <td>timestamp</td>
-                          <td>merkleRoot</td>
-                          <td>difficulty</td>
-                          <td>nonce</td>
-                          <td>body</td>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {reverse.map((data) => (
-                          <tr key={data.index}>
-                            <td>{data.version}</td>
-                            <td>{data.previousHash}</td>
-                            <td>{data.timestamp}</td>
-                            <td>{data.merkleRoot}</td>
-                            <td>{data.difficulty}</td>
-                            <td>{data.nonce}</td>
-                            <td>{data.body}</td>
-                          </tr>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </div>
+            <br />
+            <div className="card__body" style={{ mixWidth: "1200px" }}>
+              <Table
+                headData={LatestBlocks.head}
+                renderHead={(item, index) => renderCustomerHead(item, index)}
+                bodyData={LatestBlocks.body}
+                renderBody={(item, index) => renderCusomerBody(item, index)}
+              />
             </div>
+            <br />
             <div className="card__footer">
-              <Link to="/">view all</Link>
+              <Link to="/analytics">view all</Link>
             </div>
           </div>
         </div>

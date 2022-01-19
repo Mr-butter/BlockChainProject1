@@ -348,10 +348,8 @@ function isValidChain(newBlocks) {
 // }, Math.random() * 1000);
 //////////////////////////////////////
 
-
 async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-
     Blocks.push(newBlock);
     const checkGene = await BlockChainDB.findAll({
       where: { index: 0 },
