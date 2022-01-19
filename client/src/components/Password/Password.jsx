@@ -46,7 +46,7 @@ const Password = (props) => {
       type: "dark",
     },
   });
-  const avatarStyle = { backgroundColor: "gold" };
+  const avatarStyle = { backgroundColor: "gold", marginBottom: "20px" };
   const btnstyle = { margin: "20px 5px" };
 
   const history = useHistory();
