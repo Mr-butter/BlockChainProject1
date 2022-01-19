@@ -4,6 +4,7 @@ const cryptojs = require("crypto-js");
 
 const BlcokChainDB = require("../models/blocks");
 const random = require("random");
+const BlockChainDB = require("../models/blocks");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -361,31 +362,19 @@ function isValidChain(newBlocks) {
 async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
     // transectionArry = [];
-    // const checkGene = await BlcokChainDB.findOne({ where: { index: "0" } });
-
-    const checkcoco = [];
-    //   const checkGene = await BlcokChainDB.toArray();
-    const checkGene = await BlcokChainDB.findAll({
-      where: { BlockChain },
+    Blocks.push(newBlock);
+    BlockChainDB.create({
+      index: 0,
+      version: "0.0.1",
+      previousHash:
+        "0000000000000000000000000000000000000000000000000000000000000000",
+      timestamp: 1231006505,
+      merkleRoot:
+        "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
+      difficulty: 0,
+      nonce: 0,
     });
-    console.log(checkGene);
-
-    if (checkGene === null) {
-      //   BlocksBlcokChainDB.push(createGenesisBlock());
-      BlcokChainDB.create({ BlockChain: createGenesisBlock() });
-      Blocks.push(newBlock);
-      console.log("null 진입");
-      BlcokChainDB.create({
-        BlockChain: newBlock,
-      });
-      return true;
-    } else {
-      Blocks.push(newBlock);
-      BlcokChainDB.create({
-        BlockChain: newBlock,
-      });
-      return true;
-    }
+    return true;
   }
   return false;
 }
