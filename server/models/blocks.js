@@ -13,7 +13,7 @@ module.exports = class BlockChainDB extends Sequelize.Model {
                     },
                 */
         index: {
-          type: Sequelize.INTEGER(),
+          type: Sequelize.STRING(),
           allowNull: false,
         },
         version: {
