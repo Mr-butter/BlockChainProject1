@@ -6,7 +6,7 @@ module.exports = class BlockChainDB extends Sequelize.Model {
     return super.init(
       {
         /* 시퀄라이즈 에서는 id 자동 생성됨.
-                    id : {
+                    id : {.....
                     type: Sequelize.INTEGER,
                     primaryKey: true,
                     autoIncrement: true,
@@ -58,5 +58,5 @@ module.exports = class BlockChainDB extends Sequelize.Model {
     );
   }
 
-  static associate(db) { }
+  static associate(db) {}
 };
