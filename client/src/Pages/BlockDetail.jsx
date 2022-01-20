@@ -65,7 +65,7 @@ const BlockDetail = (props) => {
                         aria-label="sticky table"
                       >
                         <TableHead>
-                          <TableRow style={{ color: "#bbbbbb" }}>
+                          <TableRow style={{ color: "#5c5c5c" }}>
                             <TableCell>version</TableCell>
                             <TableCell>previousHash</TableCell>
                             <TableCell>timestamp</TableCell>
@@ -81,7 +81,7 @@ const BlockDetail = (props) => {
                               sx={{
                                 padding: "0px 0px",
                                 borderRight: "2px solid black",
-                                backgroundColor: "darkgrey",
+                                backgroundColor: "#5c5c5c",
                                 fontSize: "1.1rem",
                               }}
                             >
