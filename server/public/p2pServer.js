@@ -55,6 +55,7 @@ function connectToPeer(port) {
   });
   ws.on("error", () => {
     console.log("피어연결실패");
+    console.log(ws.readyState);
     if (ws.readyState === 2) {
       console.log("웹소켓 서버를 새로 생성합니다.");
       initP2PServer(port);

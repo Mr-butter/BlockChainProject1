@@ -19,6 +19,7 @@ router.post("/inputport", (req, res) => {
 router.post("/mineBlock", (req, res) => {
   const chainedBlock_func = require("../public/chainedBlock");
   const switchOnOff = req.body.switchOnOff;
+  console.log(switchOnOff);
   chainedBlock_func.minning(switchOnOff);
   res.send({ message: "블록생성을 시작합니다." });
 });

@@ -5,7 +5,7 @@ const BlockChainDB = require("../models/blocks");
 router.post("/", async function (req, res) {
   const analytics = await BlockChainDB.findAll({});
   console.log("///////////////////////////////////");
-  console.log(analytics[0].dataValues);
+  // console.log(analytics[0].dataValues);
   const arr = [];
   for (let i = 0; i < analytics.length; i++) {
     const block = analytics[i].dataValues;

@@ -19,6 +19,7 @@ const BlockDetail = (props) => {
   const serverUrl = `http://127.0.0.1:${serverPort}`;
 
   const [chainBlocks, setChainBlocks] = useState([]);
+  const reverse = [...chainBlocks].reverse();
 
   console.log(chainBlocks);
 
@@ -28,59 +29,74 @@ const BlockDetail = (props) => {
       .then((res) => setChainBlocks(res.data.allBlocks))
       .catch((error) => console.error(`ERROR: ${error}`));
   };
+
   return (
     <div className="row">
       <div>
         <h2 className="page-header">Blocks</h2>
         <div className="row">
+          <Button
+            style={{
+              borderRadius: 10,
+              borderColor: "gold",
+              marginLeft: 30,
+              color: "gold",
+              size: 100,
+              padding: "10px",
+              marginBottom: "25px",
+            }}
+            onClick={connect}
+            variant="outlined"
+          >
+            블록체인 목록 불러오기
+          </Button>
           <div className="col-12">
-            <div className="card" style={{ marginRight: "50px" }}>
+            <div
+              className="card"
+              style={{ marginRight: "50px", minWidth: "1650px" }}
+            >
               <div className="card__body">
-                {/* <Table
-                  limit="10"
-                  headData={blockTableHead}
-                  // renderHead={(item, index) => renderHead(item, index)}
-                  // bodyData={blockTableBody} // 추후 데이터 베이스 불러와야함.
-                  // renderBody={(item, index) => renderBody(item, index)}
-                /> */}
-                <h2></h2>
                 <div className="colinkBox">
-                  <Paper sx={{ width: "100%", overflow: "hidden" }}>
-                    <TableContainer sx={{ maxHeight: 500 }}>
-                      <Table stickyHeader aria-label="sticky table">
+                  <Paper sx={{ width: "99%", overflow: "hidden" }}>
+                    <TableContainer sx={{ maxHeight: 800 }}>
+                      <Table
+                        className="ae-zone"
+                        stickyHeader
+                        aria-label="sticky table"
+                      >
                         <TableHead>
-                          {/* <TableRow>
-                            {columns.map((column) => (
-                              <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ minWidth: column.minWidth }}
-                              ></TableCell>
-                            ))}
-                          </TableRow>*/}
+                          <TableRow style={{ color: "#bbbbbb" }}>
+                            <td>version</td>
+                            <td>previousHash</td>
+                            <td>timestamp</td>
+                            <td>merkleRoot</td>
+                            <td>difficulty</td>
+                            <td>nonce</td>
+                            <td>body</td>
+                          </TableRow>
                         </TableHead>
-                        {/* <TableBody>
-                          {colink.map((coco) => {
-                            return (
-                              <tr>
-                                <td>{coco.header.index}</td>
-                                <td>{coco.header.version}</td>
-                                <td>{coco.header.previousHash}</td>
-                                <td>{coco.header.timestamp}</td>
-                                <td>{coco.header.merkleRoot}</td>
-                                <td>{coco.header.difficulty}</td>
-                                <td>{coco.header.nonce}</td>
-                                <td>{coco.body.bodyData}</td>
+                        <TableBody>
+                          <TableCell
+                            sx={{
+                              padding: "0px 0px",
+                              borderRight: "2px solid black",
+                              backgroundColor: "darkgrey",
+                              fontSize: "1.1rem",
+                            }}
+                          >
+                            {reverse.map((data) => (
+                              <tr key={data.index}>
+                                <td>{data.version}</td>
+                                <td>{data.previousHash}</td>
+                                <td>{data.timestamp}</td>
+                                <td>{data.merkleRoot}</td>
+                                <td>{data.difficulty}</td>
+                                <td>{data.nonce}</td>
+                                <td>{data.body}</td>
                               </tr>
-                            );
-                          })}
-                        </TableBody> */}
-                        <Button
-                          style={{ marginLeft: 30, color: "gold" }}
-                          onClick={connect}
-                        >
-                          블록체인 목록 불러오기
-                        </Button>
+                            ))}
+                          </TableCell>
+                        </TableBody>
                       </Table>
                     </TableContainer>
                   </Paper>
