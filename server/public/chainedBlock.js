@@ -339,22 +339,19 @@ function isValidChain(newBlocks) {
   }
   return true;
 }
-//////////////////////////////////////임의거래장부
+///////////////////////////////////임의거래장부
 // let transectionArry = [];
-
 // setInterval(() => {
-//     const transection = { addTransection: parseInt(Math.random() * 1000) };
-//     transectionArry.push(transection);
+//   const transection = { addTransection: parseInt(Math.random() * 1000) };
+//   transectionArry.push(transection);
 // }, Math.random() * 1000);
-//////////////////////////////////////
-
+///////////////////////////////////
 async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
     Blocks.push(newBlock);
     const checkGene = await BlockChainDB.findAll({
       where: { index: 0 },
     });
-
     if (checkGene[0] === undefined) {
       BlockChainDB.create({
         index: "0",
@@ -396,59 +393,12 @@ async function addBlock(newBlock) {
   return false;
 }
 // function addBlock(newBlock) {
-//     if (isValidNewBlock(newBlock, getLastBlock())) {
-//         Blocks.push(newBlock);
-//         const checkGene = await BlockChainDB.findAll({
-//             where: { index: 0 },
-//         });
-
-//         if (checkGene[0] === undefined) {
-//             BlockChainDB.create({
-//                 index: "0",
-//                 version: "0.0.1",
-//                 previousHash:
-//                     "0000000000000000000000000000000000000000000000000000000000000000",
-//                 timestamp: "1231006505",
-//                 merkleRoot:
-//                     "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
-//                 difficulty: "0",
-//                 nonce: "0",
-//                 body: `["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]`,
-//             });
-//             BlockChainDB.create({
-//                 index: JSON.stringify(newBlock.header.index),
-//                 version: newBlock.header.version,
-//                 previousHash: newBlock.header.previousHash,
-//                 timestamp: JSON.stringify(newBlock.header.timestamp),
-//                 merkleRoot: newBlock.header.merkleRoot,
-//                 difficulty: JSON.stringify(newBlock.header.difficulty),
-//                 nonce: JSON.stringify(newBlock.header.nonce),
-//                 body: JSON.stringify(newBlock.body),
-//             });
-//             return true;
-//         } else {
-//             BlockChainDB.create({
-//                 index: JSON.stringify(newBlock.header.index),
-//                 version: newBlock.header.version,
-//                 previousHash: newBlock.header.previousHash,
-//                 timestamp: JSON.stringify(newBlock.header.timestamp),
-//                 merkleRoot: newBlock.header.merkleRoot,
-//                 difficulty: JSON.stringify(newBlock.header.difficulty),
-//                 nonce: JSON.stringify(newBlock.header.nonce),
-//                 body: JSON.stringify(newBlock.body),
-//             });
-//             return true;
-//         }
-//     }
-//     return false;
+//   if (isValidNewBlock(newBlock, getLastBlock())) {
+//     Blocks.push(newBlock);
+//     return newBlock;
+//   }
+//   return false;
 // }
-function addBlock(newBlock) {
-  if (isValidNewBlock(newBlock, getLastBlock())) {
-    Blocks.push(newBlock);
-    return newBlock;
-  }
-  return false;
-}
 
 function minning(message) {
   const p2pServer_func = require("./p2pServer");
@@ -457,8 +407,7 @@ function minning(message) {
   switch (message) {
     case "on":
       p2pServer_func.connectToPeer(6001);
-      // setInterval(() => addBlock(nextBlock(["bodyData"])), 3000);
-      addBlock(nextBlock(["bodyData"]));
+      setInterval(() => addBlock(nextBlock(["bodyData"])));
       return;
     case "block":
       addBlock(nextBlock(["bodyData"]));
