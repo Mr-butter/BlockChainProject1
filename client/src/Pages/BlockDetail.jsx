@@ -59,7 +59,11 @@ const BlockDetail = (props) => {
                 <div className="colinkBox">
                   <Paper sx={{ width: "99%", overflow: "hidden" }}>
                     <TableContainer sx={{ maxHeight: 800 }}>
-                      <Table stickyHeader aria-label="sticky table">
+                      <Table
+                        className="ae-zone"
+                        stickyHeader
+                        aria-label="sticky table"
+                      >
                         <TableHead>
                           <TableRow style={{ color: "#bbbbbb" }}>
                             <td>version</td>
@@ -72,17 +76,26 @@ const BlockDetail = (props) => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {reverse.map((data) => (
-                            <tr key={data.index}>
-                              <td>{data.version}</td>
-                              <td>{data.previousHash}</td>
-                              <td>{data.timestamp}</td>
-                              <td>{data.merkleRoot}</td>
-                              <td>{data.difficulty}</td>
-                              <td>{data.nonce}</td>
-                              <td>{data.body}</td>
-                            </tr>
-                          ))}
+                          <TableCell
+                            sx={{
+                              padding: "0px 0px",
+                              borderRight: "2px solid black",
+                              backgroundColor: "darkgrey",
+                              fontSize: "1.1rem",
+                            }}
+                          >
+                            {reverse.map((data) => (
+                              <tr key={data.index}>
+                                <td>{data.version}</td>
+                                <td>{data.previousHash}</td>
+                                <td>{data.timestamp}</td>
+                                <td>{data.merkleRoot}</td>
+                                <td>{data.difficulty}</td>
+                                <td>{data.nonce}</td>
+                                <td>{data.body}</td>
+                              </tr>
+                            ))}
+                          </TableCell>
                         </TableBody>
                       </Table>
                     </TableContainer>
