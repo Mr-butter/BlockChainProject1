@@ -76,16 +76,16 @@ const BlockDetail = (props) => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          <TableCell
-                            sx={{
-                              padding: "0px 0px",
-                              borderRight: "2px solid black",
-                              backgroundColor: "darkgrey",
-                              fontSize: "1.1rem",
-                            }}
-                          >
-                            {reverse.map((data) => (
-                              <tr key={data.index}>
+                          {reverse.map((data) => (
+                            <TableCell
+                              sx={{
+                                padding: "0px 0px",
+                                borderRight: "2px solid black",
+                                backgroundColor: "darkgrey",
+                                fontSize: "1.1rem",
+                              }}
+                            >
+                              <TableRow>
                                 <td>{data.version}</td>
                                 <td>{data.previousHash}</td>
                                 <td>{data.timestamp}</td>
@@ -93,9 +93,9 @@ const BlockDetail = (props) => {
                                 <td>{data.difficulty}</td>
                                 <td>{data.nonce}</td>
                                 <td>{data.body}</td>
-                              </tr>
-                            ))}
-                          </TableCell>
+                              </TableRow>
+                            </TableCell>
+                          ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
