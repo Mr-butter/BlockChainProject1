@@ -130,16 +130,29 @@ const Mining = () => {
       <br />
       <div>
         <Button
-          variant="contained"
-          style={{ margin: "10px" }}
+          variant="outlined"
+          style={{
+            borderRadius: 10,
+            borderColor: "gold",
+            marginLeft: 30,
+            color: "gold",
+            size: 100,
+            padding: "10px",
+          }}
           onClick={() => mineBlock("on")}
         >
           블럭채굴하기
         </Button>
         <Button
-          variant="contained"
-          color="secondary"
-          style={{ margin: "10px" }}
+          variant="outlined"
+          style={{
+            borderRadius: 10,
+            borderColor: "gold",
+            marginLeft: 30,
+            color: "gold",
+            size: 100,
+            padding: "10px",
+          }}
           onClick={() => webon()}
         >
           클라이언트 웹소켓 접속
@@ -160,10 +173,17 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row" color="red">
+            <TableCell
+              component="th"
+              scope="row"
+              color="red"
+              style={{ color: "#bbbbbb" }}
+            >
               Index
             </TableCell>
-            <TableCell align="left">{blockIndex}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blockIndex}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -172,7 +192,7 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               prevHash
             </TableCell>
             <TableCell align="left">{prevHash}</TableCell>
@@ -184,7 +204,7 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               MerkleRoot
             </TableCell>
             <TableCell align="left">{blockMerkleRoot}</TableCell>
@@ -196,7 +216,7 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               Timestamp
             </TableCell>
             <TableCell align="left">{blockTimestamp}</TableCell>
@@ -208,7 +228,7 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               Difficulty
             </TableCell>
             <TableCell align="left">{blockDifficulty}</TableCell>
@@ -220,7 +240,7 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               Nonce
             </TableCell>
             <TableCell align="left">{blocktNonce}</TableCell>
@@ -232,7 +252,7 @@ const Mining = () => {
               },
             }}
           >
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               blocktData
             </TableCell>
             <TableCell align="left">{blocktData}</TableCell>

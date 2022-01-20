@@ -1,27 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 
 import Chart from "react-apexcharts";
 
 import StatusCard from "../components/status-card/StatusCard";
 
-import { useSelector, useDispatch } from "react-redux";
-
-import Table from "../components/table/Table";
+import { useSelector } from "react-redux";
 
 import statusCards from "../assets/JsonData/status-card-data.json";
 
-import ThemeAction from "../redux/actions/ThemeAction";
-
-import { Link } from "@mui/material";
-
-import Paper from "@mui/material/Paper";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+import { Table, TableBody, TableHead, TableRow } from "@mui/material";
 
 const chartOptions = {
   series: [
@@ -67,201 +54,14 @@ const chartOptions = {
   },
 };
 
-const LatestBlocks = {
-  head: [
-    "version",
-    "previousHash",
-    "timestamp",
-    "merkleRoot",
-    "difficulty",
-    "nonce",
-    "body",
-  ],
-  body: [
-    {
-      version: "717701",
-      previousHash: "5555555",
-      timestamp: "sgsfszfgdssf",
-      merkleRoot: "1231545 bytes",
-      difficulty: "1231545 bytes",
-      nonce: "1231545 bytes",
-      body: "dszdfgjgkrlwe;wlgjaiieyorklhtu9py4ojwkrlangzdfhiprkds",
-    },
-  ],
-};
-
-const renderCustomerHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderCusomerBody = (item, index) => (
-  <tr key={index}>
-    <td>{item.index}</td>
-    <td>{item.previousHash}</td>
-    <td>{item.merkleRoot}</td>
-    <td>{item.timestamp}</td>
-    <td>{item.difficulty}</td>
-    <td>{item.nonce}</td>
-    <td>{item.version}</td>
-  </tr>
-);
-
-// const orderStatus = {};
-
-const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderOrderBody = (item, index) => (
-  <tr key={index}>
-    <td>{item.Hash}</td>
-    <td>{item.Time}</td>
-    <td>{item.Amount}</td>
-    <td>
-      <span>{item.Data}</span>
-    </td>
-  </tr>
-);
-
 const Dashboard = () => {
   const themeReducer = useSelector((state) => state.ThemeReducer.mode);
   const [chainBlocks, setChainBlocks] = useState([]);
   const reverse = [...chainBlocks].reverse();
   console.log(chainBlocks);
 
-  let latestOrders = {
-    header: ["Hash", "Time", "Amount", "Data"],
-    body: [
-      { Hash: 1, Time: 1, Amount: 1, Data: 1 },
-      { Hash: 2, Time: 2, Amount: 2, Data: 2 },
-    ],
-  };
-
-  const ws = useRef(null);
-  const [socketMessage, setSocketMessage] = useState("");
-  const [socketMessageLog, setSocketMessageLog] = useState([]);
-  const [blockIndex, setBlockIndex] = useState("");
-  // const [prevHash, setPrevHash] = useState("");
-  // const [blockMerkleRoot, setblockMerkleRoot] = useState("");
-  // const [blockTimestamp, setBlockTimestamp] = useState("");
-  // const [blockDifficulty, setBlockDifficulty] = useState("");
-  // const [blocktNonce, setBlocktNonce] = useState("");
-  // const [blocktData, setBlocktData] = useState("");
-  const serverPort = parseInt(window.location.port) + 2000;
-  const serverUrl = `http://127.0.0.1:${serverPort}`;
-  useEffect(() => {
-    ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
-    ws.current.onopen = () => {
-      // connection opened
-      console.log(`웹소켓 포트 : 6001 번으로 연결`);
-      // send a message
-    };
-
-    ws.current.onmessage = (e) => {
-      // a message was received
-      setSocketMessage(e.data);
-    };
-
-    ws.current.onerror = (e) => {
-      // an error occurred
-      console.log(e.message);
-    };
-    ws.current.onclose = (e) => {
-      // connection closed
-      console.log(e.code, e.reason);
-    };
-
-    return () => {
-      ws.current.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    ws.current.onmessage = (e) => {
-      // a message was received
-      let reciveData = JSON.parse(JSON.parse(e.data).data);
-      setSocketMessage(reciveData);
-      setSocketMessageLog((arr) => [...arr, { reciveData }]);
-      if (reciveData !== null) {
-        setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-        setBlockIndex(socketMessage.header.index);
-        // setPrevHash(socketMessage.header.previousHash);
-        // setblockMerkleRoot(socketMessage.header.merkleRoot);
-        // setBlockTimestamp(socketMessage.header.timestamp);
-        // setBlockDifficulty(socketMessage.header.difficulty);
-        // setBlocktNonce(socketMessage.header.nonce);
-        // setBlocktData(socketMessage.body);
-      }
-      //else 이용해서 앞의 블록 달라고 메세지?
-    };
-
-    document.getElementById("socketLog_writefield").innerText =
-      JSON.stringify(socketMessageLog);
-  }, [socketMessageLog]);
-
-  // useEffect(() => {
-  //   (function () {
-  //     // .then((res) => setChainBlocks(res.data.allBlocks))
-  //   })();
-  // }, []);
-
-  function forblock() {
-    const list = JSON.parse(JSON.stringify(socketMessageLog));
-
-    const fisrt = [];
-    for (let i = 0; i < socketMessageLog.length; i++) {
-      let test = JSON.stringify(list[i].reciveData);
-      fisrt.push(test);
-    }
-    console.log("첫번째 변환", fisrt);
-
-    const second = [];
-
-    for (let j = 1; j < fisrt.length; j++) {
-      const test = JSON.parse(fisrt[j])[0].header;
-      second.push(test);
-    }
-    console.log("두번째 변환", second);
-
-    setChainBlocks(second);
-    console.log("메세지....", socketMessage.header.index);
-  }
-
-  function block() {
-    axios.post(`${serverUrl}/blocks`).then((res) => {
-      const data = res.data;
-      document.getElementById("writefield").innerText = JSON.stringify(data);
-    });
-  }
-
-  function inputPort() {
-    const inputport = prompt("포트를 입력해주세요.\nex)5001", parseInt(5001));
-    axios.post(`${serverUrl}/inputport`, { port: inputport }).then((res) => {
-      // const data = res.data;
-      // document.getElementById("writefield").innerText =
-      //     JSON.stringify(data);
-      const data = res.data.message;
-      document.getElementById("writefield").innerText = data;
-    });
-  }
-
-  function mineBlock(onOff) {
-    axios.post(`${serverUrl}/mineBlock`, { switchOnOff: onOff }).then((res) => {
-      // const data = res.data;
-      // document.getElementById("writefield").innerText =
-      //     JSON.stringify(data);
-      const data = res.data.message;
-      console.log("1");
-      // document.getElementById("writefield").innerText = data;
-    });
-  }
-
-  function version() {
-    axios.post(`${serverUrl}/version`).then((res) => {
-      const data = res.data;
-      document.getElementById("writefield").innerText = JSON.stringify(data);
-    });
-  }
-
   return (
     <div>
-      <div id="socketLog_writefield"></div>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
         <div className="col-6">
@@ -301,23 +101,60 @@ const Dashboard = () => {
         <div className="col-8">
           <div className="card-1">
             <div className="card__header">
-              <h3>Latest Blocks</h3>
+              <h3>Genesis Block</h3>
               <br />
-              <h5>The most recently mined blocks</h5>
-              <br />
+              <h5>The name of the first block of Bitcoin ever mined.</h5>
             </div>
             <br />
             <div className="card__body" style={{ mixWidth: "1200px" }}>
-              <Table
-                headData={LatestBlocks.head}
-                renderHead={(item, index) => renderCustomerHead(item, index)}
-                bodyData={LatestBlocks.body}
-                renderBody={(item, index) => renderCusomerBody(item, index)}
-              />
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow style={{ color: "#bbbbbb" }}>
+                    <td>index</td>
+                    <td>version</td>
+                    <td>previousHash</td>
+                    <td>timestamp</td>
+                    <td>merkleRoot</td>
+                    <td>difficulty</td>
+                    <td>nonce</td>
+                    <td>body</td>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <tr>
+                    <td>0</td>
+                    <td>0.0.1</td>
+                    <td>
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                    </td>
+                    <td>1231006505</td>
+                    <td>
+                      A6D72BAA3DB900B03E70DF880E503E91
+                      <br />
+                      64013B4D9A470853EDC115776323A098
+                    </td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>
+                      The Times 03/Jan/2009 Chancellor on brink of second
+                      bailout for banks
+                    </td>
+                  </tr>
+                </TableBody>
+              </Table>
             </div>
             <br />
             <div className="card__footer">
-              <Link to="/analytics">view all</Link>
+              {/* <Link to="/analytics">view all</Link> */}
             </div>
           </div>
         </div>

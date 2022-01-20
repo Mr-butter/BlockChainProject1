@@ -36,8 +36,17 @@ const BlockDetail = (props) => {
         <h2 className="page-header">Blocks</h2>
         <div className="row">
           <Button
-            style={{ marginLeft: 30, color: "gold", size: 100 }}
+            style={{
+              borderRadius: 10,
+              borderColor: "gold",
+              marginLeft: 30,
+              color: "gold",
+              size: 100,
+              padding: "10px",
+              marginBottom: "25px",
+            }}
             onClick={connect}
+            variant="outlined"
           >
             블록체인 목록 불러오기
           </Button>
@@ -50,9 +59,13 @@ const BlockDetail = (props) => {
                 <div className="colinkBox">
                   <Paper sx={{ width: "99%", overflow: "hidden" }}>
                     <TableContainer sx={{ maxHeight: 800 }}>
-                      <Table stickyHeader aria-label="sticky table">
+                      <Table
+                        className="ae-zone"
+                        stickyHeader
+                        aria-label="sticky table"
+                      >
                         <TableHead>
-                          <TableRow>
+                          <TableRow style={{ color: "#bbbbbb" }}>
                             <td>version</td>
                             <td>previousHash</td>
                             <td>timestamp</td>
@@ -63,17 +76,26 @@ const BlockDetail = (props) => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {reverse.map((data) => (
-                            <tr key={data.index}>
-                              <td>{data.version}</td>
-                              <td>{data.previousHash}</td>
-                              <td>{data.timestamp}</td>
-                              <td>{data.merkleRoot}</td>
-                              <td>{data.difficulty}</td>
-                              <td>{data.nonce}</td>
-                              <td>{data.body}</td>
-                            </tr>
-                          ))}
+                          <TableCell
+                            sx={{
+                              padding: "0px 0px",
+                              borderRight: "2px solid black",
+                              backgroundColor: "darkgrey",
+                              fontSize: "1.1rem",
+                            }}
+                          >
+                            {reverse.map((data) => (
+                              <tr key={data.index}>
+                                <td>{data.version}</td>
+                                <td>{data.previousHash}</td>
+                                <td>{data.timestamp}</td>
+                                <td>{data.merkleRoot}</td>
+                                <td>{data.difficulty}</td>
+                                <td>{data.nonce}</td>
+                                <td>{data.body}</td>
+                              </tr>
+                            ))}
+                          </TableCell>
                         </TableBody>
                       </Table>
                     </TableContainer>

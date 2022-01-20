@@ -69,6 +69,7 @@ const NewWallet = (props) => {
             <KeyIcon />
           </Avatar>
           <h2>Secret Recovery Phrase</h2>
+          <br />
         </Grid>
         <TextField
           inputRef={words}
