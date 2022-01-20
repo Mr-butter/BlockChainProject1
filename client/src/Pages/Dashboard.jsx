@@ -121,100 +121,8 @@ const Dashboard = () => {
       { Hash: 2, Time: 2, Amount: 2, Data: 2 },
     ],
   };
-
-  const ws = useRef(null);
-  const [socketMessage, setSocketMessage] = useState("");
-  const [socketMessageLog, setSocketMessageLog] = useState([]);
-  // const [blockIndex, setBlockIndex] = useState("");
-  // const [prevHash, setPrevHash] = useState("");
-  // const [blockMerkleRoot, setblockMerkleRoot] = useState("");
-  // const [blockTimestamp, setBlockTimestamp] = useState("");
-  // const [blockDifficulty, setBlockDifficulty] = useState("");
-  // const [blocktNonce, setBlocktNonce] = useState("");
-  // const [blocktData, setBlocktData] = useState("");
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
-  useEffect(() => {
-    ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
-    ws.current.onopen = () => {
-      // connection opened
-      console.log(`웹소켓 포트 : 6001 번으로 연결`);
-      // send a message
-    };
-
-    ws.current.onmessage = (e) => {
-      // a message was received
-      setSocketMessage(e.data);
-    };
-
-    ws.current.onerror = (e) => {
-      // an error occurred
-      console.log(e.message);
-    };
-    ws.current.onclose = (e) => {
-      // connection closed
-      console.log(e.code, e.reason);
-    };
-
-    return () => {
-      ws.current.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    ws.current.onmessage = (e) => {
-      // a message was received
-      let reciveData = JSON.parse(JSON.parse(e.data).data);
-      setSocketMessage(reciveData);
-      setSocketMessageLog((arr) => [...arr, { reciveData }]);
-      if (reciveData !== null) {
-        setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-        // setBlockIndex(socketMessage.header.index);
-        // setPrevHash(socketMessage.header.previousHash);
-        // setblockMerkleRoot(socketMessage.header.merkleRoot);
-        // setBlockTimestamp(socketMessage.header.timestamp);
-        // setBlockDifficulty(socketMessage.header.difficulty);
-        // setBlocktNonce(socketMessage.header.nonce);
-        // setBlocktData(socketMessage.body);
-      }
-      //else 이용해서 앞의 블록 달라고 메세지?
-    };
-
-    document.getElementById("socketLog_writefield").innerText =
-      JSON.stringify(socketMessageLog);
-  }, [socketMessageLog]);
-
-  function forblock() {
-    const list = JSON.parse(JSON.stringify(socketMessageLog));
-
-    const fisrt = [];
-    for (let i = 0; i < socketMessageLog.length; i++) {
-      let test = JSON.stringify(list[i].reciveData);
-      fisrt.push(test);
-    }
-    console.log("첫번째 변환", fisrt);
-
-    const second = [];
-
-    for (let j = 1; j < fisrt.length; j++) {
-      const test = JSON.parse(fisrt[j])[0].header;
-      second.push(test);
-    }
-    console.log("두번째 변환", second);
-
-    // return {
-    //   head: [
-    //     "index",
-    //     "previousHash",
-    //     "merkleRoot",
-    //     "timestamp",
-    //     "blockDifficulty",
-    //     "nonce",
-    //     "version",
-    //   ],
-    //   body: [second],
-    // };
-  }
 
   function block() {
     axios.post(`${serverUrl}/blocks`).then((res) => {
@@ -254,41 +162,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>테스트 코드 결과</h2>
-      <div id="writefield"></div>
-      <h2>소켓 메세지</h2>
-      <div id="socket_writefield"></div>
-      ----------------------------------------------------------------------
-      <h2>소켓 메세지</h2>
-      <div id="socketLog_writefield"></div>
-      {/* {socketMessageLog} */}
-      <ol>
-        <li>
-          <button id="blocks" onClick={() => block()}>
-            get blocks
-          </button>
-        </li>
-        <li>
-          <button id="inputPort" onClick={() => inputPort()}>
-            inputPort_mine
-          </button>
-        </li>
-        <li>
-          <button id="mineBlockon" onClick={() => mineBlock("on")}>
-            mineBlock(on)
-          </button>
-        </li>
-        <li>
-          <button id="version" onClick={() => version()}>
-            version
-          </button>
-        </li>
-        <li>
-          <button id="forblock" onClick={() => forblock()}>
-            forblock
-          </button>
-        </li>
-      </ol>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
         <div className="col-6">
