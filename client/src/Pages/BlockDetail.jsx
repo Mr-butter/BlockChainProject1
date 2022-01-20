@@ -66,18 +66,18 @@ const BlockDetail = (props) => {
                       >
                         <TableHead>
                           <TableRow style={{ color: "#bbbbbb" }}>
-                            <td>version</td>
-                            <td>previousHash</td>
-                            <td>timestamp</td>
-                            <td>merkleRoot</td>
-                            <td>difficulty</td>
-                            <td>nonce</td>
-                            <td>body</td>
+                            <TableCell>version</TableCell>
+                            <TableCell>previousHash</TableCell>
+                            <TableCell>timestamp</TableCell>
+                            <TableCell>merkleRoot</TableCell>
+                            <TableCell>difficulty</TableCell>
+                            <TableCell>nonce</TableCell>
+                            <TableCell>body</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {reverse.map((data) => (
-                            <TableCell
+                            <TableRow
                               sx={{
                                 padding: "0px 0px",
                                 borderRight: "2px solid black",
@@ -85,16 +85,14 @@ const BlockDetail = (props) => {
                                 fontSize: "1.1rem",
                               }}
                             >
-                              <TableRow>
-                                <td>{data.version}</td>
-                                <td>{data.previousHash}</td>
-                                <td>{data.timestamp}</td>
-                                <td>{data.merkleRoot}</td>
-                                <td>{data.difficulty}</td>
-                                <td>{data.nonce}</td>
-                                <td>{data.body}</td>
-                              </TableRow>
-                            </TableCell>
+                              <td>{data.version}</td>
+                              <td>{data.previousHash}</td>
+                              <td>{data.timestamp}</td>
+                              <td>{data.merkleRoot}</td>
+                              <td>{data.difficulty}</td>
+                              <td>{data.nonce}</td>
+                              <td>{data.body}</td>
+                            </TableRow>
                           ))}
                         </TableBody>
                       </Table>
