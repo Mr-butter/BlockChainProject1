@@ -81,6 +81,7 @@ const Password = (props) => {
           </p>
         </Grid>
         <TextField
+          type={"password"}
           label="password"
           placeholder="Enter password"
           fullwidth
@@ -89,6 +90,7 @@ const Password = (props) => {
         />
         <br />
         <TextField
+          type={"password"}
           onChange={getPassword}
           value={Password}
           label="confirm password"
@@ -105,12 +107,20 @@ const Password = (props) => {
             // onChange={getMnemonic}
             value={Mnemonic}
             readOnly
+            style={{
+              marginTop: "10px",
+            }}
           ></TextField>
           <Button
             onClick={getMnemonic}
             size="small"
             variant="fab"
-            color="danger"
+            style={{
+              margin: "10px",
+              borderRadius: 10,
+              backgroundColor: "gold",
+              color: "#3a3a3ab9b",
+            }}
             textColor={"yellow"}
           >
             show
