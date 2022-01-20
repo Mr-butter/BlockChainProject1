@@ -1,19 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import React from "react";
 
 import Chart from "react-apexcharts";
 
 import StatusCard from "../components/status-card/StatusCard";
 
-import { useSelector, useDispatch } from "react-redux";
-
-import Table from "../components/table/Table";
+import { useSelector } from "react-redux";
 
 import statusCards from "../assets/JsonData/status-card-data.json";
 
-import ThemeAction from "../redux/actions/ThemeAction";
-
-import { Link } from "@mui/material";
+import { Table, TableBody, TableHead, TableRow } from "@mui/material";
 
 const chartOptions = {
   series: [
@@ -59,106 +54,8 @@ const chartOptions = {
   },
 };
 
-const LatestBlocks = {
-  head: [
-    "index",
-    "previousHash",
-    "merkleRoot",
-    "timestamp",
-    "blockDifficulty",
-    "nonce",
-    "version",
-  ],
-  body: [
-    {
-      index: "717701",
-      previousHash: "5555555",
-      merkleRoot: "sgsfsf",
-      timestamp: "1231545 bytes",
-      difficulty: "1231545 bytes",
-      nonce: "1231545 bytes",
-      version: "dsds",
-    },
-  ],
-};
-
-const renderCustomerHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderCusomerBody = (item, index) => (
-  <tr key={index}>
-    <td>{item.index}</td>
-    <td>{item.previousHash}</td>
-    <td>{item.merkleRoot}</td>
-    <td>{item.timestamp}</td>
-    <td>{item.difficulty}</td>
-    <td>{item.nonce}</td>
-    <td>{item.version}</td>
-  </tr>
-);
-
-// const orderStatus = {};
-
-const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderOrderBody = (item, index) => (
-  <tr key={index}>
-    <td>{item.Hash}</td>
-    <td>{item.Time}</td>
-    <td>{item.Amount}</td>
-    <td>
-      <span>{item.Data}</span>
-    </td>
-  </tr>
-);
-
 const Dashboard = () => {
   const themeReducer = useSelector((state) => state.ThemeReducer.mode);
-
-  let latestOrders = {
-    header: ["Hash", "Time", "Amount", "Data"],
-    body: [
-      { Hash: 1, Time: 1, Amount: 1, Data: 1 },
-      { Hash: 2, Time: 2, Amount: 2, Data: 2 },
-    ],
-  };
-  const serverPort = parseInt(window.location.port) + 2000;
-  const serverUrl = `http://127.0.0.1:${serverPort}`;
-
-  function block() {
-    axios.post(`${serverUrl}/blocks`).then((res) => {
-      const data = res.data;
-      document.getElementById("writefield").innerText = JSON.stringify(data);
-    });
-  }
-
-  function inputPort() {
-    const inputport = prompt("포트를 입력해주세요.\nex)5001", parseInt(5001));
-    axios.post(`${serverUrl}/inputport`, { port: inputport }).then((res) => {
-      // const data = res.data;
-      // document.getElementById("writefield").innerText =
-      //     JSON.stringify(data);
-      const data = res.data.message;
-      document.getElementById("writefield").innerText = data;
-    });
-  }
-
-  function mineBlock(onOff) {
-    axios.post(`${serverUrl}/mineBlock`, { switchOnOff: onOff }).then((res) => {
-      // const data = res.data;
-      // document.getElementById("writefield").innerText =
-      //     JSON.stringify(data);
-      const data = res.data.message;
-      console.log("1");
-      // document.getElementById("writefield").innerText = data;
-    });
-  }
-
-  function version() {
-    axios.post(`${serverUrl}/version`).then((res) => {
-      const data = res.data;
-      document.getElementById("writefield").innerText = JSON.stringify(data);
-    });
-  }
 
   return (
     <div>
@@ -198,40 +95,64 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        <div className="col-4">
-          <div className="card">
-            <div className="card__header">
-              <h3>Latest Blocks</h3>
-              <h5>The most recently mined blocks</h5>
-            </div>
-            <div className="card__body">
-              <Table
-                headData={LatestBlocks.head}
-                renderHead={(item, index) => renderCustomerHead(item, index)}
-                bodyData={LatestBlocks.body}
-                renderBody={(item, index) => renderCusomerBody(item, index)}
-              />
-            </div>
-            <div className="card__footer">
-              <Link to="/">view all</Link>
-            </div>
-          </div>
-        </div>
+
         <div className="col-8">
-          <div className="card">
+          <div className="card-1">
             <div className="card__header">
-              <h3>Latest Transactions</h3>
+              <h3>Genesis Block</h3>
+              <br />
+              <h5>The name of the first block of Bitcoin ever mined.</h5>
             </div>
-            <div className="card__body">
-              <Table
-                headData={latestOrders.header}
-                renderHead={(item, index) => renderOrderHead(item, index)}
-                bodyData={latestOrders.body}
-                renderBody={(item, index) => renderOrderBody(item, index)}
-              />
+            <br />
+            <div className="card__body" style={{ mixWidth: "1200px" }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow style={{ color: "#bbbbbb" }}>
+                    <td>index</td>
+                    <td>version</td>
+                    <td>previousHash</td>
+                    <td>timestamp</td>
+                    <td>merkleRoot</td>
+                    <td>difficulty</td>
+                    <td>nonce</td>
+                    <td>body</td>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <tr>
+                    <td>0</td>
+                    <td>0.0.1</td>
+                    <td>
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                    </td>
+                    <td>1231006505</td>
+                    <td>
+                      A6D72BAA3DB900B03E70DF880E503E91
+                      <br />
+                      64013B4D9A470853EDC115776323A098
+                    </td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>
+                      The Times 03/Jan/2009 Chancellor on brink of second
+                      bailout for banks
+                    </td>
+                  </tr>
+                </TableBody>
+              </Table>
             </div>
+            <br />
             <div className="card__footer">
-              <Link to="/">view all</Link>
+              {/* <Link to="/analytics">view all</Link> */}
             </div>
           </div>
         </div>

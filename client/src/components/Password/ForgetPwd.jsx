@@ -103,6 +103,7 @@ const ForgotPwd = (props) => {
         />
         <br />
         <TextField
+          type={"password"}
           label="새 암호"
           placeholder="Enter password"
           fullwidth
@@ -111,6 +112,7 @@ const ForgotPwd = (props) => {
         />
         <br />
         <TextField
+          type={"password"}
           onChange={getWalletPwdFromUser}
           value={WalletPwdFromUser}
           label="암호 확인"

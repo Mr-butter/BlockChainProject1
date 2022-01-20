@@ -115,6 +115,7 @@ function handleBlockChainResponse(message) {
   // 데이터로 받은 블럭 중에 마지막 블럭의 인덱스가
   // 내가 보유 중인 마지막 블럭의 인덱스보다 클 때 / 작을 때
   if (latestReceiveBlock.header.index > latesMyBlock.header.index) {
+    console.log("//////////////////////////////////////////////////");
     // 받은 마지막 블록의 이전 해시값이 내 마지막 블럭일 때
     if (
       chainedBlock_Func.createHash(latesMyBlock) ===
