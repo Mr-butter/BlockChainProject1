@@ -345,7 +345,8 @@ function isValidChain(newBlocks) {
 //   const transection = { addTransection: parseInt(Math.random() * 1000) };
 //   transectionArry.push(transection);
 // }, Math.random() * 1000);
-///////////////////////////////////
+//////////////////////////////////////
+
 async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
     Blocks.push(newBlock);
