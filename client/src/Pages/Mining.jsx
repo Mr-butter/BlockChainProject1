@@ -1,27 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import Input from "@mui/material/Input";
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Snackbar,
-  TextField,
-} from "@material-ui/core";
-import { Alert } from "@mui/material";
-import AlertTitle from "@mui/material/AlertTitle";
+
+import { Button } from "@material-ui/core";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import axios from "axios";
 
 const Mining = () => {
+  const serverPort = parseInt(window.location.port) + 2000;
+  const serverUrl = `http://127.0.0.1:${serverPort}`;
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState(null);
   const [blockIndex, setBlockIndex] = useState("");
@@ -31,36 +19,35 @@ const Mining = () => {
   const [blockDifficulty, setBlockDifficulty] = useState("");
   const [blocktNonce, setBlocktNonce] = useState("");
   const [blocktData, setBlocktData] = useState("");
-  const [WebSocketOnOff, setWebSocketOnOff] = useState("");
-  const serverPort = parseInt(window.location.port) + 2000;
-  const serverUrl = `http://127.0.0.1:${serverPort}`;
+  const [WebSocketOnOff, setWebSocketOnOff] = useState(null);
 
-  // useEffect(() => {
-  //     ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
-  //     ws.current.onopen = () => {
-  //         // connection opened
-  //         console.log(`웹소켓 포트 : 6001 번으로 연결`);
-  //         // send a message
-  //     };
+  useEffect(() => {
+    ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
+    ws.current.onopen = () => {
+      // connection opened
+      console.log(`웹소켓 포트 : 6001 번으로 연결`);
+      // send a message
+    };
 
-  //     ws.current.onmessage = (e) => {
-  //         // a message was received
-  //         setSocketMessage(e.data);
-  //     };
+    ws.current.onmessage = (e) => {
+      // a message was received
+      setSocketMessage(e.data);
+    };
 
-  //     ws.current.onerror = (e) => {
-  //         // an error occurred
-  //         console.log(e.message);
-  //     };
-  //     ws.current.onclose = (e) => {
-  //         // connection closed
-  //         console.log(e.code, e.reason);
-  //     };
+    ws.current.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+    };
+    ws.current.onclose = (e) => {
+      // connection closed
+      console.log(e.code, e.reason);
+    };
 
-  //     return () => {
-  //         ws.current.close();
-  //     };
-  // }, []);
+    return () => {
+      ws.current.close();
+    };
+  }, []);
+
   function webon() {
     ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
     ws.current.onopen = () => {
@@ -83,13 +70,14 @@ const Mining = () => {
       console.log(e.code, e.reason);
     };
   }
+
   useEffect(() => {
     if (socketMessage !== null) {
       ws.current.onmessage = (e) => {
         let reciveData = JSON.parse(JSON.parse(e.data).data);
         if (reciveData !== null) {
           setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-          setBlockIndex(socketMessage.header.index);
+          //   setBlockIndex(socketMessage.header.index);
           setPrevHash(socketMessage.header.previousHash);
           setblockMerkleRoot(socketMessage.header.merkleRoot);
           setBlockTimestamp(socketMessage.header.timestamp);
