@@ -66,36 +66,34 @@ const BlockDetail = (props) => {
                       >
                         <TableHead>
                           <TableRow style={{ color: "#bbbbbb" }}>
-                            <td>version</td>
-                            <td>previousHash</td>
-                            <td>timestamp</td>
-                            <td>merkleRoot</td>
-                            <td>difficulty</td>
-                            <td>nonce</td>
-                            <td>body</td>
+                            <TableCell>version</TableCell>
+                            <TableCell>previousHash</TableCell>
+                            <TableCell>timestamp</TableCell>
+                            <TableCell>merkleRoot</TableCell>
+                            <TableCell>difficulty</TableCell>
+                            <TableCell>nonce</TableCell>
+                            <TableCell>body</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          <TableCell
-                            sx={{
-                              padding: "0px 0px",
-                              borderRight: "2px solid black",
-                              backgroundColor: "darkgrey",
-                              fontSize: "1.1rem",
-                            }}
-                          >
-                            {reverse.map((data) => (
-                              <tr key={data.index}>
-                                <td>{data.version}</td>
-                                <td>{data.previousHash}</td>
-                                <td>{data.timestamp}</td>
-                                <td>{data.merkleRoot}</td>
-                                <td>{data.difficulty}</td>
-                                <td>{data.nonce}</td>
-                                <td>{data.body}</td>
-                              </tr>
-                            ))}
-                          </TableCell>
+                          {reverse.map((data) => (
+                            <TableRow
+                              sx={{
+                                padding: "0px 0px",
+                                borderRight: "2px solid black",
+                                backgroundColor: "darkgrey",
+                                fontSize: "1.1rem",
+                              }}
+                            >
+                              <td>{data.version}</td>
+                              <td>{data.previousHash}</td>
+                              <td>{data.timestamp}</td>
+                              <td>{data.merkleRoot}</td>
+                              <td>{data.difficulty}</td>
+                              <td>{data.nonce}</td>
+                              <td>{data.body}</td>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
