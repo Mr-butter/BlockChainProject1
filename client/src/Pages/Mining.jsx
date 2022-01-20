@@ -34,15 +34,6 @@ const Mining = () => {
   const [WebSocketOnOff, setWebSocketOnOff] = useState("");
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
-  const ws = useRef(null);
-  const [socketMessage, setSocketMessage] = useState(null);
-  const [blockIndex, setBlockIndex] = useState("");
-  const [prevHash, setPrevHash] = useState("");
-  const [blockMerkleRoot, setblockMerkleRoot] = useState("");
-  const [blockTimestamp, setBlockTimestamp] = useState("");
-  const [blockDifficulty, setBlockDifficulty] = useState("");
-  const [blocktNonce, setBlocktNonce] = useState("");
-  const [blocktData, setBlocktData] = useState("");
 
   useEffect(() => {
     if (socketMessage !== null) {

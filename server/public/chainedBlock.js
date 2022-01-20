@@ -394,7 +394,7 @@ function isValidChain(newBlocks) {
 //   return false;
 // }
 
-function addBlock(newBlock) {
+async function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
     Blocks.push(newBlock);
     const checkGene = await BlockChainDB.findAll({
