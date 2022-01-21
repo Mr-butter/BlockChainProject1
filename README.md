@@ -2,17 +2,19 @@
 
 ## 프로젝트 팀명 : CoLink
 
-### :relaxed: CoLink('코링크') - 블록체인 개념를 이해하고 적용해보기 위한 마이닝 사이트
+### :relaxed: CoLink
+
+### 블록체인 개념를 이해하고 적용해보기 위한 마이닝 사이트
 
 ## 프로젝트 시작일 : 2021-01-05
 
 Member.
 
-#### 김혜린: [깃허브] (https://github.com/Hyerin1208)
+#### 김혜린: [깃허브] (https://github.com/Hyerin1208) :watermelon:
 
-#### 박성근: [깃허브] (https://github.com/Mr-butter)
+#### 박성근: [깃허브] (https://github.com/Mr-butter) :grapes:
 
-#### 이민주: [깃허브] (https://github.com/codecocos)
+#### 이민주: [깃허브] (https://github.com/codecocos) :strawberry:
 
 ## 목차
 
@@ -87,7 +89,6 @@ Mysql, mariadb (데이터 베이스)
         "sequelize-cli": "^6.3.0",
         "ws": "^8.4.0"
 
-
 ### 사용 모듈 (client) :
 
     "@emotion/react": "^11.5.0",
@@ -142,6 +143,23 @@ Mysql, mariadb (데이터 베이스)
 
 ### 주요 기능
 
+- 메인페이지 : `MUI` `styled-components` `boxicons` `redux`
+- 로그인&지갑 : `crypto-js` `eth-lightwallet` `redux`
+- 블록정보 페이지 : `sequelize` `mysql2`
+- 마이닝 페이지 : `ws` `axios`
+
 ## 발생한 이슈와 해결방법
+
+다른 OS 환경에서 테스트 중 빈번한 모듈에러
+
+> > 서버 또는 클라이언트의 package-lock.json의 재작성으로 해결
+> > 웹소켓 서버접속시 원장 반복되는 원장불일치 오류
+> > 코드 작성시 비교조건 오류로 인한 수정 (개인적 오타)
+> > 지갑 생성후 복구 시 기존에 있던 지갑인지 확인하는 문제
+> > 지갑 관련 데이터 DB에 저장하는 것으로 해결
+> > 클라이언트에서 실시간으로 블록의 변화를 확인
+> > 클라이언트가 웹소켓에 접속하는 것으로 해결
+> > 블록 생성 정보가 DB에 들어갈 경우 DB에서 블록정보 검색에 실패
+> > DB자료구조 변경으로 해결 (JSON 형식을 STRING으로 변환)
 
 ## 디렉토리 설명
