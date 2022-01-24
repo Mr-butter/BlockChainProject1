@@ -37,7 +37,7 @@ const Transaction = () => {
               </div>
               <div className="card__body" style={{ width: "500px" }}>
                 <CssTextField
-                  label="From address"
+                  label=" From address"
                   //   style={{ width: "800px", height: "50px" }}
                   helperText="This is your wallet address. You cannot change it because you can only spend your own coins."
                   id="demo-helper-text-aligned"
@@ -49,7 +49,7 @@ const Transaction = () => {
                   }}
                 />
                 <CssTextField
-                  label="To address"
+                  label=" To address"
                   style={{
                     marginTop: 5,
                     width: "800px",
@@ -60,7 +60,7 @@ const Transaction = () => {
                   id="demo-helper-text-aligned"
                 />
                 <CssTextField
-                  label="Amount"
+                  label=" Amount"
                   style={{
                     marginTop: 5,
                     width: "800px",
@@ -87,6 +87,15 @@ const Transaction = () => {
               >
                 Sign & create transaction
               </Button>
+              <h3>Transaction pool</h3>
+              <TextField
+                defaultValue="No transactions in transaction pool"
+                style={{
+                  width: "800px",
+                  height: "50px",
+                  padding: "10px",
+                }}
+              />
               <div className="card__footer"></div>
             </div>
           </div>
