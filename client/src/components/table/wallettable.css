@@ -1,12 +1,10 @@
-.table-wrapper {
-  width: auto;
-  margin: 0;
-  padding: 0;
+.wallet-wrapper {
+  width: 800px;
 }
 
 table {
-  width: 100%;
-  min-width: 100%;
+  width: 80%;
+  min-width: 200px;
   border-spacing: 0;
 }
 

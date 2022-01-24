@@ -2,6 +2,19 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
+const BlockChainDB = require("../models/blocks");
+const {
+  processTransactions,
+  signTxIn,
+  getTransactionId,
+  isValidAddress,
+  UnspentTxOut,
+  TxIn,
+  TxOut,
+  getCoinbaseTransaction,
+  getPublicKey,
+  Transaction,
+} = require("./transaction");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -42,7 +55,7 @@ function createGenesisBlock() {
   const version = getVersion();
   const index = 0;
   const previousHash = "0".repeat(64);
-  const timestamp = Math.round(new Date().getTime() / 1000);
+  const timestamp = 1231006505;
 
   const body = [
     "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks",
@@ -65,6 +78,7 @@ function createGenesisBlock() {
 }
 
 let Blocks = [createGenesisBlock()];
+let unspentTxOuts = [];
 
 function getBlocks() {
   return Blocks;
@@ -120,6 +134,7 @@ function calculateHash(
 const genesisBlock = createGenesisBlock();
 
 function nextBlock(bodyData) {
+  const { broadcast, responseLatestMsg } = require("./p2pServer");
   const prevBlock = getLastBlock();
 
   const version = getVersion();
@@ -130,21 +145,26 @@ function nextBlock(bodyData) {
   const merkleRoot = tree.root() || "0".repeat(64);
   const difficulty = getDifficulty(getBlocks());
 
-  const header = findBlock(
+  const newBlock = findBlock(
     version,
     index,
     previousHash,
     timestamp,
     merkleRoot,
-    difficulty
+    difficulty,
+    bodyData
   );
-
-  return new Block(header, bodyData);
+  if (isValidNewBlock(newBlock, prevBlock)) {
+    broadcast(responseLatestMsg());
+    return newBlock;
+  } else {
+    return null;
+  }
 }
 
 function replaceChain(newBlocks) {
   const { broadcast, responseLatestMsg } = require("./p2pServer");
-
+  console.log(isValidChain(newBlocks));
   if (isValidChain(newBlocks)) {
     if (
       newBlocks.length > Blocks.length ||
@@ -201,7 +221,8 @@ function findBlock(
   previousHash,
   nextTimestamp,
   merkleRoot,
-  difficulty
+  difficulty,
+  bodyData
 ) {
   var nonce = 0;
 
@@ -216,7 +237,7 @@ function findBlock(
       nonce
     );
     if (hashMatchesDifficulty(hash, difficulty)) {
-      return new BlockHeader(
+      const newBlockHeader = new BlockHeader(
         currentVersion,
         nextIndex,
         previousHash,
@@ -225,6 +246,8 @@ function findBlock(
         difficulty,
         nonce
       );
+
+      return new Block(newBlockHeader, bodyData);
     }
     nonce++;
   }
@@ -314,10 +337,9 @@ function isValidTimestamp(newBlock, previousBlock) {
 }
 
 function isValidChain(newBlocks) {
-  if (JSON.stringify(newBlocsk[0]) !== JSON.stringify(Blocks[0])) {
+  if (JSON.stringify(newBlocks[0]) !== JSON.stringify(Blocks[0])) {
     return false;
   }
-
   var tempBlocks = [newBlocks[0]];
   for (var i = 1; i < newBlocks.length; i++) {
     if (isValidNewBlock(newBlocks[i], tempBlocks[i - 1])) {
@@ -328,30 +350,148 @@ function isValidChain(newBlocks) {
   }
   return true;
 }
-//////////////////////////////////////임의거래장부
-let transectionArry = [];
+//////////////////////////////////////////////////////
+const generateNextBlock = (publicKey) => {
+  const coinbaseTx = getCoinbaseTransaction(
+    publicKey,
+    getLastBlock().header.index + 1
+  );
+  const blockData = [coinbaseTx];
+  return nextBlock(blockData);
+};
 
-setInterval(() => {
-  const transection = { addTransection: parseInt(Math.random() * 1000) };
-  transectionArry.push(transection);
-}, Math.random() * 10000);
-//////////////////////////////////////
+const generatenextBlockWithTransaction = (
+  userPublicKey,
+  receiverAddress,
+  amount
+) => {
+  if (!isValidAddress(receiverAddress)) {
+    throw Error("invalid address");
+  }
+  if (typeof amount !== "number") {
+    throw Error("invalid amount");
+  }
+  const coinbaseTx = getCoinbaseTransaction(
+    userPublicKey,
+    getLastBlock().header.index + 1
+  );
+  console.log(coinbaseTx);
+  const tx = createTransaction(
+    receiverAddress,
+    amount,
+    userPublicKey,
+    unspentTxOuts
+  );
+  const blockData = [coinbaseTx, tx];
+  return nextBlock(blockData);
+};
 
-function addBlock() {
-  const p2pServer = require("./p2pServer");
+//////////////////////////////////////////////////////
 
-  const newBlock = nextBlock(transectionArry);
+// async function addBlock(newBlock) {
+//   if (isValidNewBlock(newBlock, getLastBlock())) {
+//     Blocks.push(newBlock);
+//     const checkGene = await BlockChainDB.findAll({
+//       where: { index: 0 },
+//     });
+//     if (checkGene[0] === undefined) {
+//       BlockChainDB.create({
+//         index: "0",
+//         version: "0.0.1",
+//         previousHash:
+//           "0000000000000000000000000000000000000000000000000000000000000000",
+//         timestamp: "1231006505",
+//         merkleRoot:
+//           "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
+//         difficulty: "0",
+//         nonce: "0",
+//         body: `["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]`,
+//       });
+//       BlockChainDB.create({
+//         index: JSON.stringify(newBlock.header.index),
+//         version: newBlock.header.version,
+//         previousHash: newBlock.header.previousHash,
+//         timestamp: JSON.stringify(newBlock.header.timestamp),
+//         merkleRoot: newBlock.header.merkleRoot,
+//         difficulty: JSON.stringify(newBlock.header.difficulty),
+//         nonce: JSON.stringify(newBlock.header.nonce),
+//         body: JSON.stringify(newBlock.body),
+//       });
+//       return true;
+//     } else {
+//       BlockChainDB.create({
+//         index: JSON.stringify(newBlock.header.index),
+//         version: newBlock.header.version,
+//         previousHash: newBlock.header.previousHash,
+//         timestamp: JSON.stringify(newBlock.header.timestamp),
+//         merkleRoot: newBlock.header.merkleRoot,
+//         difficulty: JSON.stringify(newBlock.header.difficulty),
+//         nonce: JSON.stringify(newBlock.header.nonce),
+//         body: JSON.stringify(newBlock.body),
+//       });
+//       return true;
+//     }
+//   }
+//   return false;
+// }
+
+function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-    transectionArry = [];
     Blocks.push(newBlock);
     return newBlock;
   }
-  return null;
+  return false;
+}
+
+function addBlockWithTransaction(newBlock) {
+  if (isValidNewBlock(newBlock, getLastBlock())) {
+    const retVal = processTransactions(
+      newBlock.body,
+      unspentTxOuts,
+      newBlock.header.index
+    );
+    if (retVal === null) {
+      return false;
+    } else {
+      Blocks.push(newBlock);
+      unspentTxOuts = retVal;
+      console.log(unspentTxOuts);
+      return newBlock;
+    }
+  }
+  return false;
+}
+
+function minning(message) {
+  const p2pServer_func = require("./p2pServer");
+  switch (message) {
+    case "on":
+      p2pServer_func.connectToPeer(6001);
+      setInterval(() => {
+        addBlock(nextBlock(["bodyData"]));
+      }, 3000);
+      return;
+    case "connectPeer":
+      p2pServer_func.connectToPeer(6001);
+      return;
+    default:
+      return;
+  }
+}
+function minningWithTransaction(userPublicKey) {
+  const PublicKey = userPublicKey;
+  const receiverAddress = userPublicKey;
+
+  addBlockWithTransaction(
+    generatenextBlockWithTransaction(PublicKey, receiverAddress, 100)
+    // generateNextBlock(userPublicKey)
+  );
 }
 
 module.exports = {
   Blocks,
   addBlock,
+  addBlockWithTransaction,
   getLastBlock,
   createHash,
   nextBlock,
@@ -360,4 +500,6 @@ module.exports = {
   hexToBinary,
   hashMatchesDifficulty,
   replaceChain,
+  minning,
+  minningWithTransaction,
 };

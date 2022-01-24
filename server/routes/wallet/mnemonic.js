@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const ligthWallet = require('eth-lightwallet')
+const { keystore } = require("eth-lightwallet");
 
 router.post("/", async (req, res, next) => {
   try {
-    const mnemonic = ligthWallet.keystore.generateRandomSeed();
-    res.json({ mnemonic: mnemonic })
+    const mnemonic = keystore.generateRandomSeed();
+    res.send({ mnemonic: mnemonic });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-
 });
 
 module.exports = router;

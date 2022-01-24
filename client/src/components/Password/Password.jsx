@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
   Checkbox,
   FormControlLabel,
   Grid,
-  Icon,
   Link,
   Paper,
   TextField,
@@ -19,93 +18,116 @@ import Dropdown from "../dropdown/Dropdown";
 
 import NewWallet from "../walletModal/NewWallet";
 
-// function ComponentChange(props) {
-//   const CreateWallet = props.CreateWallet;
-//   if (true) {
-//     return <NewWallet />;
-//   } else {
-//     return null;
-//   }
-// }
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import axios from "axios";
 
-const Password = (e) => {
+import { encryption } from "../../utils/encrypt";
+import { decryption } from "../../utils/decrypt";
+import { useDispatch } from "react-redux";
+
+import { auth, loginUser, logoutUser } from "../../redux/actions/";
+import { useHistory } from "react-router";
+
+const Password = (props) => {
+  const serverPort = parseInt(window.location.port) + 2000;
+  const serverUrl = `http://127.0.0.1:${serverPort}`;
+
+  const gridStyle = {
+    padding: 10,
+  };
   const paperStyle = {
     padding: 20,
-    height: "42vh",
-    width: 280,
-    height: 460,
+    height: 470,
+    width: 300,
     margin: "10px auto",
   };
-
-  const avatarStyle = { backgroundColor: "gold" };
-
+  const theme = createMuiTheme({
+    palette: {
+      type: "dark",
+    },
+  });
+  const avatarStyle = { backgroundColor: "gold", marginBottom: "20px" };
   const btnstyle = { margin: "20px 5px" };
 
-  const sendHaveWallet = (e) => {
-    e.getHaveWallet("pass");
-  };
+  const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  const [WalletPwdFromUser, setWalletPwdFromUser] = useState("");
+
+  function getWalletPwdFromUser(event) {
+    setWalletPwdFromUser(event.currentTarget.value);
+  }
+
+  function getWallet(props) {
+    dispatch(loginUser(WalletPwdFromUser));
+    props.setAnchorEl(null);
+  }
 
   return (
-    <Grid>
+    <Grid style={gridStyle}>
       <Paper className={10} style={paperStyle} variant="outlined">
-        <br />
         <Grid align="center">
           <Avatar style={avatarStyle}>
             <LockOutlined />
           </Avatar>
-          <br />
           <h2>My 간편 비밀번호</h2>
         </Grid>
         <TextField
+          type={"password"}
+          onChange={getWalletPwdFromUser}
+          value={WalletPwdFromUser}
           label="password"
           placeholder="Enter password"
           fullwidth
           required
+          style={{
+            width: "250px",
+            marginTop: "15px",
+            marginLeft: "0.4rem",
+          }}
         />
-        <FormControlLabel
-          control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
-        />
+        <br />
+        <br />
         <Button
-          href="/mypage"
+          onClick={() => {
+            getWallet(props);
+          }}
           type="submit"
-          color="gold"
           style={btnstyle}
           variant="contained"
           fullWidth
         >
           SIGN IN
         </Button>
-        <Typography>
-          <Link href="#">Forgot password ?</Link>
+        <Typography align={"center"}>
+          <Link onClick={() => props.sethaveWallet("forgot")} color="black">
+            Forgot password ?
+          </Link>
         </Typography>
         <br />
         {/* Create New Wallet */}
-        <Typography>
+        <Typography align={"center"}>
           Do you have an account ?
           <br />
-          <i
-            className="bx bx-wallet bx-tada"
-            style={{
-              display: "flex",
-              width: "20px",
-              height: "20px",
-              fontSize: "2.5rem",
-              alignItems: "center",
-              marginTop: "25px",
-              marginLeft: "95px",
-            }}
-          />
-          {/* <NewWallet /> */}
-          <p>
+          <ThemeProvider theme={theme}>
             <button
               id="password"
               value="password"
-              onClick={() => sendHaveWallet(true)}
-            >
-              지갑버튼
-            </button>
-          </p>
+              className="bx bxs-wallet bx-tada"
+              onClick={() => props.sethaveWallet("wallet")}
+              style={{
+                display: "flex",
+                width: "15px",
+                height: "15px",
+                fontSize: "2.7rem",
+                alignItems: "center",
+                marginTop: "25px",
+                marginLeft: "95px",
+                color: "white",
+              }}
+            ></button>
+          </ThemeProvider>
         </Typography>
       </Paper>
     </Grid>

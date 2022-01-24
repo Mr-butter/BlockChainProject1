@@ -1,69 +1,46 @@
 var express = require("express");
 var router = express.Router();
-const chainedBlock = require("../public/chainedBlock");
-const p2pServer = require("../public/p2pServer");
+const { WebSocket } = require("ws");
+const UserWallet = require("../models/userWallet");
+const chainedBlock_func = require("../public/chainedBlock");
+const p2pServer_func = require("../public/p2pServer");
+const ecdsa = require("elliptic");
+const ec = new ecdsa.ec("secp256k1");
 
-/* GET home page. */
-// router.post("/addPeers", (req, res) => {
-//   const data = req.body.data || [];
-//   connectToPeers(data);
-//   res.send(data);
-// });
-
-// router.post("/peers", (req, res) => {
-//   let sockInfo = [];
-
-//   getSockets().forEach((s) => {
-//     sockInfo.push(s._socket.remoteAddress + ":" + s._socket.remotePort);
-//   });
-//   res.send(sockInfo);
-// });
-
-router.post("/blocks", (req, res) => {
-    res.send(chainedBlock.getBlocks());
+router.post("/blocks", async (req, res) => {
+  const blocks = chainedBlock_func.getBlocks();
+  res.send(blocks);
 });
-
-const addPeerPort = [];
-router.post("/addPeer", (req, res) => {
-    if (addPeerPort.length === 0) {
-        addPeerPort.push(6000);
-        const addP2pport = addPeerPort[0];
-        const addPeer = `ws://localhost:${addP2pport}`;
-        p2pServer.initP2PServer(addP2pport);
-        p2pServer.connectToPeer(addPeer);
-        res.send(`포트 ${addP2pport}번 에서 열림`);
-    } else {
-        const addP2pport = addPeerPort[addPeerPort.length() - 1] + 1;
-        const addPeer = `ws://localhost:${addP2pport}`;
-        p2pServer.initP2PServer(addP2pport);
-        p2pServer.connectToPeer(addPeer);
-        res.send(`포트 ${addP2pport}번 에서 열림`);
-    }
+router.post("/inputport", (req, res) => {
+  // const p2pServer_func = require("../public/p2pServer");
+  const port = req.body.port;
+  console.log(port);
+  p2pServer_func.connectToPeer(port);
+  res.send({ message: `${port}번 포트로 웹소켓 접속` });
 });
 
 router.post("/mineBlock", (req, res) => {
-    const addP2pport = req.body.port;
-    const addPeer = `ws://localhost:${addP2pport}`;
-    p2pServer.initP2PServer(addP2pport);
-    p2pServer.connectToPeer(addPeer);
+  const switchOnOff = req.body.switchOnOff;
+  chainedBlock_func.minning(switchOnOff, "");
+  res.send({ message: "블록생성을 시작합니다." });
+});
+
+router.post("/mineBlockWithTransaction", (req, res) => {
+  const userAddress = req.body.userAddress;
+  const key = ec.keyFromPrivate(userAddress, "hex");
+  const userPublicKey = key.getPublic().encode("hex");
+  chainedBlock_func.minningWithTransaction(userPublicKey);
+  res.send({ message: "블록생성을 시작합니다." });
+});
+
+router.post("/getsocket", (req, res) => {
+  // const p2pServer_func = require("../public/p2pServer");
+  res.send(p2pServer_func.getSockets());
 });
 
 router.post("/version", (req, res) => {
-    res.send(chainedBlock.getVersion());
+  // const chainedBlock_func = require("../public/chainedBlock");
+  res.send(chainedBlock_func.getVersion());
 });
-
-router.post("/stop", (req, res) => {
-    res.send({ msg: "Stop Server!" });
-    process.exit();
-});
-
-// router.get("/address", (req, res) => {
-//   const address = getPublicKeyFromWallet().toString();
-//   if (address != "") {
-//     res.send({ address: address });
-//   } else {
-//     res.send("주소비었음");
-//   }
-// });
 
 module.exports = router;

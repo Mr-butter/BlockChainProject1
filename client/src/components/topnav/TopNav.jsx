@@ -1,155 +1,184 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, Fragment } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import "./topnav.css";
 
-import { Link } from "react-router-dom";
-
-import Dropdown from "../dropdown/Dropdown";
-
 import ThemeMenu from "../themeMenu/ThemeMenu";
-
-import notifications from "../../assets/JsonData/notification.json";
-
-// import styled from "styled-components";
 
 import Password from "../Password/Password";
 import NewWallet from "../walletModal/NewWallet";
 import Pwd from "../Password/Pwd";
+import ForgotPwd from "../Password/ForgetPwd";
 
-import Click from "../topnav/Click";
-
-// import Modal from "../walletModal/Modal";
-// import ModalStyles from "../walletModal/ModalStyles";
+import { Button, Menu, MenuItem, Box } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import { auth, loginUser, logoutUser } from "../../redux/actions/";
 
 import Toggle from "./Toggle";
 
-const renderNotificationItem = (item, index) => (
-  <div className="notification-item" key={index}>
-    <i className={item.icon}></i>
-    <span>{item.content}</span>
-  </div>
-);
-
 const Topnav = (props) => {
-  // const [showModal, setShowModal] = useState(false);
+    const userState = useSelector((state) => state.user);
+    const userAuth = userState.isAuth;
+    const userAddress = userState.address;
+    const serverPort = parseInt(window.location.port) + 2000;
+    const serverUrl = `http://127.0.0.1:${serverPort}`;
+    const [toggled, setToggled] = useState(false);
+    const dispatch = useDispatch();
+    const [haveWallet, sethaveWallet] = useState("pass");
+    const [AnchorEl, setAnchorEl] = useState(null);
+    const isMenuOpen = Boolean(AnchorEl);
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-  // const openModal = () => {
-  //   setShowModal((prev) => !prev);
-  // };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        sethaveWallet("pass");
+    };
 
-  const [toggled, setToggled] = useState(false);
+    useEffect(() => {
+        switch (toggled) {
+            case true:
+                axios
+                    .post(`${serverUrl}/mineBlock`, { switchOnOff: "on" })
+                    .then((res) => {
+                        const data = res.data.message;
+                        console.log(data);
+                    });
+                break;
 
-  const [haveWallet, sethaveWallet] = useState("pass");
-  const [createWallet, setcreateWallet] = useState("pass");
+            default:
+                break;
+        }
+    }, [toggled]);
 
-  const getHaveWallet = () => {
-    sethaveWallet("wallet");
-  };
-  // const getHaveCreatepwd = () => {
-  //   setcreateWallet("createpwd");
-  // };
-  useEffect(() => {
-    var elem = document.getElementById("password");
-    elem.addEventListener("click", () => getHaveWallet());
-    console.log(elem);
-  }, []);
+    useEffect(() => {}, [haveWallet]);
 
-  // useEffect(() => {
-  //   var eleme = document.getElementById("createpwd");
-  //   eleme.addEventListener("click", () => getHaveCreatepwd());
-  //   console.log(eleme);
-  // }, []);
+    const usericon = {
+        fontSize: 37,
+        color: "#dbd5d5",
+    };
+    function returnMenu(haveWallet) {
+        switch (haveWallet) {
+            case "pass":
+                return (
+                    <Password
+                        haveWallet={haveWallet}
+                        sethaveWallet={sethaveWallet}
+                        setAnchorEl={setAnchorEl}
+                    ></Password>
+                );
+            case "forgot":
+                return (
+                    <ForgotPwd
+                        haveWallet={haveWallet}
+                        sethaveWallet={sethaveWallet}
+                        setAnchorEl={setAnchorEl}
+                    ></ForgotPwd>
+                );
+            case "wallet":
+                return (
+                    <NewWallet
+                        haveWallet={haveWallet}
+                        sethaveWallet={sethaveWallet}
+                        setAnchorEl={setAnchorEl}
+                    ></NewWallet>
+                );
+            case "pwd":
+                return (
+                    <Pwd
+                        haveWallet={haveWallet}
+                        sethaveWallet={sethaveWallet}
+                        setAnchorEl={setAnchorEl}
+                    ></Pwd>
+                );
+            default:
+        }
+    }
 
-  return (
-    <div className="topnav">
-      <div className="topnav__search">
-        <input type="text" placeholder="Search here..." />
-        <i className="bx bx-search"></i>
-      </div>
+    function tttttt(iaAuth) {
+        if (iaAuth) {
+            return (
+                <Fragment>
+                    <div className="topnav__right">
+                        <Toggle
+                            onChange={(e) => {
+                                setToggled(e.target.checked);
+                            }}
+                        />
+                        <p>The switch is {toggled ? "on" : "off"}.</p>
+                    </div>
+                    <div>{userAddress}</div>
+                </Fragment>
+            );
+        }
+    }
 
-      <div className="topnav__right">
-        <Toggle onChange={(e) => setToggled(e.target.checked)} />
-        <p>The switch is {toggled ? "on" : "off"}.</p>
-      </div>
+    function yyyyyy(iaAuth) {
+        if (!iaAuth) {
+            return (
+                <Fragment>
+                    <div className="topnav__right-item">
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Open settings">
+                                <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+                                    <i class="bx bx-user" style={usericon} />
+                                </Button>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: "45px" }}
+                                id="menu-appbar"
+                                anchorEl={AnchorEl}
+                                anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                open={Boolean(AnchorEl)}
+                                onClose={handleMenuClose}
+                            >
+                                <MenuItem>{returnMenu(haveWallet)}</MenuItem>
+                            </Menu>
+                        </Box>
+                    </div>
+                </Fragment>
+            );
+        } else {
+            return (
+                <Fragment>
+                    <div className="topnav__right-item">
+                        <Button
+                            onClick={() => {
+                                dispatch(logoutUser());
+                            }}
+                            sx={{ p: 0, cursor: "pointer" }}
+                        >
+                            <i class="bx bx-user" style={usericon} />
+                        </Button>
+                    </div>
+                </Fragment>
+            );
+        }
+    }
 
-      <div className="topnav__right">
-        <div className="topnav__right-item">
-          <Dropdown
-            className="userpassword-item"
-            icon="bx bx-user"
-            // getHaveWallet={(e) => getHaveWallet(e)}
-            // customerToggle={() => renderUserToggle(curr_user)}
-            // contentData={여기에 개인지갑 어드레스 들어와야함}
-            // renderItems={(item, index) => renderUserMenu(item, index)}
-            renderFooter={
-              () =>
-                // <Password onClick={ClickWallet} />
-                // haveWallet ? <NewWallet /> : <Password />
-                {
-                  // if (haveWallet === "pass") {
-                  //   return <Password />;
-                  // } else if (haveWallet === "wallet") {
-                  //   return <NewWallet />;
-                  // }
-                  switch (haveWallet) {
-                    case "pass":
-                      return <Password />;
-                    case "wallet":
-                      return <NewWallet />;
-                    case "createpwd":
-                      return <Pwd />;
-                    default:
-                      break;
-                  }
-                }
-              // <NewWallet />
-            }
-          ></Dropdown>
+    return (
+        <div className="topnav">
+            <div className="topnav__search">
+                <input type="text" placeholder="Search here..." />
+                <i className="bx bx-search"></i>
+            </div>
+            {tttttt(userAuth)}
+            <div className="topnav__right">
+                {yyyyyy(userAuth)}
+                <div className="topnav__right-item">
+                    <ThemeMenu />
+                </div>
+            </div>
         </div>
-
-        <div className="topnav__right-item">
-          <Dropdown
-            icon="bx bx-bell"
-            badge="12"
-            contentData={notifications}
-            renderItems={(item, index) => renderNotificationItem(item, index)}
-            renderFooter={() => <Link to="/">View All</Link>}
-          />
-        </div>
-
-        <div className="topnav__right-item">
-          <ThemeMenu />
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
-
 export default Topnav;
-
-// import user_image from "../../assets/images/tuat.png";
-
-// import user_menu from "../../assets/JsonData/user_menus.json";
-
-// const curr_user = {
-//   display_name: "cococoin",
-//   image: user_image,
-// };
-
-// const renderUserToggle = (user) => (
-//   <div className="topnav__right-user">
-//     <div className="topnav__right-user__image">
-//       <img src={user.image} alt="" />
-//     </div>
-//     <div className="topnav__right-user__name">{user.display_name}</div>
-//   </div>
-// );
-
-// const renderUserMenu = (item, index) => (
-//   <Link to="/" key={index}>
-//     <div className="notification-item">
-//       <i className={item.icon}></i>
-//       <span>{item.content}</span>
-//     </div>
-//   </Link>
-// );

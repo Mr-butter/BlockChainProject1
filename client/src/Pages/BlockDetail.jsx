@@ -1,99 +1,105 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import { Button } from "@mui/material";
+// import Table from "../components/table/Table";
+// const blockTableHead = ["Hash", "Timestamp", "Amount", "Data"];
 
-import Table from "../components/table/Table";
+const columns = [{ id: "header", minWidth: 170 }];
 
-const blockTableHead = ["Hash", "Timestamp", "Amount", "Data"];
+const BlockDetail = (props) => {
+  const serverPort = parseInt(window.location.port) + 2000;
+  const serverUrl = `http://127.0.0.1:${serverPort}`;
 
-// 아래 blockTableBody은 페이지 기능보려고 넣은 임시데이타
-const blockTableBody = [
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-  {
-    Hash: "717705125461",
-    Timestamp: "1321546489797",
-    Amount: "1000",
-    Data: "1231545 fkjvmgcslkdfj;ksldfdm",
-  },
-];
+  const [chainBlocks, setChainBlocks] = useState([]);
+  const reverse = [...chainBlocks].reverse();
 
-const renderHead = (item, index) => <th key={index}>{item}</th>;
+  console.log(chainBlocks);
 
-const renderBody = (item, index) => (
-  <tr>
-    <td>{item.Hash}</td>
-    <td>{item.Timestamp}</td>
-    <td>{item.Amount}</td>
-    <td>{item.Data}</td>
-  </tr>
-);
+  const connect = async () => {
+    await axios
+      .post(`${serverUrl}/analytics`)
+      .then((res) => setChainBlocks(res.data.allBlocks))
+      .catch((error) => console.error(`ERROR: ${error}`));
+  };
 
-const BlockDetail = () => {
   return (
-    <div>
-      <h2 className="page-header">Blocks</h2>
-      <div className="row">
-        <div className="col-12">
-          <div className="card">
-            <div className="card__body">
-              <Table
-                limit="10"
-                headData={blockTableHead}
-                renderHead={(item, index) => renderHead(item, index)}
-                bodyData={blockTableBody} // 추후 데이터 베이스 불러와야함.
-                renderBody={(item, index) => renderBody(item, index)}
-              />
+    <div className="row">
+      <div>
+        <h2 className="page-header">Blocks</h2>
+        <div className="row">
+          <Button
+            style={{
+              borderRadius: 10,
+              borderColor: "gold",
+              marginLeft: 30,
+              color: "gold",
+              size: 100,
+              padding: "10px",
+              marginBottom: "25px",
+            }}
+            onClick={connect}
+            variant="outlined"
+          >
+            블록체인 목록 불러오기
+          </Button>
+          <div className="col-12">
+            <div
+              className="card"
+              style={{ marginRight: "50px", minWidth: "1650px" }}
+            >
+              <div className="card__body">
+                <div className="colinkBox">
+                  <Paper sx={{ width: "99%", overflow: "hidden" }}>
+                    <TableContainer sx={{ maxHeight: 800 }}>
+                      <Table
+                        className="ae-zone"
+                        stickyHeader
+                        aria-label="sticky table"
+                      >
+                        <TableHead>
+                          <TableRow style={{ color: "#bbbbbb" }}>
+                            <TableCell>version</TableCell>
+                            <TableCell>previousHash</TableCell>
+                            <TableCell>timestamp</TableCell>
+                            <TableCell>merkleRoot</TableCell>
+                            <TableCell>difficulty</TableCell>
+                            <TableCell>nonce</TableCell>
+                            <TableCell>body</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {reverse.map((data) => (
+                            <TableRow
+                              sx={{
+                                padding: "0px 0px",
+                                borderRight: "2px solid black",
+                                backgroundColor: "darkgrey",
+                                fontSize: "1.1rem",
+                              }}
+                            >
+                              <td>{data.version}</td>
+                              <td>{data.previousHash}</td>
+                              <td>{data.timestamp}</td>
+                              <td>{data.merkleRoot}</td>
+                              <td>{data.difficulty}</td>
+                              <td>{data.nonce}</td>
+                              <td>{data.body}</td>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </div>
+              </div>
             </div>
           </div>
         </div>

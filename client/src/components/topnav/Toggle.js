@@ -29,17 +29,17 @@ const Input = styled.input`
 `;
 
 const Slider = styled.span`
-display: flex;
-cursor: pointer;
-width: 50px;
-height: 25px;
-border-radius: 100px;
-background-color; red;
-position: background-color 0.2s;
-margin-right: 10px;
-transition: background-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  cursor: pointer;
+  width: 50px;
+  height: 25px;
+  border-radius: 100px;
+  background-color: var(--main-bg-dark);
+  position: background-color 0.2s;
+  margin-right: 10px;
+  transition: background-color 0.2s, box-shadow 0.2s;
 
-&:before {
+  &:before {
     content: "";
     position: absolute;
     top: 2px;
@@ -49,13 +49,12 @@ transition: background-color 0.2s, box-shadow 0.2s;
     border-radius: 21px;
     transition: 0.2s;
     background: gold;
-    box-shadow: 0 2px 4px 0 rgba(0, 35, 11, 0.2)
+    box-shadow: 0 2px 4px 0 rgba(0, 35, 11, 0.2);
+  }
 
-}
-
-&:active:before {
+  &:active:before {
     width: 28px;
-}
+  }
 `;
 
 const Toggle = ({ onChange, label }) => {

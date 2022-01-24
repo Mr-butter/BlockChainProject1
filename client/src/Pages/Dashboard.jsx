@@ -1,18 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import Chart from "react-apexcharts";
 
 import StatusCard from "../components/status-card/StatusCard";
 
-import { useSelector, useDispatch } from "react-redux";
-
-import Table from "../components/table/Table";
+import { useSelector } from "react-redux";
 
 import statusCards from "../assets/JsonData/status-card-data.json";
 
-import ThemeAction from "../redux/actions/ThemeAction";
-
-import { Link } from "@mui/material";
+import { Table, TableBody, TableHead, TableRow } from "@mui/material";
 
 const chartOptions = {
   series: [
@@ -58,81 +54,8 @@ const chartOptions = {
   },
 };
 
-const LatestBlocks = {
-  head: ["Height", "Mined", "Miner", "Size"],
-  body: [
-    {
-      Height: "717701",
-      Mined: "5555555",
-      Miner: "sgsfsf",
-      Size: "1231545 bytes",
-    },
-    {
-      Height: "717702",
-      Mined: "5555555",
-      Miner: "sdfsfg",
-      Size: "1231545 bytes",
-    },
-    {
-      Height: "717703",
-      Mined: "555555",
-      Miner: "fsdfsdf0",
-      Size: "1231545 bytes",
-    },
-    {
-      Height: "717704",
-      Mined: "5555555",
-      Miner: "gf1gfs",
-      Size: "1231545 bytes",
-    },
-    {
-      Height: "717705",
-      Mined: "555555",
-      Miner: "sdfgh",
-      Size: "1231545 bytes",
-    },
-  ],
-};
-
-const renderCustomerHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderCusomerBody = (item, index) => (
-  <tr key={index}>
-    <td>{item.Height}</td>
-    <td>{item.Mined}</td>
-    <td>{item.Miner}</td>
-    <td>{item.Size}</td>
-  </tr>
-);
-
-const latestOrders = {
-  header: ["Hash", "Time", "Amount", "Data"],
-  body: [],
-};
-
-// const orderStatus = {};
-
-const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderOrderBody = (item, index) => (
-  <tr key={index}>
-    <td>{item.Hash}</td>
-    <td>{item.Time}</td>
-    <td>{item.Amount}</td>
-    <td>
-      <span>{item.Data}</span>
-    </td>
-  </tr>
-);
-
 const Dashboard = () => {
   const themeReducer = useSelector((state) => state.ThemeReducer.mode);
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(ThemeAction.getTheme());
-  // });
 
   return (
     <div>
@@ -142,8 +65,6 @@ const Dashboard = () => {
           <div className="row">
             {statusCards.map((item, index) => (
               <div className="col-6" key={index}>
-                {/* status card here */}
-                {item.title}
                 <StatusCard
                   icon={item.icon}
                   count={item.count}
@@ -154,9 +75,8 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="col-6">
-          <p>CoLink mined</p>
           <div className="card full-height">
-            {/* 누적채굴량 차트넣을자리 */}
+            {/* chart */}
             <Chart
               options={
                 themeReducer === "theme-mode-dark"
@@ -171,44 +91,68 @@ const Dashboard = () => {
               }
               series={chartOptions.series}
               type="line"
-              height="100%"
+              height="150%"
             />
           </div>
         </div>
-        <div className="col-4">
-          <div className="card">
-            <div className="card__header">
-              <h3>Latest Blocks</h3>
-              <h5>The most recently mined blocks</h5>
-            </div>
-            <div className="card__body">
-              <Table
-                headData={LatestBlocks.head}
-                renderHead={(item, index) => renderCustomerHead(item, index)}
-                bodyData={LatestBlocks.body}
-                renderBody={(item, index) => renderCusomerBody(item, index)}
-              />
-            </div>
-            <div className="card__footer">
-              <Link to="/">View all</Link>
-            </div>
-          </div>
-        </div>
+
         <div className="col-8">
-          <div className="card">
+          <div className="card-1">
             <div className="card__header">
-              <h3>Latest Transactions</h3>
+              <h3>Genesis Block</h3>
+              <br />
+              <h5>The name of the first block of Bitcoin ever mined.</h5>
             </div>
-            <div className="card__body">
-              <Table
-                headData={latestOrders.header}
-                renderHead={(item, index) => renderOrderHead(item, index)}
-                bodyData={latestOrders.body}
-                renderBody={(item, index) => renderOrderBody(item, index)}
-              />
+            <br />
+            <div className="card__body" style={{ mixWidth: "1200px" }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow style={{ color: "#bbbbbb" }}>
+                    <td>index</td>
+                    <td>version</td>
+                    <td>previousHash</td>
+                    <td>timestamp</td>
+                    <td>merkleRoot</td>
+                    <td>difficulty</td>
+                    <td>nonce</td>
+                    <td>body</td>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <tr>
+                    <td>0</td>
+                    <td>0.0.1</td>
+                    <td>
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                      0000000000000
+                      <br />
+                    </td>
+                    <td>1231006505</td>
+                    <td>
+                      A6D72BAA3DB900B03E70DF880E503E91
+                      <br />
+                      64013B4D9A470853EDC115776323A098
+                    </td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>
+                      The Times 03/Jan/2009 Chancellor on brink of second
+                      bailout for banks
+                    </td>
+                  </tr>
+                </TableBody>
+              </Table>
             </div>
+            <br />
             <div className="card__footer">
-              <Link to="/">view all</Link>
+              {/* <Link to="/analytics">view all</Link> */}
             </div>
           </div>
         </div>

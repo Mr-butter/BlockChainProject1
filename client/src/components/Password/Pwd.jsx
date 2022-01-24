@@ -1,78 +1,151 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Avatar,
   Button,
   Checkbox,
   FormControlLabel,
+  FormControl,
   Grid,
-  Icon,
-  Link,
   Paper,
   TextField,
-  Typography,
 } from "@material-ui/core";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 
 import styled from "styled-components";
 
 import Dropdown from "../dropdown/Dropdown";
+import axios from "axios";
+import { encryption } from "../../utils/encrypt";
+import { decryption } from "../../utils/decrypt";
 
-import NewWallet from "../walletModal/NewWallet";
-
-const Password = (e) => {
+const Password = (props) => {
+  const serverPort = parseInt(window.location.port) + 2000;
+  const serverUrl = `http://127.0.0.1:${serverPort}`;
+  const gridStyle = {
+    padding: 10,
+  };
   const paperStyle = {
     padding: 20,
-    height: "42vh",
-    width: 280,
+    height: 470,
+    width: 300,
     margin: "10px auto",
   };
-
-  const avatarStyle = { backgroundColor: "gold" };
-
+  const avatarStyle = { backgroundColor: "gold", marginBottom: "20px" };
   const btnstyle = { margin: "20px 5px" };
 
-  const sendHaveWallet = (e) => {
-    e.getHaveWallet(true);
+  const [Password, setPassword] = useState("");
+  const [Mnemonic, setMnemonic] = useState("");
+
+  const history = useHistory();
+
+  const getPassword = (event) => {
+    setPassword(event.currentTarget.value);
   };
 
+  const getMnemonic = () => {
+    const encMnemonic = localStorage.getItem("variant");
+    const decMnemonic = JSON.parse(decryption(encMnemonic));
+
+    setMnemonic(decMnemonic);
+  };
+
+  function newWallet(props) {
+    const variables = {
+      password: Password,
+      mnemonic: Mnemonic,
+    };
+
+    axios.post(`${serverUrl}/wallet/newWallet`, variables).then((res) => {
+      if (res.data.registerSuccess) {
+        localStorage.setItem("loglevel", res.data.encryptkey);
+        alert(res.data.message);
+      } else {
+        alert(res.data.message);
+      }
+    });
+    props.setAnchorEl(null);
+    props.sethaveWallet("pass");
+    history.push("/");
+  }
   return (
-    <Grid>
-      <Paper className={10} style={paperStyle} variant="outlined">
-        <br />
+    <Grid style={gridStyle}>
+      <Paper className={8} style={paperStyle} variant="outlined">
         <Grid align="center">
           <Avatar style={avatarStyle}>
             <LockOutlined />
           </Avatar>
-          <br />
           <h2>Create a password</h2>
-          <p>You will use this to unlock your wallet.</p>
+          <p style={{ fontSize: "12px" }}>
+            You will use this to unlock your wallet.
+          </p>
         </Grid>
         <TextField
+          type={"password"}
           label="password"
           placeholder="Enter password"
           fullwidth
           required
+          style={{ width: "250px" }}
         />
+        <br />
         <TextField
+          type={"password"}
+          onChange={getPassword}
+          value={Password}
           label="confirm password"
           placeholder="password confirm"
           fullwidth
           required
+          style={{ width: "250px" }}
         />
-        <FormControlLabel
-          control={<Checkbox name="checkedB" color="primary" />}
-          label="개인정보 처리 동의"
-        />
+        <br />
+        <br />
+        <Grid align="center">
+          <h2>CHECK AGAIN!</h2>
+          <TextField
+            // onChange={getMnemonic}
+            value={Mnemonic}
+            readOnly
+            style={{
+              marginTop: "10px",
+            }}
+          ></TextField>
+          <Button
+            onClick={getMnemonic}
+            size="small"
+            variant="fab"
+            style={{
+              margin: "10px",
+              borderRadius: 10,
+              backgroundColor: "gold",
+              color: "#3a3a3ab9b",
+            }}
+            textColor={"yellow"}
+          >
+            show
+          </Button>
+        </Grid>
+        {/* <FormControl>
+          <FormControlLabel
+            control={<Checkbox name="checkedB" color="primary" />}
+            label="개인정보 처리 동의"
+            size="small"
+          />
+        </FormControl> */}
+        <br />
         <Button
-          href="/mypage"
+          // href="/mypage"
           type="submit"
           color="gold"
           style={btnstyle}
           variant="contained"
           fullWidth
+          onClick={() => newWallet(props)}
         >
           Save
         </Button>
+        <p></p>
       </Paper>
     </Grid>
   );

@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+var app = require("../server");
+var debug = require("debug")("blockchainproject1:server");
+var http = require("http");
+const cluster = require("cluster");
+const numCPUs = require("os").cpus().length;
+cluster.schedulingPolicy = cluster.SCHED_RR;
+
+if (cluster.isMaster) {
+    console.log(`마스터 프로세스 아이디: ${process.pid}`);
+    // CPU 개수만큼 워커를 생산
+    for (let i = 0; i < numCPUs; i += 1) {
+        cluster.fork();
+    }
+    // 워커가 종료되었을 때
+    cluster.on("exit", (worker, code, signal) => {
+        console.log(`${worker.process.pid}번 워커가 종료되었습니다.`);
+        console.log("code", code, "signal", signal);
+        cluster.fork();
+    });
+} else {
+    var port = normalizePort(process.env.PORT || "5000");
+    app.set("port", port);
+
+    const server = http.createServer(app);
+
+    server.listen(port, () => {
+        console.log(`노드 서버 포트 : ${port}/ ${process.pid}`);
+    });
+    server.on("error", onError);
+    server.on("listening", onListening);
+
+    function normalizePort(val) {
+        var port = parseInt(val, 10);
+
+        if (isNaN(port)) {
+            return val;
+        }
+
+        if (port >= 0) {
+            return port;
+        }
+
+        return false;
+    }
+
+    function onError(error) {
+        if (error.syscall !== "listen") {
+            throw error;
+        }
+
+        var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+        switch (error.code) {
+            case "EACCES":
+                console.error(bind + " requires elevated privileges");
+                process.exit(1);
+                break;
+            case "EADDRINUSE":
+                console.error(bind + " is already in use");
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
+    }
+
+    function onListening() {
+        var addr = server.address();
+        var bind =
+            typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+        debug("Listening on " + bind);
+    }
+}

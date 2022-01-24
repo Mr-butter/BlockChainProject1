@@ -21,7 +21,7 @@
 }
 
 .col-4 {
-  width: 33.33%;
+  width: 50%;
 }
 
 .col-5 {
@@ -30,6 +30,7 @@
 
 .col-6 {
   width: 50%;
+  height: 100%;
 }
 
 .col-6 p {
@@ -41,7 +42,7 @@
 }
 
 .col-8 {
-  width: 66.66%;
+  width: 100%;
 }
 
 .col-9 {
