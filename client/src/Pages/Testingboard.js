@@ -336,6 +336,23 @@ function Testingboard(props) {
         };
     }
 
+    function transaction() {
+        let sendingAddress = prompt(
+            "보내실 주소를 입력하세요."
+        );
+        let sendingAmount = prompt("보내실 양을 입력하세요.");
+
+        axios.post(`${serverUrl}/transaction`, {
+            address: sendingAddress,
+            amount: sendingAmount
+        }).then((res) => {
+            const data = res.data;
+            document.getElementById("writefield").innerText =
+                JSON.stringify(data);
+        });
+
+    }
+
     return (
         <div>
             <h2>테스트 코드</h2>
@@ -381,6 +398,15 @@ function Testingboard(props) {
                         onClick={() => version()}
                     >
                         version
+                    </Button>
+                </li>
+                <li>
+                    <Button
+                        color="primary"
+                        id="transaction"
+                        onClick={() => transaction()}
+                    >
+                        transaction
                     </Button>
                 </li>
             </ol>

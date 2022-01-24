@@ -7,6 +7,7 @@ import BlockDetail from "../Pages/BlockDetail";
 import Mining from "../Pages/Mining";
 import Mypage from "../Pages/Mypage";
 import Testingboard from "../Pages/Testingboard";
+import ATransaction from "../Pages/ATransaction";
 
 const Routes = () => {
   return (
@@ -15,6 +16,7 @@ const Routes = () => {
       <Route path="/analytics" component={BlockDetail} />
       <Route path="/mining" component={Mining} />
       <Route path="/mypage" component={Mypage} />
+      <Route path="/transaction" component={ATransaction} />
       <Route path="/testing" component={Testingboard} />
     </Switch>
   );

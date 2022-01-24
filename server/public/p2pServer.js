@@ -175,6 +175,10 @@ function closeConnection(ws) {
   connectToPeer(6001);
 }
 
+const broadcastLatest = () => {
+  broadcast(responseLatestMsg());
+}
+
 // parentPort.on("message", (message) => {
 //     const chainedBlock_func = require("./chainedBlock");
 //     switch (message) {
@@ -203,4 +207,5 @@ module.exports = {
   getSockets,
   broadcast,
   responseLatestMsg,
+  broadcastLatest
 };
