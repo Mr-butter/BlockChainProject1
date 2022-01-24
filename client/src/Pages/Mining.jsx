@@ -22,8 +22,6 @@ import Paper from "@mui/material/Paper";
 import axios from "axios";
 
 const Mining = () => {
-  const serverPort = parseInt(window.location.port) + 2000;
-  const serverUrl = `http://127.0.0.1:${serverPort}`;
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState(null);
   const [blockIndex, setBlockIndex] = useState("");
@@ -33,6 +31,9 @@ const Mining = () => {
   const [blockDifficulty, setBlockDifficulty] = useState("");
   const [blocktNonce, setBlocktNonce] = useState("");
   const [blocktData, setBlocktData] = useState("");
+  const [WebSocketOnOff, setWebSocketOnOff] = useState("");
+  const serverPort = parseInt(window.location.port) + 2000;
+  const serverUrl = `http://127.0.0.1:${serverPort}`;
 
   useEffect(() => {
     if (socketMessage !== null) {
@@ -82,6 +83,7 @@ const Mining = () => {
       console.log(res.data.message);
     });
   }
+
   function webon() {
     ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
     ws.current.onopen = () => {
@@ -125,12 +127,16 @@ const Mining = () => {
           블럭채굴하기
         </Button>
         <Button
-          variant="contained"
-          color="secondary"
-          style={{ margin: "10px" }}
-          onClick={() => {
-            webon();
+          variant="outlined"
+          style={{
+            borderRadius: 10,
+            borderColor: "gold",
+            marginLeft: 30,
+            color: "gold",
+            size: 100,
+            padding: "10px",
           }}
+          onClick={() => webon()}
         >
           클라이언트 웹소켓 접속
         </Button>
@@ -158,7 +164,9 @@ const Mining = () => {
             >
               Index
             </TableCell>
-            <TableCell align="left">{blockIndex}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blockIndex}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -170,7 +178,9 @@ const Mining = () => {
             <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               prevHash
             </TableCell>
-            <TableCell align="left">{prevHash}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {prevHash}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -182,7 +192,9 @@ const Mining = () => {
             <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               MerkleRoot
             </TableCell>
-            <TableCell align="left">{blockMerkleRoot}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blockMerkleRoot}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -194,7 +206,9 @@ const Mining = () => {
             <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               Timestamp
             </TableCell>
-            <TableCell align="left">{blockTimestamp}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blockTimestamp}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -206,7 +220,9 @@ const Mining = () => {
             <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               Difficulty
             </TableCell>
-            <TableCell align="left">{blockDifficulty}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blockDifficulty}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -218,7 +234,9 @@ const Mining = () => {
             <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               Nonce
             </TableCell>
-            <TableCell align="left">{blocktNonce}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blocktNonce}
+            </TableCell>
           </TableRow>
           <TableRow
             sx={{
@@ -230,7 +248,9 @@ const Mining = () => {
             <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
               blocktData
             </TableCell>
-            <TableCell align="left">{blocktData}</TableCell>
+            <TableCell align="left" style={{ color: "#bbbbbb" }}>
+              {blocktData}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>

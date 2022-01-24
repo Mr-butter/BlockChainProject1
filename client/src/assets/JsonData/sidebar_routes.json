@@ -20,11 +20,6 @@
     "icon": "bx bx-wallet"
   },
   {
-    "display_name": "settings",
-    "route": "/settings",
-    "icon": "bx bxs-cog"
-  },
-  {
     "display_name": "Testing board",
     "route": "/testing",
     "icon": "bx bx-bar-chart-alt"
