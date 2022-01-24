@@ -2,14 +2,17 @@ var express = require("express");
 var router = express.Router();
 const { WebSocket } = require("ws");
 const UserWallet = require("../models/userWallet");
+const chainedBlock_func = require("../public/chainedBlock");
+const p2pServer_func = require("../public/p2pServer");
+const ecdsa = require("elliptic");
+const ec = new ecdsa.ec("secp256k1");
 
 router.post("/blocks", async (req, res) => {
-  const chainedBlock_func = require("../public/chainedBlock");
   const blocks = chainedBlock_func.getBlocks();
   res.send(blocks);
 });
 router.post("/inputport", (req, res) => {
-  const p2pServer_func = require("../public/p2pServer");
+  // const p2pServer_func = require("../public/p2pServer");
   const port = req.body.port;
   console.log(port);
   p2pServer_func.connectToPeer(port);
@@ -17,21 +20,26 @@ router.post("/inputport", (req, res) => {
 });
 
 router.post("/mineBlock", (req, res) => {
-  const chainedBlock_func = require("../public/chainedBlock");
-  console.log("////////////");
   const switchOnOff = req.body.switchOnOff;
-  console.log(switchOnOff);
-  chainedBlock_func.minning(switchOnOff);
+  chainedBlock_func.minning(switchOnOff, "");
+  res.send({ message: "블록생성을 시작합니다." });
+});
+
+router.post("/mineBlockWithTransaction", (req, res) => {
+  const userAddress = req.body.userAddress;
+  const key = ec.keyFromPrivate(userAddress, "hex");
+  const userPublicKey = key.getPublic().encode("hex");
+  chainedBlock_func.minningWithTransaction(userPublicKey);
   res.send({ message: "블록생성을 시작합니다." });
 });
 
 router.post("/getsocket", (req, res) => {
-  const p2pServer_func = require("../public/p2pServer");
+  // const p2pServer_func = require("../public/p2pServer");
   res.send(p2pServer_func.getSockets());
 });
 
 router.post("/version", (req, res) => {
-  const chainedBlock_func = require("../public/chainedBlock");
+  // const chainedBlock_func = require("../public/chainedBlock");
   res.send(chainedBlock_func.getVersion());
 });
 

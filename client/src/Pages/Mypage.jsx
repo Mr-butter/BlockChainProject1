@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 // import axios from "axios";
 import styled from "styled-components";
 import WalletTable from "../components/table/WalletTable";
+import _ from "lodash";
 
 // import Modal from "../components/walletModal/modal";
 // import ModalStyles from "../walletModal/ModalStyles";
@@ -32,12 +33,6 @@ function Mypage(props) {
   const userAuth = userState.isAuth;
   const userAddress = userState.address;
 
-  //   function initWallet() {
-  //     axios.post("/initWallet", (req, res) => {
-  //       alert(res.data.message);
-  //     });
-  //   }
-
   function asdf(Auth) {
     if (Auth) {
       return (
@@ -52,6 +47,9 @@ function Mypage(props) {
                 </div>
                 <div className="card__body" style={{ width: "500px" }}>
                   <WalletTable />
+                  <div>
+                    <Button onClick={() => {}}>보내기</Button>
+                  </div>
                 </div>
                 <div className="card__footer"></div>
               </div>

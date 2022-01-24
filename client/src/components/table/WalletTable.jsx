@@ -23,13 +23,13 @@ const WalletTable = () => {
     });
   }
   function getVarPwdFromUser(event) {
-    console.log(event.currentTarget.value);
+    // console.log(event.currentTarget.value);
     setVarPwdFromUser(event.currentTarget.value);
   }
 
   const decStr = JSON.parse(decryption(localStorage.getItem("loglevel")));
-  console.log("decStr");
-  console.log(decStr);
+  // console.log("decStr");
+  // console.log(decStr);
   const keystore = new ligthWallet.keystore.deserialize(decStr);
   const address = keystore.getAddresses();
 
