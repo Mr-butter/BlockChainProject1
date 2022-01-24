@@ -3,6 +3,18 @@ const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
 const BlockChainDB = require("../models/blocks");
+const {
+  processTransactions,
+  signTxIn,
+  getTransactionId,
+  isValidAddress,
+  UnspentTxOut,
+  TxIn,
+  TxOut,
+  getCoinbaseTransaction,
+  getPublicKey,
+  Transaction,
+} = require("./transaction");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -66,6 +78,7 @@ function createGenesisBlock() {
 }
 
 let Blocks = [createGenesisBlock()];
+let unspentTxOuts = [];
 
 function getBlocks() {
   return Blocks;
@@ -337,14 +350,43 @@ function isValidChain(newBlocks) {
   }
   return true;
 }
+//////////////////////////////////////////////////////
+const generateNextBlock = (publicKey) => {
+  const coinbaseTx = getCoinbaseTransaction(
+    publicKey,
+    getLastBlock().header.index + 1
+  );
+  const blockData = [coinbaseTx];
+  return nextBlock(blockData);
+};
 
-//////////////////////////////////////임의거래장부
-// let transectionArry = [];
-// setInterval(() => {
-//   const transection = { addTransection: parseInt(Math.random() * 1000) };
-//   transectionArry.push(transection);
-// }, Math.random() * 1000);
-//////////////////////////////////////
+const generatenextBlockWithTransaction = (
+  userPublicKey,
+  receiverAddress,
+  amount
+) => {
+  if (!isValidAddress(receiverAddress)) {
+    throw Error("invalid address");
+  }
+  if (typeof amount !== "number") {
+    throw Error("invalid amount");
+  }
+  const coinbaseTx = getCoinbaseTransaction(
+    userPublicKey,
+    getLastBlock().header.index + 1
+  );
+  console.log(coinbaseTx);
+  const tx = createTransaction(
+    receiverAddress,
+    amount,
+    userPublicKey,
+    unspentTxOuts
+  );
+  const blockData = [coinbaseTx, tx];
+  return nextBlock(blockData);
+};
+
+//////////////////////////////////////////////////////
 
 // async function addBlock(newBlock) {
 //   if (isValidNewBlock(newBlock, getLastBlock())) {
@@ -352,7 +394,6 @@ function isValidChain(newBlocks) {
 //     const checkGene = await BlockChainDB.findAll({
 //       where: { index: 0 },
 //     });
-
 //     if (checkGene[0] === undefined) {
 //       BlockChainDB.create({
 //         index: "0",
@@ -394,101 +435,63 @@ function isValidChain(newBlocks) {
 //   return false;
 // }
 
-async function addBlock(newBlock) {
+function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
     Blocks.push(newBlock);
-    const checkGene = await BlockChainDB.findAll({
-      where: { index: 0 },
-    });
-    if (checkGene[0] === undefined) {
-      BlockChainDB.create({
-        index: "0",
-        version: "0.0.1",
-        previousHash:
-          "0000000000000000000000000000000000000000000000000000000000000000",
-        timestamp: "1231006505",
-        merkleRoot:
-          "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
-        difficulty: "0",
-        nonce: "0",
-        body: `["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]`,
-      });
-      BlockChainDB.create({
-        index: JSON.stringify(newBlock.header.index),
-        version: newBlock.header.version,
-        previousHash: newBlock.header.previousHash,
-        timestamp: JSON.stringify(newBlock.header.timestamp),
-        merkleRoot: newBlock.header.merkleRoot,
-        difficulty: JSON.stringify(newBlock.header.difficulty),
-        nonce: JSON.stringify(newBlock.header.nonce),
-        body: JSON.stringify(newBlock.body),
-      });
-      return true;
+    return newBlock;
+  }
+  return false;
+}
+
+function addBlockWithTransaction(newBlock) {
+  if (isValidNewBlock(newBlock, getLastBlock())) {
+    const retVal = processTransactions(
+      newBlock.body,
+      unspentTxOuts,
+      newBlock.header.index
+    );
+    if (retVal === null) {
+      return false;
     } else {
-      BlockChainDB.create({
-        index: JSON.stringify(newBlock.header.index),
-        version: newBlock.header.version,
-        previousHash: newBlock.header.previousHash,
-        timestamp: JSON.stringify(newBlock.header.timestamp),
-        merkleRoot: newBlock.header.merkleRoot,
-        difficulty: JSON.stringify(newBlock.header.difficulty),
-        nonce: JSON.stringify(newBlock.header.nonce),
-        body: JSON.stringify(newBlock.body),
-      });
-      return true;
+      Blocks.push(newBlock);
+      unspentTxOuts = retVal;
+      console.log(unspentTxOuts);
+      return newBlock;
     }
   }
   return false;
 }
-// function addBlock(newBlock) {
-//   if (isValidNewBlock(newBlock, getLastBlock())) {
-//     Blocks.push(newBlock);
-//     return newBlock;
-//   }
-//   return false;
-// }
 
 function minning(message) {
   const p2pServer_func = require("./p2pServer");
-  // console.log("들어가니?");
-  // addBlock(nextBlock(["bodyData"]));
   switch (message) {
     case "on":
-      console.log("온진입");
       p2pServer_func.connectToPeer(6001);
       setInterval(() => {
         addBlock(nextBlock(["bodyData"]));
       }, 3000);
       return;
-    case "block":
-      console.log("블럭진입");
-      addBlock(nextBlock(["bodyData"]));
-      return;
     case "connectPeer":
-      console.log("피어진입");
       p2pServer_func.connectToPeer(6001);
       return;
     default:
       return;
   }
 }
+function minningWithTransaction(userPublicKey) {
+  const PublicKey = userPublicKey;
+  const receiverAddress = userPublicKey;
 
-// function minning(message) {
-//     switch (message) {
-//         case "on":
-//             setInterval(() => addBlock(), 1000);
-//             break;
-//         case "off":
-//             return process.exit();
-
-//         default:
-//             break;
-//     }
-// }
+  addBlockWithTransaction(
+    generatenextBlockWithTransaction(PublicKey, receiverAddress, 100)
+    // generateNextBlock(userPublicKey)
+  );
+}
 
 module.exports = {
   Blocks,
   addBlock,
+  addBlockWithTransaction,
   getLastBlock,
   createHash,
   nextBlock,
@@ -498,4 +501,5 @@ module.exports = {
   hashMatchesDifficulty,
   replaceChain,
   minning,
+  minningWithTransaction,
 };

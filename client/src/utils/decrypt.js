@@ -19,7 +19,7 @@ export function decryption(encStr) {
 
   const decStr = CryptoJS.enc.Utf8.stringify(decObj);
   //const parsedDecStr = JSON.parse(decStr)
-  console.log("decStr : " + decStr);
+  // console.log("decStr : " + decStr);
 
   return decStr;
 }
