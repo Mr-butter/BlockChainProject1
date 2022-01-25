@@ -2,11 +2,11 @@ const fs = require("fs");
 const merkle = require("merkle");
 const cryptojs = require("crypto-js");
 const random = require("random");
-const BlockChainDB = require("../models/blocks");
-const ecdsa = require('elliptic');
-const ec = new ecdsa.ec("secp256k1");
-const { getCoinbaseTransaction, isValidAddress, processTransactions, Transaction, UnspentTxOut } = require('./transaction');
-const { getPublicKeyFromWallet, getPrivateKeyFromWallet, createTransaction, getBalance } = require("./encryption");
+// const BlockChainDB = require("../models/blocks");
+// const ecdsa = require('elliptic');
+// const ec = new ecdsa.ec("secp256k1");
+// const { getCoinbaseTransaction, isValidAddress, processTransactions, Transaction, UnspentTxOut } = require('./transaction');
+// const { getPublicKeyFromWallet, getPrivateKeyFromWallet, createTransaction, getBalance } = require("./encryption");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -146,7 +146,8 @@ function nextBlock(bodyData) {
     difficulty,
     bodyData
   );
-  if (addBlock(newBlock)) {
+  if (isValidNewBlock(newBlock, prevBlock)) {
+  // if (addBlock(newBlock)) {
     broadcast(responseLatestMsg());
     return newBlock;
   } else {
@@ -448,7 +449,7 @@ function isValidChain(newBlocks) {
 
 function minning(message) {
   const p2pServer_func = require("./p2pServer");
-  // console.log("들어가니?");
+  console.log("들어가니?");
   // addBlock(nextBlock(["bodyData"]));
   switch (message) {
     case "on":
@@ -484,11 +485,21 @@ function minning(message) {
 //     }
 // }
 
+// function addBlock(newBlock) {
+//   if (isValidNewBlock(newBlock, getLastBlock())) {
+//     Blocks.push(newBlock);
+//     return newBlock;
+//   }
+//   return false;
+// }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 let unspentTxOuts = [];
 
 function addBlock(newBlock) {
+// function addBlockWithTransaction(newBlock) {
+  const { processTransactions } = require('./transaction');
   if (isValidNewBlock(newBlock, getLastBlock())) {
     const retVal = processTransactions(newBlock.data, unspentTxOuts, newBlock.index)
     if (retVal === null) {
@@ -502,7 +513,18 @@ function addBlock(newBlock) {
   return false;
 }
 
+// const generateNextBlock = (publicKey) => {
+//   const coinbaseTx = getCoinbaseTransaction(
+//     publicKey,
+//     getLastBlock().header.index + 1
+//   );
+//   const blockData = [coinbaseTx];
+//   return nextBlock(blockData);
+// };
+
 const generatenextBlockWithTransaction = (receiverAddress, amount) => {
+  const { getPublicKeyFromWallet, getPrivateKeyFromWallet, createTransaction } = require("./encryption");
+  const { getCoinbaseTransaction, isValidAddress } = require('./transaction');
 
   console.log("진입");
   console.log("receiverAddress::", receiverAddress);
@@ -524,6 +546,16 @@ const generatenextBlockWithTransaction = (receiverAddress, amount) => {
   return nextBlock(blockData)
 }
 
+///////////////////////////////////////////////////////////////////
+function minningWithTransaction(userPublicKey) {
+  const PublicKey = userPublicKey;
+  const receiverAddress = userPublicKey;
+
+  addBlockWithTransaction(
+    generatenextBlockWithTransaction(PublicKey, receiverAddress, 100)
+    // generateNextBlock(userPublicKey)
+  );
+}
 
 
 
@@ -539,5 +571,6 @@ module.exports = {
   hashMatchesDifficulty,
   replaceChain,
   minning,
-  generatenextBlockWithTransaction
+  generatenextBlockWithTransaction,
+  // minningWithTransaction
 };

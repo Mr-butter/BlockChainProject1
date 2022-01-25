@@ -353,6 +353,7 @@ function Testingboard(props) {
 
     }
 
+
     return (
         <div>
             <h2>테스트 코드</h2>
@@ -407,6 +408,22 @@ function Testingboard(props) {
                         onClick={() => transaction()}
                     >
                         transaction
+                    </Button>
+                </li>
+                <li>
+                    <Button
+                        color="primary"
+                        id="makeWallet"
+                        onClick={() => makeWallet()}>
+                        makeWallet
+                    </Button>
+                </li>
+                <li>
+                    <Button
+                        color="primary"
+                        id="address"
+                        onClick={() => address()}>
+                        address
                     </Button>
                 </li>
             </ol>

@@ -3,14 +3,7 @@ const ecdsa = require("elliptic");
 const ec = new ecdsa.ec("secp256k1");
 const _ = require('lodash')
 
-const {
-    getPublicKey,
-    getTransactionId,
-    signTxIn,
-    Transaction,
-    TxIn,
-    TxOut,
-} = require("./chainedBlock");
+
 
 const privateKeyLocation = "wallet/" + (process.env.PRIVATE_KEY || "default");
 const privateKeyFile = privateKeyLocation + "/private_key";
@@ -52,6 +45,7 @@ function getPublicKeyFromWallet() {
 
 //////////////////////////////////////////////////////////////
 
+
 const getBalance = (address, unspentTxOuts) => {
     return _(unspentTxOuts)
         .filter((uTxo) => uTxo.address === address)
@@ -77,6 +71,9 @@ const findTxOutsForAmount = (amount, myUnspentTxOuts) => {
 }
 
 const createTxOuts = (receiverAddress, myAddress, amount, leftOverAmount) => {
+    const {
+        TxOut,
+    } = require("./transaction");
     const txOut1 = new TxOut(receiverAddress, amount)
     if (leftOverAmount === 0) {
         return [txOut1]
@@ -87,6 +84,15 @@ const createTxOuts = (receiverAddress, myAddress, amount, leftOverAmount) => {
 }
 
 const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts) => {
+
+    const {
+        getPublicKey,
+        getTransactionId,
+        signTxIn,
+        Transaction,
+        TxIn,
+    } = require("./transaction");
+
     const myAddress = getPublicKey(privateKey);
     const myUnspentTxOuts = unspentTxOuts.filter(
         (uTxO) => uTxO.address === myAddress

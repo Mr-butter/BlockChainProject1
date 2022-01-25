@@ -19,7 +19,7 @@ router.post("/inputport", (req, res) => {
 
 router.post("/mineBlock", (req, res) => {
   const chainedBlock_func = require("../public/chainedBlock");
-  console.log("////////////");
+  console.log("///////////////블럭채굴시작합니다.");
   const switchOnOff = req.body.switchOnOff;
   console.log(switchOnOff);
   chainedBlock_func.minning(switchOnOff);
@@ -40,7 +40,8 @@ router.post("/mineTransaction", (req, res) => {
   console.log("///////////////////////////////////////////////////////////////mineTransaction 시작입니다.\n");
   const chainedBlock_func = require("../public/chainedBlock");
   const address = req.body.address;
-  const amount = req.body.amount;
+  const amount = parseInt(req.body.amount);
+  console.log(typeof amount);
 
   console.log(req.body);
 
@@ -54,5 +55,21 @@ router.post("/mineTransaction", (req, res) => {
   }
 
 });
+
+router.get("/address", (req, res) => {
+  const { getPublicKeyFromWallet } = require("../public/encryption");
+  const address = getPublicKeyFromWallet().toString();
+  if (address != "") {
+    res.send({ address_PublicKey: address });
+  } else {
+    res.send("주소비었음");
+  }
+});
+
+router.post("/initWallet", async (req, res, next) => {
+  const { initWallet } = require("../public/encryption");
+  res.json(initWallet());
+});
+
 
 module.exports = router;

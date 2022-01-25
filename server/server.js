@@ -19,6 +19,7 @@ var wallet = require("./routes/wallet");
 var analytics = require("./routes/analytics");
 
 
+
 var app = express();
 
 app.use(logger("dev"));
@@ -54,6 +55,7 @@ app.use("/login", login);
 // app.use("/socketServer", socketServer);
 app.use("/wallet", wallet);
 app.use("/analytics", analytics);
+
 
 
 // catch 404 and forward to error handler

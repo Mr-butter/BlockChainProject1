@@ -1,4 +1,4 @@
-const cryptojs = require("crypto-js");
+const CryptoJS = require("crypto-js");
 const _ = require('lodash')
 const ecdsa = require('elliptic');
 const ec = new ecdsa.ec("secp256k1");
