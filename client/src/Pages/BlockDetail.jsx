@@ -53,7 +53,7 @@ const BlockDetail = (props) => {
           <div className="col-12">
             <div
               className="card"
-              style={{ marginRight: "50px", minWidth: "1650px" }}
+              style={{ marginRight: "50px", minWidth: "1200px" }}
             >
               <div className="card__body">
                 <div className="colinkBox">

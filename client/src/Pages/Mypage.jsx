@@ -20,11 +20,11 @@ const Container = styled.div`
 const Button = styled.button`
   padding: 16px 32px;
   border-radious: 30%;
-  background: #000000;
+  background: #202020;
   color: gold;
   font-size: 24px;
   margin-left: 44%;
-  margin-bottom: 60%;
+  /* margin-bottom: 60%; */
   cursor: pointer;
 `;
 
@@ -36,7 +36,7 @@ function Mypage(props) {
   function asdf(Auth) {
     if (Auth) {
       return (
-        <div className="table-wrapper" style={{ marginBottom: "200px" }}>
+        <div className="table-wrapper" style={{ marginBottom: "50px" }}>
           <h2>My Wallet</h2>
           <br />
           <div>
@@ -48,7 +48,21 @@ function Mypage(props) {
                 <div className="card__body" style={{ width: "500px" }}>
                   <WalletTable />
                   <div>
-                    <Button onClick={() => {}}>보내기</Button>
+                    <Button
+                      style={{
+                        borderRadius: 10,
+                        borderColor: "gold",
+                        marginLeft: 270,
+                        color: "gold",
+                        size: 100,
+                        padding: "10px",
+                        marginBottom: "25px",
+                      }}
+                      variant="outlined"
+                      onClick={() => {}}
+                    >
+                      보내기
+                    </Button>
                   </div>
                 </div>
                 <div className="card__footer"></div>
