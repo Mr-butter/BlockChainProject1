@@ -1,7 +1,6 @@
 const fs = require("fs");
 const ecdsa = require("elliptic");
 const ec = new ecdsa.ec("secp256k1");
-
 const privateKeyLocation = "wallet/" + (process.env.PRIVATE_KEY || "default");
 const privateKeyFile = privateKeyLocation + "/private_key";
 
@@ -22,7 +21,6 @@ function initWallet() {
     console.log("새로운 지갑경로 생성 경로 : " + privateKeyFile);
     return { message: "지갑이 잘 생성되었습니다." };
 }
-
 function generatePrivatekey() {
     const keyPair = ec.genKeyPair();
     const privatekey = keyPair.getPrivate();
@@ -35,10 +33,12 @@ function getPrivateKeyFromWallet() {
 }
 
 function getPublicKeyFromWallet() {
-    const privatekey = getPrivateKeyFromWallet();
+    // const privatekey = getPrivateKeyFromWallet();
+    const privatekey = "0x5fbfdc01bf54191d146103853b2481bdc81e7c0d";
     const key = ec.keyFromPrivate(privatekey, "hex");
     return key.getPublic().encode("hex");
 }
+console.log(getPublicKeyFromWallet());
 
 module.exports = {
     initWallet,

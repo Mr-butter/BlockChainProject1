@@ -19,7 +19,6 @@ var wallet = require("./routes/wallet");
 var analytics = require("./routes/analytics");
 
 var app = express();
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,24 +26,24 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use(express.static(path.join(__dirname, "public")));
 sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("DB 연결성공");
-  })
-  .catch((err) => {
-    console.error(`DB 연결실패 - ${err}`);
-  });
+    .sync({ force: false })
+    .then(() => {
+        console.log("DB 연결성공");
+    })
+    .catch((err) => {
+        console.error(`DB 연결실패 - ${err}`);
+    });
 app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET || "cookiesecret",
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 2,
-      secure: false,
-    },
-  })
+    session({
+        resave: false,
+        saveUninitialized: false,
+        secret: process.env.COOKIE_SECRET || "cookiesecret",
+        cookie: {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 2,
+            secure: false,
+        },
+    })
 );
 app.use(cors());
 
@@ -57,18 +56,18 @@ app.use("/analytics", analytics);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.send("error");
+    // render the error page
+    res.status(err.status || 500);
+    res.send("error");
 });
 
 module.exports = app;
