@@ -131,9 +131,9 @@ function Testingboard(props) {
                 userAddress: userAddress,
             })
             .then((res) => {
-                // const data = res.data.message;
+                const data = JSON.stringify(res.data.message);
                 console.log(res.data.message);
-                // document.getElementById("writefield").innerText = data;
+                document.getElementById("writefield").innerText = data;
             });
     }
     function sendTransation() {

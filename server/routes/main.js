@@ -30,7 +30,8 @@ router.post("/mineBlockWithTransaction", (req, res) => {
     const key = ec.keyFromPrivate(userAddress, "hex");
     const userPublicKey = key.getPublic().encode("hex");
     chainedBlock_func.minningWithTransaction(userPublicKey);
-    res.send({ message: "트랜잭션추가 블록생성." });
+    const UnspentTxOuts = chainedBlock_func.getUnspentTxOuts();
+    res.send({ message: UnspentTxOuts });
 });
 router.post("/getUserAmount", (req, res) => {
     const userAddress = req.body.userAddress;
