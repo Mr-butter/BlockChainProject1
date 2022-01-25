@@ -21,7 +21,7 @@ const TransactionTable = () => {
     const serverPort = parseInt(window.location.port) + 2000;
     const serverUrl = `http://127.0.0.1:${serverPort}`;
     axios
-      .post(`${serverUrl}/transaction`, {
+      .post(`${serverUrl}/mineTransaction`, {
         address: ToAddress,
         amount: ToAmount,
       })

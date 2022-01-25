@@ -2,10 +2,10 @@ var express = require("express");
 var router = express.Router();
 const { WebSocket } = require("ws");
 const UserWallet = require("../models/userWallet");
-const chainedBlock_func = require("../public/chainedBlock");
+// const chainedBlock_func = require("../public/chainedBlock");
 
 router.post("/blocks", async (req, res) => {
-
+  const chainedBlock_func = require("../public/chainedBlock");
   const blocks = chainedBlock_func.getBlocks();
   res.send(blocks);
 });
@@ -18,7 +18,7 @@ router.post("/inputport", (req, res) => {
 });
 
 router.post("/mineBlock", (req, res) => {
-
+  const chainedBlock_func = require("../public/chainedBlock");
   console.log("////////////");
   const switchOnOff = req.body.switchOnOff;
   console.log(switchOnOff);
@@ -32,31 +32,26 @@ router.post("/getsocket", (req, res) => {
 });
 
 router.post("/version", (req, res) => {
-
+  const chainedBlock_func = require("../public/chainedBlock");
   res.send(chainedBlock_func.getVersion());
 });
 
-router.post("/transaction", (req, res) => {
-
+router.post("/mineTransaction", (req, res) => {
+  console.log("///////////////////////////////////////////////////////////////mineTransaction 시작입니다.\n");
+  const chainedBlock_func = require("../public/chainedBlock");
   const address = req.body.address;
   const amount = req.body.amount;
 
-
   console.log(req.body);
-  //res.send(req.body)
 
-  const resp = chainedBlock_func.generatenextBlockWithTransaction(address, amount)
-  console.log(resp);
-  res.send(resp);
-
-  // try {
-  //   const resp = chainedBlock_func.generatenextBlockWithTransaction(address, amount)
-  //   console.log(resp);
-  //   res.send(resp)
-  // } catch (e) {
-  //   console.log(e.message);
-  //   res.status(400).send(e.message)
-  // }
+  try {
+    const resp = chainedBlock_func.generatenextBlockWithTransaction(address, amount)
+    console.log(resp);
+    res.send(resp)
+  } catch (e) {
+    console.log(e.message);
+    res.status(400).send(e.message)
+  }
 
 });
 

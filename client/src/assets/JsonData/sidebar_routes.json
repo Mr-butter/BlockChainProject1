@@ -21,8 +21,8 @@
   },
   {
     "display_name": "transaction",
-    "route": "/transaction",
-    "icon": "bx bxs-badge-dollar"
+    "route": "/mineTransaction",
+    "icon": "bx bx-transfer-alt bx-burst"
   },
   {
     "display_name": "Testing board",

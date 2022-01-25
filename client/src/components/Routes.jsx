@@ -16,7 +16,7 @@ const Routes = () => {
       <Route path="/analytics" component={BlockDetail} />
       <Route path="/mining" component={Mining} />
       <Route path="/mypage" component={Mypage} />
-      <Route path="/transaction" component={ATransaction} />
+      <Route path="/mineTransaction" component={ATransaction} />
       <Route path="/testing" component={Testingboard} />
     </Switch>
   );

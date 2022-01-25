@@ -3,14 +3,14 @@ const ecdsa = require("elliptic");
 const ec = new ecdsa.ec("secp256k1");
 const _ = require('lodash')
 
-import {
+const {
     getPublicKey,
     getTransactionId,
     signTxIn,
     Transaction,
     TxIn,
     TxOut,
-} from "./chainedBlock";
+} = require("./chainedBlock");
 
 const privateKeyLocation = "wallet/" + (process.env.PRIVATE_KEY || "default");
 const privateKeyFile = privateKeyLocation + "/private_key";
