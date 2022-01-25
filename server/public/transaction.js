@@ -2,6 +2,7 @@ const CryptoJS = require("crypto-js");
 const ecdsa = require("elliptic");
 const ec = new ecdsa.ec("secp256k1");
 const _ = require("lodash");
+const { CLOSING } = require("ws");
 
 class TxOut {
     constructor(address, amount) {
@@ -76,6 +77,7 @@ const toHexString = (byteArray) => {
 // };
 
 const signTxIn = (transaction, txInIndex, privateKey, aUnspentTxOuts) => {
+    console.log("여기는 들어오나");
     const txIn = transaction.txIns[txInIndex];
 
     const dataToSign = transaction.id;
@@ -367,11 +369,6 @@ const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
         return null;
     }
 
-    console.log("processTransactions");
-    console.log(aTransactions);
-    console.log(aUnspentTxOuts);
-    console.log(blockIndex);
-
     return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);
 };
 
@@ -421,15 +418,25 @@ const findTxOutsForAmount = (amount, myUnspentTxOuts) => {
     throw Error(eMsg);
 };
 
+const createTxOuts = (receiverAddress, myAddress, amount, leftOverAmount) => {
+    const txOut1 = new TxOut(receiverAddress, amount);
+    if (leftOverAmount === 0) {
+        return [txOut1];
+    } else {
+        const leftOverTx = new TxOut(myAddress, leftOverAmount);
+        return [txOut1, leftOverTx];
+    }
+};
+
 const createTransaction = (
     receiverAddress,
     amount,
     myaddress,
     unspentTxOuts
 ) => {
-    const myAddress = myaddress;
+    const mypublickey = getPublicKey(myaddress);
     const myUnspentTxOuts = unspentTxOuts.filter(
-        (uTxO) => uTxO.address === myAddress
+        (uTxO) => uTxO.address === mypublickey
     );
     const { includedUnspentTxOuts, leftOverAmount } = findTxOutsForAmount(
         amount,
@@ -443,23 +450,20 @@ const createTransaction = (
         return txIn;
     };
     const unsignedTxIns = includedUnspentTxOuts.map(toUnsignedTxIn);
-    console.log(unsignedTxIns);
 
     const tx = new Transaction();
     tx.txIns = unsignedTxIns;
     tx.txOuts = createTxOuts(
         receiverAddress,
-        myAddress,
+        mypublickey,
         amount,
         leftOverAmount
     );
     tx.id = getTransactionId(tx);
-
     tx.txIns = tx.txIns.map((txIn, index) => {
         txIn.signature = signTxIn(tx, index, myaddress, unspentTxOuts);
         return txIn;
     });
-
     return tx;
 };
 

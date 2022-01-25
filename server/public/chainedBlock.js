@@ -454,10 +454,12 @@ const generateNextBlock = (userPublicKey) => {
 };
 
 const generatenextBlockWithTransaction = (
-    userPublicKey,
+    myAddress,
     receiverAddress,
     amount
 ) => {
+    const userPublicKey = getPublicKey(myAddress);
+
     if (!isValidAddress(receiverAddress)) {
         throw Error("invalid address");
     }
@@ -472,7 +474,7 @@ const generatenextBlockWithTransaction = (
     const tx = createTransaction(
         receiverAddress,
         amount,
-        userPublicKey,
+        myAddress,
         unspentTxOuts
     );
     const blockData = [coinbaseTx, tx];
