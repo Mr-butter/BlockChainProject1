@@ -14,7 +14,9 @@ const {
   getCoinbaseTransaction,
   getPublicKey,
   Transaction,
+  createTransaction,
 } = require("./transaction");
+const _ = require("lodash");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
@@ -351,40 +353,6 @@ function isValidChain(newBlocks) {
   return true;
 }
 //////////////////////////////////////////////////////
-const generateNextBlock = (publicKey) => {
-  const coinbaseTx = getCoinbaseTransaction(
-    publicKey,
-    getLastBlock().header.index + 1
-  );
-  const blockData = [coinbaseTx];
-  return nextBlock(blockData);
-};
-
-const generatenextBlockWithTransaction = (
-  userPublicKey,
-  receiverAddress,
-  amount
-) => {
-  if (!isValidAddress(receiverAddress)) {
-    throw Error("invalid address");
-  }
-  if (typeof amount !== "number") {
-    throw Error("invalid amount");
-  }
-  const coinbaseTx = getCoinbaseTransaction(
-    userPublicKey,
-    getLastBlock().header.index + 1
-  );
-  console.log(coinbaseTx);
-  const tx = createTransaction(
-    receiverAddress,
-    amount,
-    userPublicKey,
-    unspentTxOuts
-  );
-  const blockData = [coinbaseTx, tx];
-  return nextBlock(blockData);
-};
 
 //////////////////////////////////////////////////////
 
@@ -444,22 +412,18 @@ async function addBlock(newBlock) {
 // }
 
 function addBlockWithTransaction(newBlock) {
-  if (isValidNewBlock(newBlock, getLastBlock())) {
-    const retVal = processTransactions(
-      newBlock.body,
-      unspentTxOuts,
-      newBlock.header.index
-    );
-    if (retVal === null) {
-      return false;
-    } else {
-      Blocks.push(newBlock);
-      unspentTxOuts = retVal;
-      console.log(unspentTxOuts);
-      return newBlock;
-    }
+  const retVal = processTransactions(
+    newBlock.body,
+    unspentTxOuts,
+    newBlock.header.index
+  );
+  if (retVal === null) {
+    return false;
+  } else {
+    Blocks.push(newBlock);
+    unspentTxOuts = retVal;
+    return newBlock;
   }
-  return false;
 }
 
 function minning(message) {
@@ -478,21 +442,77 @@ function minning(message) {
       return;
   }
 }
-function minningWithTransaction(userPublicKey) {
-  const PublicKey = userPublicKey;
-  const receiverAddress = userPublicKey;
 
-  addBlockWithTransaction(
-    generatenextBlockWithTransaction(PublicKey, receiverAddress, 100)
-    // generateNextBlock(userPublicKey)
+const generateNextBlock = (userPublicKey) => {
+  const coinbaseTx = getCoinbaseTransaction(
+    userPublicKey,
+    getLastBlock().header.index + 1
   );
+  const blockData = [coinbaseTx];
+  return nextBlock(blockData);
+};
+
+const generatenextBlockWithTransaction = (
+  myAddress,
+  receiverAddress,
+  amount
+) => {
+  const userPublicKey = getPublicKey(myAddress);
+
+  if (!isValidAddress(receiverAddress)) {
+    throw Error("invalid address");
+  }
+  if (typeof amount !== "number") {
+    throw Error("invalid amount");
+  }
+  const coinbaseTx = getCoinbaseTransaction(
+    userPublicKey,
+    getLastBlock().header.index + 1
+  );
+
+  const tx = createTransaction(
+    receiverAddress,
+    amount,
+    myAddress,
+    unspentTxOuts
+  );
+  const blockData = [coinbaseTx, tx];
+  return nextBlock(blockData);
+};
+
+function minningWithTransaction(userPublicKey) {
+  addBlockWithTransaction(generateNextBlock(userPublicKey));
 }
+
+const sendTransaction = (myAddress, receiverAddress, amount) => {
+  addBlockWithTransaction(
+    generatenextBlockWithTransaction(myAddress, receiverAddress, amount)
+  );
+};
+
+const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
+
+const findUnspentTxOuts = (ownerAddress, unspentTxOuts) => {
+  return _.filter(unspentTxOuts, (uTxO) => uTxO.address === ownerAddress);
+};
+
+const getBalance = (address, unspentTxOuts) => {
+  return _(findUnspentTxOuts(address, unspentTxOuts))
+    .map((uTxO) => uTxO.amount)
+    .sum();
+};
+
+const getAccountBalance = (userPublicKey) => {
+  return getBalance(userPublicKey, getUnspentTxOuts());
+};
 
 module.exports = {
   Blocks,
   addBlock,
   addBlockWithTransaction,
+  getAccountBalance,
   getLastBlock,
+  sendTransaction,
   createHash,
   nextBlock,
   getVersion,
@@ -501,5 +521,6 @@ module.exports = {
   hashMatchesDifficulty,
   replaceChain,
   minning,
+  getUnspentTxOuts,
   minningWithTransaction,
 };
