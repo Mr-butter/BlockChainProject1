@@ -16,6 +16,11 @@ const {
     Transaction,
     createTransaction,
 } = require("./transaction");
+const {
+    getTransactionPool,
+    updateTransactionPool,
+    addToTransactionPool,
+} = require("./transactionpool");
 const _ = require("lodash");
 
 const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
@@ -80,7 +85,7 @@ function createGenesisBlock() {
 }
 
 let Blocks = [createGenesisBlock()];
-let unspentTxOuts = [];
+let unspentTxOuts = processTransactions(Blocks[0].body, [], 0);
 
 function getBlocks() {
     return Blocks;
@@ -449,7 +454,7 @@ const generateNextBlock = (userPublicKey) => {
         userPublicKey,
         getLastBlock().header.index + 1
     );
-    const blockData = [coinbaseTx];
+    const blockData = [coinbaseTx].concat(getTransactionPool());
     return nextBlock(blockData);
 };
 
@@ -475,17 +480,32 @@ const generatenextBlockWithTransaction = (
         receiverAddress,
         amount,
         myAddress,
-        unspentTxOuts
+        getUnspentTxOuts(),
+        getTransactionPool()
     );
     const blockData = [coinbaseTx, tx];
     return nextBlock(blockData);
+};
+
+const sendTransaction = (myAddress, receiverAddress, amount) => {
+    const { broadCastTransactionPool } = require("./p2pServer");
+    const tx = createTransaction(
+        receiverAddress,
+        amount,
+        myAddress,
+        getUnspentTxOuts(),
+        getTransactionPool()
+    );
+    addToTransactionPool(tx, getUnspentTxOuts());
+    broadCastTransactionPool();
+    return tx;
 };
 
 function minningWithTransaction(userPublicKey) {
     addBlockWithTransaction(generateNextBlock(userPublicKey));
 }
 
-const sendTransaction = (myAddress, receiverAddress, amount) => {
+const sendTransactionwithmineBlock = (myAddress, receiverAddress, amount) => {
     addBlockWithTransaction(
         generatenextBlockWithTransaction(myAddress, receiverAddress, amount)
     );
@@ -506,6 +526,9 @@ const getBalance = (address, unspentTxOuts) => {
 const getAccountBalance = (userPublicKey) => {
     return getBalance(userPublicKey, getUnspentTxOuts());
 };
+const handleReceivedTransaction = (transaction) => {
+    addToTransactionPool(transaction, getUnspentTxOuts());
+};
 
 module.exports = {
     Blocks,
@@ -514,6 +537,7 @@ module.exports = {
     getAccountBalance,
     getLastBlock,
     sendTransaction,
+    sendTransactionwithmineBlock,
     createHash,
     nextBlock,
     getVersion,
@@ -524,4 +548,5 @@ module.exports = {
     minning,
     getUnspentTxOuts,
     minningWithTransaction,
+    handleReceivedTransaction,
 };

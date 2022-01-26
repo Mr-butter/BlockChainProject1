@@ -11,6 +11,7 @@ router.post("/blocks", async (req, res) => {
     const blocks = chainedBlock_func.getBlocks();
     res.send(blocks);
 });
+
 router.post("/inputport", (req, res) => {
     // const p2pServer_func = require("../public/p2pServer");
     const port = req.body.port;
@@ -33,11 +34,25 @@ router.post("/mineBlockWithTransaction", (req, res) => {
     const UnspentTxOuts = chainedBlock_func.getUnspentTxOuts();
     res.send({ message: UnspentTxOuts });
 });
+
 router.post("/getUserAmount", (req, res) => {
     const userAddress = req.body.userAddress;
     const key = ec.keyFromPrivate(userAddress, "hex");
     const userPublicKey = key.getPublic().encode("hex");
     const userAmount = chainedBlock_func.getAccountBalance(userPublicKey);
+    res.send({ message: `전체금액 ${userAmount}` });
+});
+
+router.post("/sendTransationwithmineBlock", (req, res) => {
+    const myAddress = req.body.myAddress;
+    const receiverAddress = req.body.receiverAddress;
+    const sendAmounte = req.body.sendAmounte;
+
+    const userAmount = chainedBlock_func.sendTransactionwithmineBlock(
+        myAddress,
+        receiverAddress,
+        sendAmounte
+    );
     res.send({ message: `전체금액 ${userAmount}` });
 });
 router.post("/sendTransation", (req, res) => {

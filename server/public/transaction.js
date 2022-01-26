@@ -2,7 +2,6 @@ const CryptoJS = require("crypto-js");
 const ecdsa = require("elliptic");
 const ec = new ecdsa.ec("secp256k1");
 const _ = require("lodash");
-const { CLOSING } = require("ws");
 
 class TxOut {
     constructor(address, amount) {
@@ -428,16 +427,43 @@ const createTxOuts = (receiverAddress, myAddress, amount, leftOverAmount) => {
     }
 };
 
+const filterTxPoolTxs = (unspentTxOuts, transactionPool) => {
+    const txIns = _(transactionPool)
+        .map((tx) => tx.txIns)
+        .flatten()
+        .value();
+    const removable = [];
+    for (const unspentTxOut of unspentTxOuts) {
+        const txIn = _.find(txIns, (aTxIn) => {
+            return (
+                aTxIn.txOutIndex === unspentTxOut.txOutIndex &&
+                aTxIn.txOutId === unspentTxOut.txOutId
+            );
+        });
+
+        if (txIn === undefined) {
+        } else {
+            removable.push(unspentTxOut);
+        }
+    }
+
+    return _.without(unspentTxOuts, ...removable);
+};
+
 const createTransaction = (
     receiverAddress,
     amount,
     myaddress,
-    unspentTxOuts
+    unspentTxOuts,
+    txPool
 ) => {
     const mypublickey = getPublicKey(myaddress);
-    const myUnspentTxOuts = unspentTxOuts.filter(
+    const myUnspentTxOutsA = unspentTxOuts.filter(
         (uTxO) => uTxO.address === mypublickey
     );
+
+    const myUnspentTxOuts = filterTxPoolTxs(myUnspentTxOutsA, txPool);
+
     const { includedUnspentTxOuts, leftOverAmount } = findTxOutsForAmount(
         amount,
         myUnspentTxOuts
