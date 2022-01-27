@@ -428,6 +428,7 @@ function addBlock(newBlock) {
 }
 
 function addBlockWithTransaction(newBlock) {
+  const transactionpool_func = require("./transactionpool");
   const retVal = processTransactions(
     newBlock.body,
     unspentTxOuts,
@@ -437,22 +438,20 @@ function addBlockWithTransaction(newBlock) {
     return false;
   } else {
     Blocks.push(newBlock);
-    unspentTxOuts = retVal;
+    setUnspentTxOuts(retVal);
+    transactionpool_func.updateTransactionPool(unspentTxOuts);
     return newBlock;
   }
 }
 
-function minning(message) {
+function minning(message, publicKey) {
   const p2pServer_func = require("./p2pServer");
   switch (message) {
     case "on":
       p2pServer_func.connectToPeer(6001);
       setInterval(() => {
-        addBlock(nextBlock(["bodyData"]));
+        minningWithTransaction(publicKey);
       }, 3000);
-      return;
-    case "connectPeer":
-      p2pServer_func.connectToPeer(6001);
       return;
     default:
       return;
@@ -502,14 +501,23 @@ const generatenextBlockWithTransaction = (
 
 const sendTransaction = (myAddress, receiverAddress, amount) => {
   const { broadCastTransactionPool } = require("./p2pServer");
+
+  // console.log("///////////////////////////////");
+  // console.log(getPublicKey(receiverAddress));
+  // console.log(amount);
+  // console.log(myAddress);
+  // console.log(getUnspentTxOuts());
+  // console.log(getTransactionPool());
+  // console.log("///////////////////////////////");
+
   const tx = createTransaction(
-    receiverAddress,
+    getPublicKey(receiverAddress),
     amount,
     myAddress,
     getUnspentTxOuts(),
     getTransactionPool()
   );
-  console.log(tx);
+  //tx는 보내는 금액이 포함되어 새로 생성된 트랜잭션. 제네시스블럭과 내가 채굴한 내역이 들어있는 getUnspentTxOuts()
   addToTransactionPool(tx, getUnspentTxOuts());
   broadCastTransactionPool();
   return tx;
@@ -526,6 +534,10 @@ const sendTransactionwithmineBlock = (myAddress, receiverAddress, amount) => {
 };
 
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
+const setUnspentTxOuts = (newUnspentTxOut) => {
+  console.log("replacing unspentTxouts with: %s", newUnspentTxOut);
+  unspentTxOuts = newUnspentTxOut;
+};
 
 const findUnspentTxOuts = (ownerAddress, unspentTxOuts) => {
   return _.filter(unspentTxOuts, (uTxO) => uTxO.address === ownerAddress);

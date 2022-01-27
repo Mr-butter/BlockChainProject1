@@ -49,14 +49,20 @@ const getTxPoolIns = (aTransactionPool) => {
 };
 const isValidTxForPool = (tx, aTtransactionPool) => {
   const txPoolIns = getTxPoolIns(aTtransactionPool);
-  const containsTxIn = (txIns, txIn) => {
-    return _.find(txPoolIns, (txPoolIn) => {
+  console.log("////////////////");
+  console.log(txPoolIns);
+  console.log("////////////////");
+  console.log(tx.txIns);
+  console.log("////////////////");
+  const containsTxIn = (txIns, comparetxIn) => {
+    return _.find(txIns, (txIn) => {
       return (
-        txIn.txOutIndex === txPoolIn.txOutIndex &&
-        txIn.txOutId === txPoolIn.txOutId
+        txIn.txOutIndex === comparetxIn.txOutIndex &&
+        txIn.txOutId === comparetxIn.txOutId
       );
     });
   };
+
   for (const txIn of tx.txIns) {
     if (containsTxIn(txPoolIns, txIn)) {
       console.log("txIn already found in the txPool");
