@@ -138,7 +138,7 @@ function Testingboard(props) {
     }
     function sendTransation() {
         const receiverAddress = prompt(
-            "받는사람 주소름 입력하세요",
+            "받는사람 주소를 입력하세요",
             "04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534b"
         );
         const sendAmounte = Number(prompt("보내실 금액을 입력해주세요", 50));
