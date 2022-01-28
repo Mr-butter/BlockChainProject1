@@ -11,7 +11,7 @@ import _ from "lodash";
 
 const Container = styled.div`
   display: flex;
-  margin-left: 150px
+  margin-left: 150px;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -59,9 +59,8 @@ function Mypage(props) {
                         marginBottom: "25px",
                       }}
                       variant="outlined"
-                      onClick={() => {}}
                     >
-                      보내기
+                      <a href="/transaction">보내기</a>
                     </Button>
                   </div>
                 </div>

@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { decryption } from "../../utils/decrypt";
 import "./wallettable.css";
 import ligthWallet from "eth-lightwallet";
 import { Button, TextField } from "@material-ui/core";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 
-const WalletTable = () => {
+const WalletTable = (porps) => {
+  const userState = useSelector((state) => state.user);
+  const ws = useRef(null);
+  const [socketMessage, setSocketMessage] = useState(null);
+
   const [WalletPwdFromUser, setWalletPwdFromUser] = useState("");
   const [VarPwdFromUser, setVarPwdFromUser] = useState("");
   const [Mnemonic, setMnemonic] = useState("");
   const [PrivateKey, setPrivateKey] = useState("");
+  const serverPort = parseInt(window.location.port) + 2000;
+  const serverUrl = `http://127.0.0.1:${serverPort}`;
+
+  useEffect(() => {
+      if (socketMessage !== null) {
+          ws.current.onmessage = (e) => {
+              // a message was received
+              let reciveData = JSON.parse(JSON.parse(e.data).data);
+              setSocketMessage(reciveData);
+              if (reciveData !== null) {
+                document.getElementById("socket_writefield").innerText =
+                JSON.stringify(socketMessage);
+          }
+      };
+    }
+  }, [socketMessage]);
 
   function getWalletPwdFromUser() {
     keystore.keyFromPassword(VarPwdFromUser, function (err, pwDerivedKey) {
@@ -22,6 +44,17 @@ const WalletTable = () => {
       }
     });
   }
+  function getUserAmount(userAddress) {
+    axios
+        .post(`${serverUrl}/getUserAmount`, {
+            userAddress: userAddress,
+        })
+        .then((res) => {
+            const data = res.data.message;
+            document.getElementById("writefield").innerText = data;
+        });
+}
+
   function getVarPwdFromUser(event) {
     // console.log(event.currentTarget.value);
     setVarPwdFromUser(event.currentTarget.value);
@@ -50,7 +83,39 @@ const WalletTable = () => {
           </tbody>
         </table>
         <br />
-        <br />
+        <table>
+          <thead>
+            <tr>
+              <th>Your balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+              <Button
+                        color="primary"
+                        id="getUserAmount"
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          marginLeft: 30,
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                          marginBottom: "25px",
+                        }}
+                        onClick={() => getUserAmount(userState.address)}
+                    >
+                        내 잔고 확인하기
+                    </Button>
+              </td>
+              <td>
+              <div id="writefield"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
         <table>
           <br />
           <thead>
