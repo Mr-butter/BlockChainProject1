@@ -12,16 +12,21 @@ const CssTextField = styled(TextField)({
   },
   "& .MuiInput-underline:after": {
     borderBottomColor: "grey",
+    color: "grey",
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
       borderColor: "gold",
+      textcolor: "grey",
+      color: "grey",
     },
     "&:hover fieldset": {
       borderColor: "yellow",
+      color: "grey",
     },
     "&.Mui-focused fieldset": {
       borderColor: "gold",
+      color: "grey",
     },
   },
 });
@@ -123,9 +128,14 @@ const Transaction = () => {
                     marginTop: 11,
                     width: "800px",
                     height: "50px",
-                    padding: "10px",
-                    marginBottom: "30px"
-                  }} helperText="This is your wallet address. You cannot change it because you can only spend your own coins."
+                    flex: 1, 
+                    margin: '20px 10px',
+                    padding: "10px 10px",
+                    color: 'grey',
+                    marginBottom: "50px"
+                  }} 
+                  helperText="This is your wallet address. You cannot change it because you can only spend your own coins."
+                  inputProps={{ style: { fontFamily: 'Arial', color: 'white', padding: "17px 15px"}}}
                   />
                 </div>
                 <br />
@@ -146,9 +156,14 @@ const Transaction = () => {
                   style={{
                     marginTop: 5,
                     width: "800px",
-                    height: "100px",
-                    padding: "10px",
+                    height: "70px",
+                    flex: 1, 
+                    margin: '20px 10px',
+                    padding: "10px 10px",
+                    color: 'grey',
+                    marginBottom: "50px"
                   }}
+                  inputProps={{ style: { fontFamily: 'Arial', color: 'white', padding: "17px 15px"}}}
                   onChange={getAmount} 
                   value={amount}
                   helperText="You can transfer any amount. Account balance is not checked in this demo. Have at it!
@@ -165,7 +180,7 @@ const Transaction = () => {
                   color: "gold",
                   size: 100,
                   padding: "10px",
-                  marginBottom: "25px",
+                  marginBottom: "50px",
                 }}
                 // onClick={connect}
                 variant="outlined"
@@ -180,6 +195,7 @@ const Transaction = () => {
                   height: "50px",
                   padding: "10px",
                 }}
+                inputProps={{ style: { fontFamily: 'Arial', padding: "17px 15px"}}}
               />
               <div className="card__footer"></div>
             </div>
