@@ -50,7 +50,7 @@ const Transaction = () => {
     setFromAddress(event.target.value)
   }
 
-  const [amount, setAmount] = useState("10000")
+  const [amount, setAmount] = useState("")
 
   const getAmount = (event) => {
     setAmount(event.target.value)

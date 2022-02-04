@@ -20,10 +20,19 @@ router.post("/inputport", (req, res) => {
     res.send({ message: `${port}번 포트로 웹소켓 접속` });
 });
 
+// router.post("/mineBlock", (req, res) => {
+//     const switchOnOff = req.body.switchOnOff;
+//     chainedBlock_func.minning(switchOnOff, "");
+//     res.send({ message: "블록생성" });
+// });
+
 router.post("/mineBlock", (req, res) => {
     const switchOnOff = req.body.switchOnOff;
-    chainedBlock_func.minning(switchOnOff, "");
-    res.send({ message: "블록생성" });
+    const userAddress = req.body.userAddress;
+    const key = ec.keyFromPrivate(userAddress, "hex");
+    const userPublicKey = key.getPublic().encode("hex");
+    chainedBlock_func.minning(switchOnOff, userPublicKey);
+    res.send({ message: "블록생성시작" });
 });
 
 router.post("/mineBlockWithTransaction", (req, res) => {
@@ -34,6 +43,7 @@ router.post("/mineBlockWithTransaction", (req, res) => {
     const UnspentTxOuts = chainedBlock_func.getUnspentTxOuts();
     res.send({ message: UnspentTxOuts });
 });
+
 router.post("/getUserAmount", (req, res) => {
     const userAddress = req.body.userAddress;
     const key = ec.keyFromPrivate(userAddress, "hex");
@@ -41,6 +51,7 @@ router.post("/getUserAmount", (req, res) => {
     const userAmount = chainedBlock_func.getAccountBalance(userPublicKey);
     res.send({ message: `전체금액 ${userAmount}` });
 });
+
 router.post("/sendTransation", (req, res) => {
     const myAddress = req.body.myAddress;
     const receiverAddress = req.body.receiverAddress;
@@ -54,9 +65,19 @@ router.post("/sendTransation", (req, res) => {
     res.send({ message: `전체금액 ${userAmount}` });
 });
 
-router.post("/getsocket", (req, res) => {
+router.post("/getSocket", (req, res) => {
+    const getSocket = p2pServer_func.getSockets();
+    res.send(getSocket);
+});
+
+router.post("/getTransactionPool", (req, res) => {
     // const p2pServer_func = require("../public/p2pServer");
-    res.send(p2pServer_func.getSockets());
+    res.send(chainedBlock_func.getUnspentTxOuts());
+});
+
+router.post("/getUnspentTxOuts", (req, res) => {
+    // const p2pServer_func = require("../public/p2pServer");
+    res.send(transactionpool_func.getTransactionPool());
 });
 
 router.post("/version", (req, res) => {

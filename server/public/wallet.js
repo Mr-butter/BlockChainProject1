@@ -2,6 +2,12 @@ const { keystore } = require("eth-lightwallet");
 const fs = require("fs");
 const CryptoJS = require("crypto-js");
 const UserWallet = require("../models/userWallet");
+const ecdsa = require("elliptic");
+const ec = new ecdsa.ec("secp256k1");
+
+const getPublicKey = (aPrivateKey) => {
+    return ec.keyFromPrivate(aPrivateKey, "hex").getPublic().encode("hex");
+};
 
 function encryption(data) {
     const key = "process.env.ENCRYPTION_KEY";
@@ -36,8 +42,7 @@ const getmnemonic = () => {
     return mnemonic;
 };
 const password = 1234;
-const seedPhrase =
-    "gap thunder keep only skill silent speak jewel salute fame ancient great";
+const seedPhrase = getmnemonic();
 
 const getKeystore = (password, seedPhrase) => {
     new keystore.createVault(
