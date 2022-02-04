@@ -5,7 +5,6 @@ import styled from "styled-components";
 import axios from "axios";
 import { useHistory } from "react-router";
 
-
 const CssTextField = styled(TextField)({
   "& label.Mui-focused": {
     color: "grey",
@@ -39,7 +38,6 @@ const Transaction = () => {
   const serverUrl = `http://127.0.0.1:${serverPort}`;
 
   const history = useHistory();
-
   const dispatch = useDispatch();
 
   // 객체를 업데이트하는 useState
@@ -84,9 +82,42 @@ const Transaction = () => {
     }
   }, [socketMessage]);
 
+    function inputPort() {
+      const inputport = prompt(
+          "포트를 입력해주세요.\nex)6001",
+          parseInt(6001)
+      );
+      axios
+          .post(`${serverUrl}/inputport`, { port: inputport })
+          .then((res) => {
+              // const data = res.data;
+              // document.getElementById("writefield").innerText =
+              //     JSON.stringify(data);
+              const data = res.data.message;
+              document.getElementById("writefield").innerText = data;
+          });
+  }
+  
+    function mineBlockWithTransation(userAddress) {
+      axios
+          .post(`${serverUrl}/mineBlockWithTransaction`, {
+              userAddress: userAddress,
+          })
+          .then((res) => {
+              const data = JSON.stringify(res.data.message);
+              // console.log(res.data.message);
+              document.getElementById("writefield").innerText = data;
+          });
+  }
+
   function sendTransation() {
-    const receiverAddress = alert("주소가 확인되었습니다.")
-    const sendAmounte = alert("금액이 입력되었습니다.")
+    // const receiverAddress = prompt(
+    //     "받는사람 주소를 입력하세요",
+    //     "04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534b"
+    // );
+    const receiverAddress = prompt("받으시는 분 주소 맞습니까?", fromAddress)
+    // const sendAmounte = Number(prompt("보내실 금액을 입력해주세요", 50));
+    const sendAmounte = Number(prompt("전송 요청하신 금액이 맞습니까?", amount));
     axios
         .post(`${serverUrl}/sendTransation`, {
             myAddress: userState.address,
@@ -98,18 +129,51 @@ const Transaction = () => {
             console.log(res.data.message);
             // document.getElementById("writefield").innerText = data;
         });
+}
+
+  function getTransactionPool() {
+    axios.post(`${serverUrl}/getTransactionPool`).then((res) => {
+        const data = res.data;
+        console.log(data);
+        document.getElementById("writefield").innerText =
+            JSON.stringify(data);
+    });
   }
 
-  function getUserAmount(userAddress) {
-    axios
-        .post(`${serverUrl}/getUserAmount`, {
-            userAddress: userAddress,
-        })
-        .then((res) => {
-            const data = res.data.message;
-            document.getElementById("writefield").innerText = data;
-        });
+  // function getUserAmount(userAddress) {
+  //   axios
+  //       .post(`${serverUrl}/getUserAmount`, {
+  //           userAddress: userAddress,
+  //       })
+  //       .then((res) => {
+  //           const data = res.data.message;
+  //           document.getElementById("writefield").innerText = data;
+  //       });
+  // }
+
+    function webon() {
+      ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
+      ws.current.onopen = () => {
+          // connection opened
+          console.log(`웹소켓 포트 : 6001 번으로 연결`);
+          // send a message
+      };
+  
+      ws.current.onmessage = (e) => {
+          // a message was received
+          setSocketMessage(e.data);
+      };
+  
+      ws.current.onerror = (e) => {
+          // an error occurred
+          console.log(e.message);
+      };
+      ws.current.onclose = (e) => {
+          // connection closed
+          console.log(e.code, e.reason);
+      };
   }
+
 
   return (
     <div>
@@ -122,7 +186,70 @@ const Transaction = () => {
               <div className="card__header">
                 <h3>Transfer some money to someone!</h3>
               </div>
+              <div id="writefield"></div>
               <div className="card__body" style={{ width: "500px" }}>
+                <table>
+                    <Button
+                        color="primary"
+                        id="connectPeer"
+                        onClick={() => {
+                            inputPort();
+                        }}
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        피어 연결
+                    </Button>
+                    <Button
+                        color="primary"
+                        id="inputPort"
+                        onClick={() => webon()}
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        웹소켓 연결
+                    </Button>
+
+                    <Button
+                        color="primary"
+                        id="mineBlockWithTransation"
+                        onClick={() =>
+                            mineBlockWithTransation(userState.address)
+                        }
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        트랜잭선&블록채굴
+                    </Button>
+                    <Button
+                        id="sendTransation"
+                        onClick={() => sendTransation()}
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        거래하기
+                    </Button>
+                </table>
                 <div>                
                 <CssTextField label=" From address" type={"text"} onChange={getFromAddress} value={fromAddress} style={{
                     marginTop: 11,
@@ -171,7 +298,7 @@ const Transaction = () => {
                   id="amount"
                 />
               </div>
-              <Button
+              {/* <Button
                 onClick={() => {sendTransation()}}
                 style={{
                   borderRadius: 10,
@@ -181,22 +308,38 @@ const Transaction = () => {
                   size: 100,
                   padding: "10px",
                   marginBottom: "50px",
+                  marginLeft: "500px"
                 }}
                 // onClick={connect}
                 variant="outlined"
               >
                 Sign & create transaction
-              </Button>
+              </Button> */}
               <h3>Transaction pool</h3>
-              <TextField
-                defaultValue="No transactions in transaction pool"
-                style={{
-                  width: "800px",
-                  height: "50px",
-                  padding: "10px",
-                }}
-                inputProps={{ style: { fontFamily: 'Arial', padding: "17px 15px"}}}
-              />
+                    <Button
+                        color="primary"
+                        id="getTransactionPool"
+                        onClick={() => getTransactionPool()}
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        get TransactionPool
+                    </Button>
+                <TextField
+                  defaultValue="No transactions in transaction pool"
+                  id="socket_writefield"
+                  style={{
+                    width: "800px",
+                    height: "50px",
+                    padding: "10px",
+                  }}
+                  inputProps={{ style: { fontFamily: 'Arial', padding: "17px 15px"}}}
+                />
               <div className="card__footer"></div>
             </div>
           </div>
