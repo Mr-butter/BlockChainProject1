@@ -4,6 +4,7 @@ const { WebSocket } = require("ws");
 const UserWallet = require("../models/userWallet");
 const chainedBlock_func = require("../public/chainedBlock");
 const p2pServer_func = require("../public/p2pServer");
+const transactionpool_func = require("../public/transactionpool");
 const ecdsa = require("elliptic");
 const ec = new ecdsa.ec("secp256k1");
 

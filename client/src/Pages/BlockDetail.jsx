@@ -64,7 +64,7 @@ const BlockDetail = (props) => {
                         stickyHeader
                         aria-label="sticky table"
                       >
-                        <TableHead>
+                        <TableHead style={{ color: "#5c5c5c" }}>
                           <TableRow style={{ color: "#5c5c5c" }}>
                             <TableCell>version</TableCell>
                             <TableCell>previousHash</TableCell>
