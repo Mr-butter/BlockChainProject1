@@ -36,11 +36,11 @@ function Mypage(props) {
   function asdf(Auth) {
     if (Auth) {
       return (
-        <div className="table-wrapper" style={{ marginBottom: "50px" }}>
+        <div className="table-wrapper" style={{ marginTop: "50px", marginRight: "100px" }}>
           <h2>My Wallet</h2>
           <br />
           <div>
-            <div className="col-8" style={{ width: "1100px" }}>
+            <div className="col-8" style={{ width: "1200px" }}>
               <div className="card" style={{ width: "900px" }}>
                 <div className="card__header">
                   <h3>나만의 은행을 이용하세요.</h3>
@@ -48,7 +48,7 @@ function Mypage(props) {
                 <div className="card__body" style={{ width: "500px" }}>
                   <WalletTable />
                   <div>
-                    <Button
+                    {/* <Button
                       style={{
                         borderRadius: 10,
                         borderColor: "gold",
@@ -56,12 +56,12 @@ function Mypage(props) {
                         color: "gold",
                         size: 100,
                         padding: "10px",
-                        marginBottom: "25px",
+                        // marginBottom: "25px",
                       }}
                       variant="outlined"
                     >
                       <a href="/transaction">보내기</a>
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
                 <div className="card__footer"></div>

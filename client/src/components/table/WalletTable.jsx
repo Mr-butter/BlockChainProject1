@@ -87,30 +87,31 @@ const WalletTable = (porps) => {
           <thead>
             <tr>
               <th>Your balance</th>
+              <Button
+                    color="primary"
+                    id="getUserAmount"
+                    style={{
+                      borderRadius: 10,
+                      borderColor: "gold",
+                      marginLeft: 30,
+                      color: "black",
+                      marginTop: "7px",
+                      marginRight: "300px",
+                      size: 100,
+                      fontSize: "bold",
+                      backgroundColor: "gold"
+                    }}
+                    onClick={() => getUserAmount(userState.address)}
+                >
+                  Account Balance
+                </Button>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>
-              <Button
-                        color="primary"
-                        id="getUserAmount"
-                        style={{
-                          borderRadius: 10,
-                          borderColor: "gold",
-                          marginLeft: 30,
-                          color: "gold",
-                          size: 100,
-                          padding: "10px",
-                          marginBottom: "25px",
-                        }}
-                        onClick={() => getUserAmount(userState.address)}
-                    >
-                        내 잔고 확인하기
-                    </Button>
-              </td>
-              <td>
-              <div id="writefield"></div>
+
+                    <div id="writefield"></div>
               </td>
             </tr>
           </tbody>
