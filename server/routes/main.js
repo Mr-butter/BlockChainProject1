@@ -27,7 +27,7 @@ router.post("/mineBlock", (req, res) => {
     const key = ec.keyFromPrivate(userAddress, "hex");
     const userPublicKey = key.getPublic().encode("hex");
     chainedBlock_func.minning(switchOnOff, userPublicKey);
-    res.send({ message: "블록생성" });
+    res.send({ message: "블록생성시작" });
 });
 
 router.post("/mineBlockWithTransaction", (req, res) => {
@@ -45,6 +45,11 @@ router.post("/getUserAmount", (req, res) => {
     const userPublicKey = key.getPublic().encode("hex");
     const userAmount = chainedBlock_func.getAccountBalance(userPublicKey);
     res.send({ message: `전체금액 ${userAmount}` });
+});
+
+router.post("/getSocket", (req, res) => {
+    const getSocket = p2pServer_func.getSockets();
+    res.send(getSocket);
 });
 
 router.post("/sendTransationwithmineBlock", (req, res) => {

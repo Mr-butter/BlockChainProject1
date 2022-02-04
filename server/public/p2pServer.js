@@ -28,7 +28,6 @@ function initConnection(ws) {
     initErrorHandler(ws);
     write(ws, queryLatestMsg());
     setTimeout(() => {
-        console.log("1");
         broadcast(queryTransactionPoolMsg());
     }, 500);
 }
@@ -61,15 +60,25 @@ function connectToPeer(port) {
     ws.on("error", () => {
         console.log("피어연결실패");
         console.log(ws.readyState);
-        if (ws.readyState === 2) {
-            console.log("웹소켓 서버를 새로 생성합니다.");
-            initP2PServer(port);
-            connectToPeer(port);
+        switch (ws.readyState) {
+            case 2:
+                console.log("케이스2 : 웹소켓 서버를 새로 생성합니다.");
+                initP2PServer(6001);
+                connectToPeer(6001);
+                break;
+            case 3:
+                console.log("케이스3 : 웹소켓 서버를 새로 생성합니다.");
+                initP2PServer(6001);
+                connectToPeer(6001);
+                break;
+
+            default:
+                closeConnection(ws);
+                break;
         }
-        // console.log("재접속을 시도합니다");
-        // connectToPeer(port);
     });
 }
+connectToPeer(6001);
 
 // Message Handler
 const MessageType = {
@@ -198,46 +207,41 @@ function queryLatestMsg() {
 }
 
 function initErrorHandler(ws) {
-    console.log("에러 핸들러 진입");
     ws.on("close", () => {
+        console.log("웹소켓 close 진입");
         closeConnection(ws);
     });
     ws.on("error", () => {
-        closeConnection(ws);
+        console.log("웹소켓 error 진입");
+        switch (ws.readyState) {
+            case 0:
+                console.log("웹소켓 서버를 새로 생성합니다.");
+                initP2PServer(6001);
+                connectToPeer(6001);
+                break;
+            case 2:
+                console.log("웹소켓 서버 재접속...");
+                connectToPeer(6001);
+                break;
+            case 3:
+                console.log("웹소켓 서버를 새로 생성합니다.");
+                initP2PServer(6001);
+                connectToPeer(6001);
+                break;
+
+            default:
+                closeConnection(ws);
+                console.log("웹소켓 서버 재접속...");
+                connectToPeer(6001);
+                break;
+        }
     });
-    console.log("에러 핸들러 종료");
 }
 
 function closeConnection(ws) {
     console.log(`Connection close ${ws.url}`);
     sockets.splice(sockets.indexOf(ws), 1);
-    if (ws.readyState === 2) {
-        console.log("웹소켓 서버를 새로 생성합니다.");
-        initP2PServer(6001);
-        connectToPeer(6001);
-    }
-    console.log("재접속을 시도합니다");
-    connectToPeer(6001);
 }
-
-// parentPort.on("message", (message) => {
-//     const chainedBlock_func = require("./chainedBlock");
-//     switch (message) {
-//         case "on":
-//             connectToPeer(6001);
-//             setInterval(() => chainedBlock_func.addBlock(), 1000);
-//             break;
-//         case "block":
-//             chainedBlock_func.addBlock();
-//             return;
-//         case "off":
-//             parentPort.close();
-//             return;
-
-//         default:
-//             break;
-//     }
-// });
 
 module.exports = {
     WebSocket,

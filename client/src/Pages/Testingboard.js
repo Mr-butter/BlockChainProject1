@@ -187,6 +187,14 @@ function Testingboard(props) {
             });
     }
 
+    function getSocket() {
+        axios.post(`${serverUrl}/getSocket`).then((res) => {
+            const data = res.data;
+            console.log(data);
+            document.getElementById("writefield").innerText = data;
+        });
+    }
+
     function getUnspentTxOuts() {
         axios.post(`${serverUrl}/getUnspentTxOuts`).then((res) => {
             const data = res.data;
@@ -291,6 +299,15 @@ function Testingboard(props) {
                         onClick={() => webon()}
                     >
                         connect websocket
+                    </Button>
+                </li>
+                <li>
+                    <Button
+                        color="primary"
+                        id="getSocket"
+                        onClick={() => getSocket()}
+                    >
+                        getSocket
                     </Button>
                 </li>
                 <li>

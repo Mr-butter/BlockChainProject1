@@ -40,14 +40,25 @@ const Topnav = (props) => {
         switch (toggled) {
             case true:
                 axios
-                    .post(`${serverUrl}/mineBlock`, { switchOnOff: "on" })
+                    .post(`${serverUrl}/mineBlock`, {
+                        switchOnOff: "on",
+                        userAddress: userState.address,
+                    })
                     .then((res) => {
                         const data = res.data.message;
                         console.log(data);
                     });
                 break;
-
             default:
+                axios
+                    .post(`${serverUrl}/mineBlock`, {
+                        switchOnOff: "off",
+                        userAddress: userState.address,
+                    })
+                    .then((res) => {
+                        const data = res.data.message;
+                        console.log(data);
+                    });
                 break;
         }
     }, [toggled]);

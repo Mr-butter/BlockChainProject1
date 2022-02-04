@@ -537,18 +537,24 @@ function addBlockWithTransaction(newBlock) {
 }
 
 function minning(message, publicKey) {
-    const p2pServer_func = require("./p2pServer");
-    switch (message) {
-        case "on":
-            p2pServer_func.connectToPeer(6001);
-            setInterval(() => {
-                minningWithTransaction(publicKey);
-            }, 3000);
-            return;
-        default:
-            return;
+    if (message === "on") {
+        return (mineblock = setInterval(() => {
+            generateNextBlock(publicKey);
+        }, 3000));
+    } else {
+        return clearInterval(mineblock);
     }
 }
+// function minning(message, publicKey) {
+//     let mineblock = setInterval(() => {
+//         if (message === "on") {
+//             generateNextBlock(publicKey);
+//         } else {
+//             console.log("인터벌클리어");
+//             clearInterval(mineblock);
+//         }
+//     }, 3000);
+// }
 
 const generateNextBlock = (userPublicKey) => {
     const coinbaseTx = getCoinbaseTransaction(
