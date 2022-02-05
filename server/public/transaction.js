@@ -45,6 +45,9 @@ const COINBASE_AMOUNT = 10000;
 
 const getTransactionId = (transaction) => {
     // 트랜잭션 아이디 = 트랜잭션의 컨텐트로부터 계산된 해시값
+    console.log(`3. 트랜잭션아이디를 코인베이스 트랜잭션의 아이디에 담는다.
+    or 9-1-1. 코인베이스 트랜잭션의 아이디가 유효한 ID인지 확인`);
+
     const txInContent = transaction.txIns
         .map((txIn) => txIn.txOutId + txIn.txOutIndex)
         // .reduce((누적값,현재값)=> 결과, 초기값)
@@ -201,7 +204,7 @@ const isValidTxOutStructure = (txOut) => {
         console.log("invalid address type in txOut");
         return false;
     } else if (!isValidAddress(txOut.address)) {
-        console.log(txOut.address);
+        console.log("txOut.address:"+txOut.address);
         console.log("invalid TxOut address");
         return false;
     } else if (typeof txOut.amount !== "number") {
@@ -286,14 +289,14 @@ const validateBlockTransactions = (
     // 일반 트랜잭션들(코인베이스 트랜잭션을 제외한 전체 트랜잭션)
     const normalTransactions = aTransactions.slice(1);
     // 일반 트랜잭션들을 검사해서 모두 정상이면 true 반환
-    console.log(normalTransactions);
+    console.log("normalTransactions :" + normalTransactions);
     return normalTransactions
         .map((tx) => validateTransaction(tx, aUnspentTxOuts))
         .reduce((a, b) => a && b, true);
 };
 
 const hasDuplicates = (txIns) => {
-    const groups = _.countBy(txIns, (txIn) => txIn.txOutId + txIn.txOutId);
+    const groups = _.countBy(txIns, (txIn) => txIn.txOutId + txIn.txOutIndex);
     return _(groups)
         .map((value, key) => {
             if (value > 1) {
@@ -335,7 +338,7 @@ const validateCoinbaseTx = (transaction, blockIndex) => {
         console.log("invalid number of txOuts in coinbase transaction");
         return false;
     }
-    if (transaction.txOuts[0].amount != COINBASE_AMOUNT) {
+    if (transaction.txOuts[0].amount !== COINBASE_AMOUNT) {
         console.log("invalid coinbase amount in coinbase transaction");
         return false;
     }
@@ -346,7 +349,7 @@ const validateCoinbaseTx = (transaction, blockIndex) => {
 //txIns의 서명도 사용되지 않은 아웃풋을 잘 참조하고 있는지 확인
 const validateTxIn = (txIn, transaction, aUnspentTxOuts) => {
     const referencedUTxOut = aUnspentTxOuts.find(
-        (uTxO) => uTxO.txOutId === txIn.txOutId && uTxO.txOutId === txIn.txOutId
+        (uTxO) => uTxO.txOutId === txIn.txOutId && uTxO.txOutIndex === txIn.txOutIndex
     );
     if (referencedUTxOut == null) {
         console.log("referenced txOut not found: " + JSON.stringify(txIn));
@@ -378,8 +381,8 @@ const getCoinbaseTransaction = (address, blockIndex) => {
 
     const t = new Transaction();
     const txIn = new TxIn();
-    txIn.signature = "";
-    txIn.txOutId = "";
+    txIn.signature = '';
+    txIn.txOutId = '';
     txIn.txOutIndex = blockIndex;
 
     t.txIns = [txIn];
@@ -413,6 +416,7 @@ const isValidAddress = (address) => {
     console.log("\n7-3-1.isValidAddress 진입 \n or 2. 보낼 주소가 유효한 주소인지 확인");
 
     if (address.length !== 130) {
+        console.log(address);
         console.log("invalid public key length");
         return false;
     } else if (address.match("^[a-fA-F0-9]+$") === null) {
@@ -537,6 +541,7 @@ module.exports = {
     TxOut,
     getCoinbaseTransaction,
     getPublicKey,
+    hasDuplicates,
     Transaction,
     createTransaction,
 };
