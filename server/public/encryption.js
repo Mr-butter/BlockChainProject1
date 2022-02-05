@@ -55,7 +55,8 @@ function getPublicKeyFromWallet() {
     const key = ec.keyFromPrivate(privatekey, "hex");
     return key.getPublic().encode("hex");
 }
-console.log(getPublicKeyFromWallet());
+
+console.log('getPublicFromWallet::: 지갑 주소!\n', getPublicFromWallet());
 
 module.exports = {
     initWallet,

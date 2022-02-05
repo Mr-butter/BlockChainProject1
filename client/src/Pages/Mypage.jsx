@@ -36,7 +36,7 @@ function Mypage(props) {
   function asdf(Auth) {
     if (Auth) {
       return (
-        <div className="table-wrapper" style={{ marginTop: "50px", marginRight: "100px" }}>
+        <div className="table-wrapper" style={{ marginRight: "100px", marginBottom: "150px" }}>
           <h2>My Wallet</h2>
           <br />
           <div>
