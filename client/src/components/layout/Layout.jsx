@@ -44,17 +44,14 @@ const Layout = () => {
             console.log(`웹소켓 포트 : 6001 번으로 연결`);
             // send a message
         };
+
         ws.current.onmessage = async (e) => {
             // a message was received
             let reciveData = await JSON.parse(JSON.parse(e.data).data);
             setSocketMessage(reciveData);
         };
-        ws.current.onclose = (ws) => {
-            axios.post(`${serverUrl}/getSocket`).then((res) => {
-                const sockets = res.data;
-                sockets.splice(sockets.indexOf(ws), 1);
-            });
-
+        ws.current.onclose = () => {
+            console.log("///////////////" + ws.current.readyState);
             console.log("종료되었습니다.");
         };
         return () => {

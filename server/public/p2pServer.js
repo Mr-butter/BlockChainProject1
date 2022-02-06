@@ -3,12 +3,17 @@ const { WebSocket } = require("ws");
 const transactionPool = require("./transactionpool");
 
 function initP2PServer(port) {
-    const p2pserver = new WebSocket.Server({ port: port });
-    p2pserver.on("connection", (ws) => {
-        initConnection(ws);
-        console.log(`${port}번 포트 웹소켓 서버에 접속하셨습니다.`);
-    });
-    console.log(`${port}번 포트로 웹소켓 서버 생성되었습니다.`);
+    try {
+        const p2pserver = new WebSocket.Server({ port: port });
+        p2pserver.on("connection", (ws) => {
+            initConnection(ws);
+            console.log(`${port}번 포트 웹소켓 서버에 접속하셨습니다.`);
+        });
+        console.log(`${port}번 포트로 웹소켓 서버 생성되었습니다.`);
+    } catch (error) {
+        console.log(error);
+        connectToPeer(6001);
+    }
 }
 
 function initHttpP2PServer(server, port) {
@@ -65,7 +70,6 @@ function connectToPeer(port) {
                 try {
                     console.log("케이스2 : 웹소켓 서버를 새로 생성합니다.");
                     initP2PServer(6001);
-                    connectToPeer(6001);
                 } catch (error) {
                     console.log(error);
                     connectToPeer(6001);
@@ -221,6 +225,7 @@ function initErrorHandler(ws) {
     ws.on("close", () => {
         console.log("웹소켓 close 진입");
         closeConnection(ws);
+        connectToPeer(6001);
     });
     ws.on("error", () => {
         console.log("웹소켓 error 진입");

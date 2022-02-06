@@ -622,7 +622,8 @@ const sendTransaction = (myAddress, receiverAddress, amount) => {
 
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
 const setUnspentTxOuts = (newUnspentTxOut) => {
-    console.log("replacing unspentTxouts with: %s", newUnspentTxOut);
+    // console.log("replacing unspentTxouts with: %s", newUnspentTxOut);
+    console.log("replacing unspentTxouts");
     unspentTxOuts = newUnspentTxOut;
 };
 
