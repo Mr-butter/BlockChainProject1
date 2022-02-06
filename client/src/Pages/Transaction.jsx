@@ -237,7 +237,7 @@ const Transaction = () => {
                         웹소켓 연결
                     </Button>
 
-                    <Button
+                    {/* <Button
                         color="primary"
                         id="mineBlockWithTransation"
                         onClick={() =>
@@ -252,7 +252,7 @@ const Transaction = () => {
                         }}
                     >
                         트랜잭선&블록채굴
-                    </Button>
+                    </Button> */}
                     <Button
                         id="sendTransation"
                         onClick={() => sendTransation()}

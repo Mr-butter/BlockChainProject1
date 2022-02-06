@@ -1,259 +1,224 @@
 import React, { useEffect, useRef, useState } from "react";
-import Input from "@mui/material/Input";
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Snackbar,
-  TextField,
-} from "@material-ui/core";
-import { Alert } from "@mui/material";
-import AlertTitle from "@mui/material/AlertTitle";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { useSelector, useDispatch } from "react-redux";
+import { Button, FormControl, OutlinedInput, Paper, Tab, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TextField } from "@mui/material";
+import styled from "styled-components";
 import axios from "axios";
+import { DataGrid } from '@mui/x-data-grid';
+import { useHistory } from "react-router";
+
+
+const columns = [
+  { id: 'txOutId', label: 'txOutId', minWidth: 170 },
+  { id: 'txOutIndex', label: 'txOutIndex', minWidth: 50 },
+  { id: 'address', label: 'address', minWidth: 170 },
+  { id: 'amount', label: 'amount', minWidth: 100 },
+];
 
 const Mining = () => {
+  const userState = useSelector((state) => state.user);
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState(null);
-  const [blockIndex, setBlockIndex] = useState("");
-  const [prevHash, setPrevHash] = useState("");
-  const [blockMerkleRoot, setblockMerkleRoot] = useState("");
-  const [blockTimestamp, setBlockTimestamp] = useState("");
-  const [blockDifficulty, setBlockDifficulty] = useState("");
-  const [blocktNonce, setBlocktNonce] = useState("");
-  const [blocktData, setBlocktData] = useState("");
-  const [WebSocketOnOff, setWebSocketOnOff] = useState("");
+  const [mineBlock, setmineBlockWithTransation] = useState([]);
+  const reverse = [...mineBlock].reverse();
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
 
+
   useEffect(() => {
     if (socketMessage !== null) {
-      ws.current.onmessage = async (e) => {
-        // a message was received
-        let reciveData = await JSON.parse(JSON.parse(e.data).data);
-        setSocketMessage(reciveData);
-        if (reciveData !== null) {
-          setBlockIndex(reciveData[0].header.index);
-          setPrevHash(await reciveData[0].header.previousHash);
-          setblockMerkleRoot(await reciveData[0].header.merkleRoot);
-          setBlockTimestamp(await reciveData[0].header.timestamp);
-          setBlockDifficulty(await reciveData[0].header.difficulty);
-          setBlocktNonce(await reciveData[0].header.nonce);
-          setBlocktData(await reciveData[0].body);
-          // document.getElementById("socket_writefield").innerText =
-          //   JSON.stringify(reciveData);
-          // document.getElementById("blockIndex").innerText = JSON.stringify(
-          //   reciveData[0].header.index
-          // );
-          // document.getElementById("prevHash").innerText = JSON.stringify(
-          //   reciveData[0].header.previousHash
-          // );
-          // document.getElementById("blockMerkleRoot").innerText = JSON.stringify(
-          //   reciveData[0].header.merkleRoot
-          // );
-          // document.getElementById("blockTimestamp").innerText = JSON.stringify(
-          //   reciveData[0].header.timestamp
-          // );
-          // document.getElementById("blockDifficulty").innerText = JSON.stringify(
-          //   reciveData[0].header.difficulty
-          // );
-          // document.getElementById("blocktNonce").innerText = JSON.stringify(
-          //   reciveData[0].header.nonce
-          // );
-          // document.getElementById("blocktData").innerText = JSON.stringify(
-          //   reciveData[0].body
-          // );
-        }
-      };
+        ws.current.onmessage = (e) => {
+            // a message was received
+            let reciveData = JSON.parse(JSON.parse(e.data).data);
+            setSocketMessage(reciveData);
+            if (reciveData !== null) {
+                setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
+                setSocketMessage(socketMessage.header.index);
+                // setTxOutId(socketMessage.header.txOutId);
+                // setTxOutIndex(socketMessage.header.txOutIndex);
+                // setAddress(socketMessage.header.address);
+                // setAmountpool(socketMessage.header.amount);
+                document.getElementById("socket_writefield").innerText =
+                    JSON.stringify(socketMessage);
+            }
+        };
     }
   }, [socketMessage]);
 
-  function mineBlock(onOff) {
-    axios.post(`${serverUrl}/mineBlock`, { switchOnOff: onOff }).then((res) => {
-      const data = res.data.message;
-      console.log(res.data.message);
-    });
+    function inputPort() {
+      const inputport = prompt(
+          "포트를 입력해주세요.\nex)6001",
+          parseInt(6001)
+      );
+      axios
+          .post(`${serverUrl}/inputport`, { port: inputport })
+          .then((res) => {
+              // const data = res.data;
+              // document.getElementById("writefield").innerText =
+              //     JSON.stringify(data);
+              const data = res.data.message;
+              document.getElementById("writefield").innerText = data;
+          });
+  }
+  
+    function mineBlockWithTransation(userAddress) {
+      axios
+          .post(`${serverUrl}/mineBlockWithTransaction`, {
+              userAddress: userAddress,
+          })
+          .then((res) => {
+              const data = JSON.stringify(res.data.message);
+              console.log(data);
+              // document.getElementById("poolWritefield").innerText = data;
+              setmineBlockWithTransation(res.data.message);
+          })
+          .catch((error) => console.error(`ERROR: ${error}`));
   }
 
-  function webon() {
-    ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
-    ws.current.onopen = () => {
-      // connection opened
-      console.log(`웹소켓 포트 : 6001 번으로 연결`);
-      // send a message
-    };
 
-    ws.current.onmessage = (e) => {
-      // a message was received
-      setSocketMessage(e.data);
-    };
-
-    ws.current.onerror = (e) => {
-      // an error occurred
-      console.log(e.message);
-    };
-    ws.current.onclose = (e) => {
-      // connection closed
-      console.log(e.code, e.reason);
-    };
+    function webon() {
+      ws.current = new WebSocket(`ws://127.0.0.1:6001/`);
+      ws.current.onopen = () => {
+          // connection opened
+          console.log(`웹소켓 포트 : 6001 번으로 연결`);
+          // send a message
+      };
+  
+      ws.current.onmessage = (e) => {
+          // a message was received
+          setSocketMessage(e.data);
+      };
+  
+      ws.current.onerror = (e) => {
+          // an error occurred
+          console.log(e.message);
+      };
+      ws.current.onclose = (e) => {
+          // connection closed
+          console.log(e.code, e.reason);
+      };
   }
+
 
   return (
     <div>
-      <h2>CoLink Mining</h2>
-      <br />
-      <div>
-        <Button
-          variant="outlined"
-          style={{
-            borderRadius: 10,
-            borderColor: "gold",
-            marginLeft: 30,
-            color: "gold",
-            size: 100,
-            padding: "10px",
-          }}
-          onClick={() => mineBlock("on")}
-        >
-          블럭채굴하기
-        </Button>
-        <Button
-          variant="outlined"
-          style={{
-            borderRadius: 10,
-            borderColor: "gold",
-            marginLeft: 30,
-            color: "gold",
-            size: 100,
-            padding: "10px",
-          }}
-          onClick={() => webon()}
-        >
-          클라이언트 웹소켓 접속
-        </Button>
-      </div>
-      <br />
-      <h2>블럭정보</h2>
-      <br />
-      <h2 id="infowritefield"></h2>
-      <br />
+      <div className="table-wrapper" style={{ marginBottom: "200px" }}>
+        <h2>블럭정보</h2>
+        <br />
+        <div>
+          <div className="col-8" style={{ width: "1100px" }}>
+            <div className="card" style={{ width: "900px" }}>
+            <h3>Block Infomation</h3>
+            <br />
+              <div className="card__body" style={{ width: "500px" }}>
+                <table>
+                    <Button
+                        color="primary"
+                        id="connectPeer"
+                        onClick={() => {
+                            inputPort();
+                        }}
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        피어 연결
+                    </Button>
+                    <Button
+                        color="primary"
+                        id="inputPort"
+                        onClick={() => webon()}
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        웹소켓 연결
+                    </Button>
 
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableBody>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell
-              component="th"
-              scope="row"
-              color="red"
-              style={{ color: "#bbbbbb" }}
-            >
-              Index
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {blockIndex}
-            </TableCell>
-          </TableRow>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
-              prevHash
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {prevHash}
-            </TableCell>
-          </TableRow>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
-              MerkleRoot
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {blockMerkleRoot}
-            </TableCell>
-          </TableRow>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
-              Timestamp
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {blockTimestamp}
-            </TableCell>
-          </TableRow>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
-              Difficulty
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {blockDifficulty}
-            </TableCell>
-          </TableRow>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
-              Nonce
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {blocktNonce}
-            </TableCell>
-          </TableRow>
-          <TableRow
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
-          >
-            <TableCell component="th" scope="row" style={{ color: "#bbbbbb" }}>
-              blocktData
-            </TableCell>
-            <TableCell align="left" style={{ color: "#bbbbbb" }}>
-              {blocktData}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+                    <Button
+                        color="primary"
+                        id="mineBlockWithTransation"
+                        onClick={() =>
+                            mineBlockWithTransation(userState.address)
+                        }
+                        style={{
+                          borderRadius: 10,
+                          borderColor: "gold",
+                          color: "gold",
+                          size: 100,
+                          padding: "10px",
+                        }}
+                    >
+                        트랜잭선&블록채굴
+                    </Button>
+
+                </table>
+              </div>
+
+              <div id="writefield"></div>
+              <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                 </TableRow>
+                </TableHead>
+                <TableBody>
+                {reverse.map((data) => (
+                            <TableRow
+                      sx={{
+                        padding: "0px 0px",
+                        borderRight: "2px solid black",
+                        backgroundColor: "#5c5c5c",
+                        fontSize: "1.1rem",
+                      }}
+                    >
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.txOutId}
+                      </TableCell>
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.txOutIndex}
+                      </TableCell>
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.address}
+                      </TableCell>
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.txOutIndex}
+                      </TableCell>
+                      <td>{data.txOutId}</td>
+                      <td>{data.txOutIndex}</td>
+                      <td>{data.address}</td>
+                      <td>{data.txOutIndex}</td>
+                  </TableRow>
+                ))}
+                </TableBody>
+                </Table>
+              </Paper>
+                <div id="socket_writefield"></div>
+                {/* <textfild
+                  defaultValue="No transactions in transaction pool"
+                  id="poolWritefield"
+                /> */}
+              <div className="card__footer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
