@@ -62,14 +62,25 @@ function connectToPeer(port) {
         console.log(ws.readyState);
         switch (ws.readyState) {
             case 2:
-                console.log("케이스2 : 웹소켓 서버를 새로 생성합니다.");
-                initP2PServer(6001);
-                connectToPeer(6001);
+                try {
+                    console.log("케이스2 : 웹소켓 서버를 새로 생성합니다.");
+                    initP2PServer(6001);
+                    connectToPeer(6001);
+                } catch (error) {
+                    console.log(error);
+                    connectToPeer(6001);
+                }
                 break;
             case 3:
-                console.log("케이스3 : 웹소켓 서버를 새로 생성합니다.");
-                initP2PServer(6001);
-                connectToPeer(6001);
+                try {
+                    console.log("케이스3 : 웹소켓 서버를 새로 생성합니다.");
+                    initP2PServer(6001);
+                    connectToPeer(6001);
+                } catch (error) {
+                    console.log(error);
+                    connectToPeer(6001);
+                }
+
                 break;
 
             default:

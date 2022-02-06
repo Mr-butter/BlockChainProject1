@@ -14,7 +14,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 function Testingboard(props) {
-    const userState = useSelector((state) => state.user);
+    const userState = useSelector((state) => state.User);
     const ws = useRef(null);
     const [socketMessage, setSocketMessage] = useState(null);
     const [blockIndex, setBlockIndex] = useState("");
@@ -143,12 +143,12 @@ function Testingboard(props) {
             "받는사람 주소름 입력하세요",
             "04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534b"
         );
-        const sendAmounte = Number(prompt("보내실 금액을 입력해주세요", 50));
+        const sendAmount = Number(prompt("보내실 금액을 입력해주세요", 50));
         axios
             .post(`${serverUrl}/sendTransationwithmineBlock`, {
                 myAddress: userState.address,
                 receiverAddress: receiverAddress,
-                sendAmounte: sendAmounte,
+                sendAmount: sendAmount,
             })
             .then((res) => {
                 // const data = res.data.message;
@@ -162,12 +162,12 @@ function Testingboard(props) {
             "받는사람 주소름 입력하세요",
             "ex) 0x23009f380afbb841bf93b7e2d728060041d11fb0"
         );
-        const sendAmounte = Number(prompt("보내실 금액을 입력해주세요", 50));
+        const sendAmount = Number(prompt("보내실 금액을 입력해주세요", 50));
         axios
             .post(`${serverUrl}/sendTransation`, {
                 myAddress: userState.address,
                 receiverAddress: receiverAddress,
-                sendAmounte: sendAmounte,
+                sendAmount: sendAmount,
             })
             .then((res) => {
                 // const data = res.data.message;

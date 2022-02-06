@@ -1,11 +1,15 @@
 import { combineReducers } from "redux";
-import user from "./user";
+import User from "./User";
+import Block from "./Block";
+import Socket from "./Socket";
 
 import ThemeReducer from "./ThemeReducer";
 
 const rootReducer = combineReducers({
-  user,
-  ThemeReducer,
+    User,
+    Block,
+    Socket,
+    ThemeReducer,
 });
 
 export default rootReducer;

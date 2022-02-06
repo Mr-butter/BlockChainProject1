@@ -600,7 +600,6 @@ const generatenextBlockWithTransaction = (
 const sendTransaction = (myAddress, receiverAddress, amount) => {
     const { broadCastTransactionPool } = require("./p2pServer");
 
-    // console.log("///////////////////////////////");
     // console.log(getPublicKey(receiverAddress));
     // console.log(amount);
     // console.log(myAddress);
@@ -646,6 +645,7 @@ const handleReceivedTransaction = (transaction) => {
 
 module.exports = {
     Blocks,
+    findUnspentTxOuts,
     addBlockToChain,
     addBlockWithTransaction,
     getAccountBalance,

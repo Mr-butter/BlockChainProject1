@@ -44,7 +44,18 @@ router.post("/getUserAmount", (req, res) => {
     const key = ec.keyFromPrivate(userAddress, "hex");
     const userPublicKey = key.getPublic().encode("hex");
     const userAmount = chainedBlock_func.getAccountBalance(userPublicKey);
-    res.send({ message: `전체금액 ${userAmount}` });
+    res.send({ message: `${userAmount}` });
+});
+
+router.post("/findTransaction", (req, res) => {
+    const userAddress = req.body.userAddress;
+    const key = ec.keyFromPrivate(userAddress, "hex");
+    const userPublicKey = key.getPublic().encode("hex");
+    const findUnspentTxOuts = chainedBlock_func.findUnspentTxOuts(
+        userPublicKey,
+        chainedBlock_func.getUnspentTxOuts()
+    );
+    res.send({ uTxO: JSON.stringify(findUnspentTxOuts) });
 });
 
 router.post("/getSocket", (req, res) => {
@@ -57,24 +68,23 @@ router.post("/sendTransationwithmineBlock", (req, res) => {
     const receiverAddress = req.body.receiverAddress;
     const sendAmounte = req.body.sendAmounte;
 
-    const userAmount = chainedBlock_func.generatenextBlockWithTransaction(
-        myAddress,
-        receiverAddress,
-        sendAmounte
-    );
-    res.send({ message: `전체금액 ${userAmount}` });
+    const sendTxReturnBlock =
+        chainedBlock_func.generatenextBlockWithTransaction(
+            myAddress,
+            receiverAddress,
+            sendAmounte
+        );
+    res.send({ message: `${sendTxReturnBlock}` });
 });
 router.post("/sendTransation", (req, res) => {
     const myAddress = req.body.myAddress;
     const receiverAddress = req.body.receiverAddress;
-    const sendAmounte = req.body.sendAmounte;
+    const sendAmount = req.body.sendAmount;
+    console.log(typeof sendAmount);
+    console.log(sendAmount);
 
-    const userAmount = chainedBlock_func.sendTransaction(
-        myAddress,
-        receiverAddress,
-        sendAmounte
-    );
-    res.send({ message: `전체금액 ${userAmount}` });
+    chainedBlock_func.sendTransaction(myAddress, receiverAddress, sendAmount);
+    res.send({ message: "전송완료" });
 });
 
 router.post("/getTransactionPool", (req, res) => {

@@ -4,6 +4,10 @@ import { decryption } from "../../utils/decrypt";
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGOUT_USER = "LOGOUT_USER";
 export const AUTH_USER = "AUTH_USER";
+export const USER_AMOUNT = "USER_AMOUNT";
+
+export const GET_BLOCK = "GET_BLOCK";
+export const SOCKET_MESSAGE = "SOCKET_MESSAGE";
 
 const serverPort = parseInt(window.location.port) + 2000;
 const serverUrl = `http://127.0.0.1:${serverPort}`;
@@ -69,4 +73,33 @@ export async function auth() {
             payload: data,
         };
     }
+}
+
+export async function userAmount(userAddress) {
+    const data = await axios
+        .post(`${serverUrl}/getUserAmount`, {
+            userAddress: userAddress,
+        })
+        .then(async (res) => res.data.message);
+    return {
+        type: USER_AMOUNT,
+        payload: data,
+    };
+}
+
+export function getblock() {
+    const data = axios
+        .post(`${serverUrl}/blocks`)
+        .then(async (res) => res.data);
+    return {
+        type: GET_BLOCK,
+        payload: data,
+    };
+}
+
+export function messageFromSocket(message) {
+    return {
+        type: SOCKET_MESSAGE,
+        payload: message,
+    };
 }

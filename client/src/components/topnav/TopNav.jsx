@@ -17,7 +17,7 @@ import { auth, loginUser, logoutUser } from "../../redux/actions/";
 import Toggle from "./Toggle";
 
 const Topnav = (props) => {
-    const userState = useSelector((state) => state.user);
+    const userState = useSelector((state) => state.User);
     const userAuth = userState.isAuth;
     const userAddress = userState.address;
     const serverPort = parseInt(window.location.port) + 2000;
