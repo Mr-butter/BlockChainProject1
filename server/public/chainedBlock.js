@@ -160,7 +160,7 @@ function nextBlock(bodyData) {
   const prevBlock = getLastBlock();
   console.log('\n4. 코인베이스트랜잭션을 블록데이터에 담는다.');
   console.log('///////////////////////////////////////');
-  console.log("\n2. 다음 블럭 생성 함수 : ", blockData);
+  console.log("\n2. 다음 블럭 생성 함수 : ", bodyData);
 
   const version = getVersion();
   const index = prevBlock.header.index + 1;
@@ -186,8 +186,8 @@ function nextBlock(bodyData) {
   //chapter3
   // 블록체인에 채굴한 블록 추가하고 채굴한 블록 전파하기
   if (addBlockToChain(newBlock)) {
-      broadcast(responseLatestMsg());
-      return newBlock;
+    broadcast(responseLatestMsg());
+    return newBlock;
   } else {
       return null;
   }
@@ -222,34 +222,52 @@ const addBlockToChain = (newBlock) => {
   return false;
 }
 
-// 블록체인 교체, 전달하기
 function replaceChain(newBlocks) {
   const { broadcast, responseLatestMsg } = require("./p2pServer");
-  console.log(isValidChain(newBlocks));
-
-  // 전달받은 블록체인, 그안의 트랜잭션들을 검증후 그것들로 만든 공용장부를 aUnspentTxOuts 변수에 저장
   const aUnspentTxOuts = isValidChain(newBlocks);
-  // 공용장부 상태가 null이 아닌지 확인용 변수 validChiain (true/false)
-  const validChain = aUnspentTxOuts !== null;
 
-  // 공용장부가 비어있지 않고 전달받은 블록체인의 누적난이도가 내가가진 블록체인의 누적난이도보다 높으면
-  if (
-    validChain &&
-    getAccumulatedDifficulty(newBlocks) > getAccumulatedDifficulty(getBlockchain())) {
-      console.log(`Received blockchain is valid. Replacing current blockchain with received blockchain 
-      / 전달받은 블록체인으로 교체했어요!`);
-      // 내 블록체인을 전달받은 블록체인으로 교체
-      Blocks = newBlocks;
-      // 공용장부도 전달받은 블록체인으로부터 만든 공용장부로 교체
-      setUnspentTxOuts(aUnspentTxOuts);
-      // 새 공용장부로 트랜잭션Pool 갱신
-      updateTransactionPool(unspentTxOuts);
-      // 최신화된 블록체인의 마지막 블록 알리기
-      broadcast(responseLatestMsg());
+  if (isValidChain(newBlocks)) {
+      if (
+          newBlocks.length > Blocks.length ||
+          (newBlocks.length === Blocks.length && random.boolean())
+      ) {
+          Blocks = newBlocks;
+          setUnspentTxOuts(aUnspentTxOuts);
+          updateTransactionPool(unspentTxOuts);
+          broadcast(responseLatestMsg());
+      }
   } else {
-    console.log("Received blockchain invalid/전달받은 블록체인보다 내 블록체인의 누적 난이도가 높으니 내 블록체인을 그대로 유지합니다");
+      console.log("받은 원장에 문제가 있음");
   }
 }
+// // 블록체인 교체, 전달하기
+// function replaceChain(newBlocks) {
+//   const { broadcast, responseLatestMsg } = require("./p2pServer");
+//   console.log(isValidChain(newBlocks));
+
+//   // 전달받은 블록체인, 그안의 트랜잭션들을 검증후 그것들로 만든 공용장부를 aUnspentTxOuts 변수에 저장
+//   const aUnspentTxOuts = isValidChain(newBlocks);
+//   // 공용장부 상태가 null이 아닌지 확인용 변수 validChiain (true/false)
+//   const validChain = aUnspentTxOuts !== null;
+
+//   // 공용장부가 비어있지 않고 전달받은 블록체인의 누적난이도가 내가가진 블록체인의 누적난이도보다 높으면
+//   if (
+//     validChain &&
+//     getAccumulatedDifficulty(newBlocks) > getAccumulatedDifficulty(getBlockchain())) {
+//       console.log(`Received blockchain is valid. Replacing current blockchain with received blockchain 
+//       / 전달받은 블록체인으로 교체했어요!`);
+//       // 내 블록체인을 전달받은 블록체인으로 교체
+//       Blocks = newBlocks;
+//       // 공용장부도 전달받은 블록체인으로부터 만든 공용장부로 교체
+//       setUnspentTxOuts(aUnspentTxOuts);
+//       // 새 공용장부로 트랜잭션Pool 갱신
+//       updateTransactionPool(unspentTxOuts);
+//       // 최신화된 블록체인의 마지막 블록 알리기
+//       broadcast(responseLatestMsg());
+//   } else {
+//     console.log("Received blockchain invalid/전달받은 블록체인보다 내 블록체인의 누적 난이도가 높으니 내 블록체인을 그대로 유지합니다");
+//   }
+// }
 //chapter4 추가
 const getAccumulatedDifficulty = (aBlockchain) => {
   return aBlockchain
@@ -342,10 +360,10 @@ function findBlock(
 function getDifficulty(blocks) {
   const lastBlock = blocks[blocks.length - 1];
   if (
-    lastBlock.header.index !== 0 &&
-    lastBlock.header.index % DIIFFICULTY_ADJUSTMENT_INTERVAL === 0
+      lastBlock.header.index !== 0 &&
+      lastBlock.header.index % DIIFFICULTY_ADJUSTMENT_INTERVAL === 0
   ) {
-    return getAdjustDifficulty(lastBlock, blocks);
+      return getAdjustDifficulty(lastBlock, blocks);
   }
   return lastBlock.header.difficulty;
 }
@@ -353,31 +371,31 @@ function getDifficulty(blocks) {
 // 마지막 블록이랑 10개 이전 블록 비교해 난이도 조절
 function getAdjustDifficulty(lastBlock, blocks) {
   const prevAdjustmentBlock =
-    blocks[blocks.length - DIIFFICULTY_ADJUSTMENT_INTERVAL];
+      blocks[blocks.length - DIIFFICULTY_ADJUSTMENT_INTERVAL];
   const elapsedTime =
-    lastBlock.header.timestamp - prevAdjustmentBlock.header.timestamp;
+      lastBlock.header.timestamp - prevAdjustmentBlock.header.timestamp;
   const expectedTime =
-    BLOCK_GENERATION_INTERVAL * DIIFFICULTY_ADJUSTMENT_INTERVAL;
+      BLOCK_GENERATION_INTERVAL * DIIFFICULTY_ADJUSTMENT_INTERVAL;
   if (expectedTime / 2 > elapsedTime) {
-    return prevAdjustmentBlock.header.difficulty + 1;
+      return prevAdjustmentBlock.header.difficulty + 1;
   } else if (expectedTime * 2 < elapsedTime) {
-    return prevAdjustmentBlock.header.difficulty - 1;
+      return prevAdjustmentBlock.header.difficulty - 1;
   } else {
-    return prevAdjustmentBlock.header.difficulty;
+      return prevAdjustmentBlock.header.difficulty;
   }
 }
 
 //////////////////////////// 검증코드
 function isValidBlockStructure(block) {
   return (
-    typeof block.header.version === "string" &&
-    typeof block.header.index === "number" &&
-    typeof block.header.previousHash === "string" &&
-    typeof block.header.timestamp === "number" &&
-    typeof block.header.merkleRoot === "string" &&
-    typeof block.header.difficulty === "number" &&
-    typeof block.header.nonce === "number" &&
-    typeof block.body === "object"
+      typeof block.header.version === "string" &&
+      typeof block.header.index === "number" &&
+      typeof block.header.previousHash === "string" &&
+      typeof block.header.timestamp === "number" &&
+      typeof block.header.merkleRoot === "string" &&
+      typeof block.header.difficulty === "number" &&
+      typeof block.header.nonce === "number" &&
+      typeof block.body === "object"
   );
 }
 
@@ -421,6 +439,7 @@ function getCurrentTimestamp() {
   return Math.round(new Date().getTime() / 1000);
 }
 
+
 function isValidTimestamp(newBlock, previousBlock) {
   return (
     previousBlock.header.timestamp - 60 < newBlock.header.timestamp &&
@@ -429,112 +448,114 @@ function isValidTimestamp(newBlock, previousBlock) {
 }
 
 // 전달받은 블록체인과 그 안의 트랜잭션들을 검증하고 그로부터 만들어낸 공용장부 반환하기
-function isValidChain(blockchainToValidate) {
-  console.log('isValidChain:');
+const isValidChain = (blockchainToValidate) => {
+  console.log("isValidChain:");
   console.log(JSON.stringify(blockchainToValidate));
-  
-  // 내가 가진 제네시스 블록과 전달받은 블록체인의 제네시스블록이 같으면 true
+  // 내가가진 제네시스블록과 전달받은 블록체인의 제네시스 블록이 같으면 true
   const isValidGenesis = (block) => {
-    return JSON.stringify(block) === JSON.stringify(genesisBlock);
+      return JSON.stringify(block) === JSON.stringify(genesisBlock);
   };
   // 전달받은 블록체인과 내 제네시스 블록이 동일한지 검증
   if (!isValidGenesis(blockchainToValidate[0])) {
-    return null;
+      return null;
   }
-
-  // 새로 만들 공용장부
+  /*
+Validate each block in the chain. The block is valid if the block structure is valid
+  and the transaction are valid
+ */
+// 새로만들 공용장부
   let aUnspentTxOuts = [];
 
-  // 전달받은 블록체인 길이만큼 돌리기
+  // 전달받은 블록체인의 길이만큼 돌리기
   for (let i = 0; i < blockchainToValidate.length; i++) {
-    const currentBlock = blockchainToValidate[i];
-    if (
-      // 블록들 하나하나 순서대로 정상인지 검사하기
-      i !== 0 &&
-      !isValidNewBlock(
-        blockchainToValidate[i],
-        blockchainToValidate[i - 1]
-      )
-    ) {
-      return null;
-    }
-
-    // 전달받은 블록들의 트랜잭션들 검사해서 공용장부에 갱신
-    aUnspentTxOuts = processTransactions(
-      currentBlock.body,
-      aUnspentTxOuts,
-      currentBlock.header.index
-    );
-    // 공용장부에 들은게 null인 경우
-    if (aUnspentTxOuts === null) {
-      console.log("블록체인 안에 거래정보(트랜잭션)가 잘못되었습니다.")
-    }
+      const currentBlock = blockchainToValidate[i];
+      if (
+        // 블록들 하나하나 순서대로 정상인지 검사
+          i !== 0 &&
+          !isValidNewBlock(
+              blockchainToValidate[i],
+              blockchainToValidate[i - 1]
+          )
+      ) {
+          return null;
+      }
+      // 전달받은 블록들의 트랜잭션들 검사해서 공용장부 갱신
+      aUnspentTxOuts = processTransactions(
+          currentBlock.body,
+          aUnspentTxOuts,
+          currentBlock.header.index
+      );
+      // 공용장부에 들은게 null이면
+      if (aUnspentTxOuts === null) {
+          console.log("invalid transactions in blockchain");
+          return null;
+      }
   }
-
   // 전달받은 블록체인으로 만든 공용장부 반환
   return aUnspentTxOuts;
-}
+};
 
 //////////////////////////////////////////////////////
 
-async function addBlock(newBlock) {
+// async function addBlock(newBlock) {
+//   if (isValidNewBlock(newBlock, getLastBlock())) {
+//     Blocks.push(newBlock);
+//     const checkGene = await BlockChainDB.findAll({
+//       where: { index: 0 },
+//     });
+//     if (checkGene[0] === undefined) {
+//       BlockChainDB.create({
+//         index: "0",
+//         version: "0.0.1",
+//         previousHash:
+//           "0000000000000000000000000000000000000000000000000000000000000000",
+//         timestamp: "1231006505",
+//         merkleRoot:
+//           "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
+//         difficulty: "0",
+//         nonce: "0",
+//         body: `["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]`,
+//       });
+//       BlockChainDB.create({
+//         index: JSON.stringify(newBlock.header.index),
+//         version: newBlock.header.version,
+//         previousHash: newBlock.header.previousHash,
+//         timestamp: JSON.stringify(newBlock.header.timestamp),
+//         merkleRoot: newBlock.header.merkleRoot,
+//         difficulty: JSON.stringify(newBlock.header.difficulty),
+//         nonce: JSON.stringify(newBlock.header.nonce),
+//         body: JSON.stringify(newBlock.body),
+//       });
+//       return true;
+//     } else {
+//       BlockChainDB.create({
+//         index: JSON.stringify(newBlock.header.index),
+//         version: newBlock.header.version,
+//         previousHash: newBlock.header.previousHash,
+//         timestamp: JSON.stringify(newBlock.header.timestamp),
+//         merkleRoot: newBlock.header.merkleRoot,
+//         difficulty: JSON.stringify(newBlock.header.difficulty),
+//         nonce: JSON.stringify(newBlock.header.nonce),
+//         body: JSON.stringify(newBlock.body),
+//       });
+//       return true;
+//     }
+//   }
+//   return false;
+// }
+//////////////////////////////////////////////////////
+
+function addBlock(newBlock) {
   if (isValidNewBlock(newBlock, getLastBlock())) {
-    Blocks.push(newBlock);
-    const checkGene = await BlockChainDB.findAll({
-      where: { index: 0 },
-    });
-    if (checkGene[0] === undefined) {
-      BlockChainDB.create({
-        index: "0",
-        version: "0.0.1",
-        previousHash:
-          "0000000000000000000000000000000000000000000000000000000000000000",
-        timestamp: "1231006505",
-        merkleRoot:
-          "A6D72BAA3DB900B03E70DF880E503E9164013B4D9A470853EDC115776323A098",
-        difficulty: "0",
-        nonce: "0",
-        body: `["The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"]`,
-      });
-      BlockChainDB.create({
-        index: JSON.stringify(newBlock.header.index),
-        version: newBlock.header.version,
-        previousHash: newBlock.header.previousHash,
-        timestamp: JSON.stringify(newBlock.header.timestamp),
-        merkleRoot: newBlock.header.merkleRoot,
-        difficulty: JSON.stringify(newBlock.header.difficulty),
-        nonce: JSON.stringify(newBlock.header.nonce),
-        body: JSON.stringify(newBlock.body),
-      });
-      return true;
-    } else {
-      BlockChainDB.create({
-        index: JSON.stringify(newBlock.header.index),
-        version: newBlock.header.version,
-        previousHash: newBlock.header.previousHash,
-        timestamp: JSON.stringify(newBlock.header.timestamp),
-        merkleRoot: newBlock.header.merkleRoot,
-        difficulty: JSON.stringify(newBlock.header.difficulty),
-        nonce: JSON.stringify(newBlock.header.nonce),
-        body: JSON.stringify(newBlock.body),
-      });
-      return true;
-    }
+      Blocks.push(newBlock);
+      return newBlock;
   }
   return false;
 }
 
-// function addBlock(newBlock) {
-//   if (isValidNewBlock(newBlock, getLastBlock())) {
-//     Blocks.push(newBlock);
-//     return newBlock;
-//   }
-//   return false;
-// }
-
 // 새 블록 블록체인에 추가하기
 function addBlockWithTransaction(newBlock) {
-  console.log('\n3. addBlockWithTransaction 진입\n 나이브에서는 addBlockToChain', newBlock);
+  console.log('\n3. addBlockWithTransaction 진입/나이브에서는 addBlockToChain', newBlock);
   const transactionpool_func = require("./transactionpool");
 
   // 새블록에 들어갈 트랜잭션들을 검증 (processTransactions)
@@ -550,7 +571,6 @@ function addBlockWithTransaction(newBlock) {
   if (retVal === null) {
     console.log('\n블럭 생성 실패/트랜잭션쪽에 문제가 있습니다');
     return false;
-
   } else {
     console.log("\n블럭이 성공적으로 생성됩니다.");
     // 이상 없으면 블록체인에 새 블록을 추가하고
@@ -565,6 +585,7 @@ function addBlockWithTransaction(newBlock) {
 
 // function minning(message) {
 //   const p2pServer_func = require("./p2pServer");
+
 //   switch (message) {
 //     case "on":
 //       p2pServer_func.connectToPeer(6001);
@@ -708,7 +729,6 @@ const handleReceivedTransaction = (transaction) => {
 
 module.exports = {
   Blocks,
-  addBlock,
   addBlockToChain,
   addBlockWithTransaction,
   getAccountBalance,

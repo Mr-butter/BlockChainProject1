@@ -39,9 +39,9 @@ router.post("/mineBlockWithTransaction", (req, res) => {
     const userAddress = req.body.userAddress;
     const key = ec.keyFromPrivate(userAddress, "hex");
     const userPublicKey = key.getPublic().encode("hex");
-    chainedBlock_func.minningWithTransaction(userPublicKey);
+    chainedBlock_func.generateNextBlock(userPublicKey);
     const UnspentTxOuts = chainedBlock_func.getUnspentTxOuts();
-    res.send({ message: UnspentTxOuts });
+    res.send({ message: JSON.stringify(UnspentTxOuts) });
 });
 
 router.post("/getUserAmount", (req, res) => {
@@ -68,6 +68,19 @@ router.post("/sendTransation", (req, res) => {
 router.post("/getSocket", (req, res) => {
     const getSocket = p2pServer_func.getSockets();
     res.send(getSocket);
+});
+
+router.post("/sendTransationwithmineBlock", (req, res) => {
+    const myAddress = req.body.myAddress;
+    const receiverAddress = req.body.receiverAddress;
+    const sendAmounte = req.body.sendAmounte;
+
+    const userAmount = chainedBlock_func.generatenextBlockWithTransaction(
+        myAddress,
+        receiverAddress,
+        sendAmounte
+    );
+    res.send({ message: `전체금액 ${userAmount}` });
 });
 
 router.post("/getTransactionPool", (req, res) => {

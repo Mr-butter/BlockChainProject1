@@ -74,7 +74,7 @@ const toHexString = (byteArray) => {
 };
 
 const signTxIn = (transaction, txInIndex, privateKey, aUnspentTxOuts) => {
-    console.log("signTxIn");
+    console.log("signTxIn진입");
     const txIn = transaction.txIns[txInIndex];
 
     const dataToSign = transaction.id;
@@ -170,6 +170,7 @@ const validateTransaction = (transaction, aUnspentTxOuts) => {
         return false;
     }
 
+    console.log('validateTransaction통과');
     return true;
 };
 // console.log(validateTransaction(testTransaction, [testUnspentTxOut]));
@@ -197,6 +198,7 @@ const isValidTxInStructure = (txIn) => {
 // console.log(isValidTxInStructure(testtxIns[0]));
 
 const isValidTxOutStructure = (txOut) => {
+    console.log('\n7-3. isValidTxOutStructure 진입');
     if (txOut == null) {
         console.log("txOut is null");
         return false;
@@ -371,8 +373,7 @@ const validateTxIn = (txIn, transaction, aUnspentTxOuts) => {
 };
 
 const getTxInAmount = (txIn, aUnspentTxOuts) => {
-    return findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, aUnspentTxOuts)
-        .amount;
+    return findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, aUnspentTxOuts).amount;
 };
 
 //코인베이스 트랜잭션 : 노드의 첫 트랜잭션
@@ -400,7 +401,7 @@ const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
     // }
 
     if (!validateBlockTransactions(aTransactions, aUnspentTxOuts, blockIndex)) {
-        console.log('invalid block transactions');
+        console.log("invalid block transactions");
         return null;
     }
     return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);

@@ -22,7 +22,9 @@ function initWallet() {
         fs.mkdirSync(privateKeyLocation);
     }
 
+    // 지갑 생성
     const newPrivateKey = generatePrivatekey();
+    // 지갑 경로 생성
     fs.writeFileSync(privateKeyFile, newPrivateKey);
     console.log("새로운 지갑경로 생성 경로 : " + privateKeyFile);
     return { message: "지갑이 잘 생성되었습니다." };
@@ -55,6 +57,7 @@ function getPublicKeyFromWallet() {
     const key = ec.keyFromPrivate(privatekey, "hex");
     return key.getPublic().encode("hex");
 }
+console.log(getPublicKeyFromWallet());
 
 console.log('getPublicFromWallet::: 지갑 주소!\n', getPublicFromWallet());
 

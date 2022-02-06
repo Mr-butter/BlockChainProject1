@@ -153,7 +153,7 @@ function initMessageHandler(ws) {
             break;
           }
           console.log("받은 메시지에 블록 발견, 비교해보겠습니다.");
-          handleBlockchainResponse(receivedBlocks);
+          handleBlockChainResponse(message);
           break;
 
         case MessageType.QUERY_TRANSACTION_POOL:
@@ -202,6 +202,11 @@ function responseAllChainMsg() {
     data: JSON.stringify(chainedBlock_Func.getBlocks()),
   };
 }
+// 다른 노드에게 상대방 트랜잭션 풀 요청 메시지
+const queryTransactionPoolMsg = () => ({
+  type: MessageType.QUERY_TRANSACTION_POOL,
+  data: null,
+});
 
 // 상대 노드에게 블록체인 또는 마지막 블록 받으면 처리할 메뉴얼
 function handleBlockChainResponse(message) {
@@ -294,15 +299,7 @@ function queryLatestMsg() {
 
 // 에러 핸들러 초기화
 function initErrorHandler(ws) {
-  // console.log("에러 핸들러 진입");
-
-  // ws.on("close", () => {
-  //   closeConnection(ws);
-  // });
-  // ws.on("error", () => {
-  //   closeConnection(ws);
-  // });
-  // console.log("에러 핸들러 종료");
+  console.log("에러 핸들러 초기화 진입");
 
   ws.on("close", () => {
     console.log("웹소켓 close 진입");
@@ -325,7 +322,7 @@ function initErrorHandler(ws) {
               initP2PServer(6001);
               connectToPeer(6001);
               break;
-  
+          // 해당 소켓이 닫히거나 오류가 있으면 연결 끊기
           default:
               closeConnection(ws);
               console.log("웹소켓 서버 재접속...");
