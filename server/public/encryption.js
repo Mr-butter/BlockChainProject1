@@ -22,7 +22,9 @@ function initWallet() {
         fs.mkdirSync(privateKeyLocation);
     }
 
+    // 지갑생성
     const newPrivateKey = generatePrivatekey();
+    // 지갑경로 생성
     fs.writeFileSync(privateKeyFile, newPrivateKey);
     console.log("새로운 지갑경로 생성 경로 : " + privateKeyFile);
     return { message: "지갑이 잘 생성되었습니다." };

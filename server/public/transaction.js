@@ -74,7 +74,7 @@ const toHexString = (byteArray) => {
 };
 
 const signTxIn = (transaction, txInIndex, privateKey, aUnspentTxOuts) => {
-    console.log("signTxIn");
+    console.log("signTxIn진입");
     const txIn = transaction.txIns[txInIndex];
 
     const dataToSign = transaction.id;
@@ -169,7 +169,7 @@ const validateTransaction = (transaction, aUnspentTxOuts) => {
         );
         return false;
     }
-
+    console.log('validateTransaction통과');
     return true;
 };
 // console.log(validateTransaction(testTransaction, [testUnspentTxOut]));
@@ -197,6 +197,8 @@ const isValidTxInStructure = (txIn) => {
 // console.log(isValidTxInStructure(testtxIns[0]));
 
 const isValidTxOutStructure = (txOut) => {
+    console.log('\n7-3. isValidTxOutStructure 진입');
+
     if (txOut == null) {
         console.log("txOut is null");
         return false;
@@ -406,6 +408,8 @@ const getCoinbaseTransaction = (address, blockIndex) => {
 //     return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);
 // };
 const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
+    console.log('\n5.프로세스트랜잭션 진입');
+
     if (!validateBlockTransactions(aTransactions, aUnspentTxOuts, blockIndex)) {
       console.log("invalid block transactions");
       return null;
@@ -417,7 +421,6 @@ const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
 const getPublicKey = (aPrivateKey) => {
     return ec.keyFromPrivate(aPrivateKey, "hex").getPublic().encode("hex");
 };
-
 
 //valid address is a valid ecdsa public key in the 04 + X-coordinate + Y-coordinate format
 const isValidAddress = (address) => {
@@ -509,11 +512,13 @@ const createTransaction = (
 
     const myUnspentTxOuts = filterTxPoolTxs(myUnspentTxOutsA, txPool);
 
+    // pool에서 참조되는 입력과 같은 unspentOutput에서 필터링
     const { includedUnspentTxOuts, leftOverAmount } = findTxOutsForAmount(
         amount,
         myUnspentTxOuts
     );
 
+    //소진되지 않은 트랜잭션 아웃풋을 가진 만큼 트랜책션 txIns를 만들어낼 수 있다.
     const toUnsignedTxIn = (unspentTxOut) => {
         const txIn = new TxIn();
         txIn.txOutId = unspentTxOut.txOutId;
@@ -549,7 +554,6 @@ module.exports = {
     TxOut,
     getCoinbaseTransaction,
     getPublicKey,
-    hasDuplicates,
     Transaction,
     createTransaction,
 };
