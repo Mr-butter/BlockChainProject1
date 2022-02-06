@@ -16,6 +16,11 @@ const {
   Transaction,
   createTransaction,
 } = require("./transaction");
+const {
+  getTransactionPool,
+  updateTransactionPool,
+  addToTransactionPool,
+} = require("./transactionpool");
 const _ = require("lodash");
 
 // in seconds (블록 생성 간격 10초)
@@ -97,6 +102,7 @@ function createGenesisBlock() {
 
 let Blocks = [createGenesisBlock()];
 let unspentTxOuts = [];
+// let unspentTxOuts = processTransactions(Blocks[0].body, [], 0);
 
 function getBlocks() {
   return Blocks;
@@ -108,22 +114,22 @@ function getLastBlock() {
 
 function createHash(block) {
   const {
-    version,
-    index,
-    previousHash,
-    timestamp,
-    merkleRoot,
-    difficulty,
-    nonce,
+      version,
+      index,
+      previousHash,
+      timestamp,
+      merkleRoot,
+      difficulty,
+      nonce,
   } = block.header;
   const blockString =
-    version +
-    index +
-    previousHash +
-    timestamp +
-    merkleRoot +
-    difficulty +
-    nonce;
+      version +
+      index +
+      previousHash +
+      timestamp +
+      merkleRoot +
+      difficulty +
+      nonce;
   const hash = cryptojs.SHA256(blockString).toString();
   return hash;
 }
@@ -138,13 +144,13 @@ function calculateHash(
   nonce
 ) {
   const blockString =
-    version +
-    index +
-    previousHash +
-    timestamp +
-    merkleRoot +
-    difficulty +
-    nonce;
+      version +
+      index +
+      previousHash +
+      timestamp +
+      merkleRoot +
+      difficulty +
+      nonce;
   const hash = cryptojs.SHA256(blockString).toString();
   return hash;
 }
@@ -178,23 +184,61 @@ function nextBlock(bodyData) {
   } else {
     return null;
   }
+  //   if (addBlockToChain(newBlock)) {
+  //     broadcast(responseLatestMsg());
+  //     return newBlock;
+  // } else {
+  //     return null;
+  // }
 }
+
+const addBlockToChain = (newBlock) => {
+  if (isValidNewBlock(newBlock, getLastBlock())) {
+      const retVal = processTransactions(
+          newBlock.body,
+          getUnspentTxOuts(),
+          newBlock.header.index
+      );
+      if (retVal === null) {
+          console.log("block is not valid in terms of transactions");
+          return false;
+      } else {
+          Blocks.push(newBlock);
+          setUnspentTxOuts(retVal);
+          updateTransactionPool(unspentTxOuts);
+          return true;
+      }
+  }
+  return false;
+};
 
 function replaceChain(newBlocks) {
   const { broadcast, responseLatestMsg } = require("./p2pServer");
+  const aUnspentTxOuts = isValidChain(newBlocks);
+
   console.log(isValidChain(newBlocks));
+
   if (isValidChain(newBlocks)) {
-    if (
-      newBlocks.length > Blocks.length ||
-      (newBlocks.length === Blocks.length && random.boolean())
-    ) {
-      Blocks = newBlocks;
-      broadcast(responseLatestMsg());
-    }
+      if (
+          newBlocks.length > Blocks.length ||
+          (newBlocks.length === Blocks.length && random.boolean())
+      ) {
+          Blocks = newBlocks;
+          setUnspentTxOuts(aUnspentTxOuts);
+          updateTransactionPool(unspentTxOuts);
+          broadcast(responseLatestMsg());
+      }
   } else {
-    console.log("받은 원장에 문제가 있음");
+      console.log("받은 원장에 문제가 있음");
   }
 }
+
+const getAccumulatedDifficulty = (aBlockchain) => {
+  return aBlockchain
+      .map((block) => block.difficulty)
+      .map((difficulty) => Math.pow(2, difficulty))
+      .reduce((a, b) => a + b);
+};
 
 function hexToBinary(s) {
   const lookupTable = {
@@ -314,34 +358,35 @@ function isValidBlockStructure(block) {
 
 function isValidNewBlock(newBlock, previousBlock) {
   if (isValidBlockStructure(newBlock) === false) {
-    console.log("Invalid Block Structure");
-    return false;
+      console.log("Invalid Block Structure");
+      return false;
   } else if (newBlock.header.index !== previousBlock.header.index + 1) {
-    console.log("Invalid Index");
-    return false;
+      console.log("Invalid Index");
+      return false;
   } else if (createHash(previousBlock) !== newBlock.header.previousHash) {
-    console.log("Invalid previousHash");
-    return false;
+      console.log("Invalid previousHash");
+      return false;
   } else if (
-    (newBlock.body.length === 0 &&
-      "0".repeat(64) !== newBlock.header.merkleRoot) ||
-    (newBlock.body.length !== 0 &&
-      merkle("sha256").sync(newBlock.body).root() !==
-        newBlock.header.merkleRoot)
+      (newBlock.body.length === 0 &&
+          "0".repeat(64) !== newBlock.header.merkleRoot) ||
+      (newBlock.body.length !== 0 &&
+          merkle("sha256").sync(newBlock.body).root() !==
+              newBlock.header.merkleRoot)
   ) {
-    console.log("Invalid merkleRoot");
-    return false;
+      console.log("Invalid merkleRoot");
+      return false;
   } else if (!isValidTimestamp(newBlock, previousBlock)) {
-    console.log("invalid timestamp");
-    return false;
+      console.log("invalid timestamp");
+      return false;
   } else if (
-    !hashMatchesDifficulty(createHash(newBlock), newBlock.header.difficulty)
+      !hashMatchesDifficulty(createHash(newBlock), newBlock.header.difficulty)
   ) {
-    console.log("Invalid hash");
-    return false;
+      console.log("Invalid hash");
+      return false;
   }
   return true;
 }
+
 
 function getCurrentTimestamp() {
   return Math.round(new Date().getTime() / 1000);
@@ -354,20 +399,46 @@ function isValidTimestamp(newBlock, previousBlock) {
   );
 }
 
-function isValidChain(newBlocks) {
-  if (JSON.stringify(newBlocks[0]) !== JSON.stringify(Blocks[0])) {
-    return false;
+const isValidChain = (blockchainToValidate) => {
+  console.log("isValidChain:");
+  console.log(JSON.stringify(blockchainToValidate));
+  const isValidGenesis = (block) => {
+      return JSON.stringify(block) === JSON.stringify(genesisBlock);
+  };
+
+  if (!isValidGenesis(blockchainToValidate[0])) {
+      return null;
   }
-  var tempBlocks = [newBlocks[0]];
-  for (var i = 1; i < newBlocks.length; i++) {
-    if (isValidNewBlock(newBlocks[i], tempBlocks[i - 1])) {
-      tempBlocks.push(newBlocks[i]);
-    } else {
-      return false;
-    }
+  /*
+Validate each block in the chain. The block is valid if the block structure is valid
+  and the transaction are valid
+ */
+  let aUnspentTxOuts = [];
+
+  for (let i = 0; i < blockchainToValidate.length; i++) {
+      const currentBlock = blockchainToValidate[i];
+      if (
+          i !== 0 &&
+          !isValidNewBlock(
+              blockchainToValidate[i],
+              blockchainToValidate[i - 1]
+          )
+      ) {
+          return null;
+      }
+
+      aUnspentTxOuts = processTransactions(
+          currentBlock.body,
+          aUnspentTxOuts,
+          currentBlock.header.index
+      );
+      if (aUnspentTxOuts === null) {
+          console.log("invalid transactions in blockchain");
+          return null;
+      }
   }
-  return true;
-}
+  return aUnspentTxOuts;
+};
 //////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////
@@ -428,34 +499,45 @@ async function addBlock(newBlock) {
 // }
 
 function addBlockWithTransaction(newBlock) {
+  const transactionpool_func = require("./transactionpool");
   const retVal = processTransactions(
-    newBlock.body,
-    unspentTxOuts,
-    newBlock.header.index
+      newBlock.body,
+      unspentTxOuts,
+      newBlock.header.index
   );
   if (retVal === null) {
-    return false;
+      return false;
   } else {
-    Blocks.push(newBlock);
-    unspentTxOuts = retVal;
-    return newBlock;
+      Blocks.push(newBlock);
+      setUnspentTxOuts(retVal);
+      transactionpool_func.updateTransactionPool(unspentTxOuts);
+      return newBlock;
   }
 }
 
-function minning(message) {
-  const p2pServer_func = require("./p2pServer");
-  switch (message) {
-    case "on":
-      p2pServer_func.connectToPeer(6001);
-      setInterval(() => {
-        addBlock(nextBlock(["bodyData"]));
-      }, 3000);
-      return;
-    case "connectPeer":
-      p2pServer_func.connectToPeer(6001);
-      return;
-    default:
-      return;
+// function minning(message) {
+//   const p2pServer_func = require("./p2pServer");
+//   switch (message) {
+//     case "on":
+//       p2pServer_func.connectToPeer(6001);
+//       setInterval(() => {
+//         addBlock(nextBlock(["bodyData"]));
+//       }, 3000);
+//       return;
+//     case "connectPeer":
+//       p2pServer_func.connectToPeer(6001);
+//       return;
+//     default:
+//       return;
+//   }
+// }
+function minning(message, publicKey) {
+  if (message === "on") {
+      return (mineblock = setInterval(() => {
+          generateNextBlock(publicKey);
+      }, 3000));
+  } else {
+      return clearInterval(mineblock);
   }
 }
 
@@ -464,7 +546,7 @@ const generateNextBlock = (userPublicKey) => {
     userPublicKey,
     getLastBlock().header.index + 1
   );
-  const blockData = [coinbaseTx];
+  const blockData = [coinbaseTx].concat(getTransactionPool());
   return nextBlock(blockData);
 };
 
@@ -476,21 +558,22 @@ const generatenextBlockWithTransaction = (
   const userPublicKey = getPublicKey(myAddress);
 
   if (!isValidAddress(receiverAddress)) {
-    throw Error("invalid address");
+      throw Error("invalid address");
   }
   if (typeof amount !== "number") {
-    throw Error("invalid amount");
+      throw Error("invalid amount");
   }
   const coinbaseTx = getCoinbaseTransaction(
-    userPublicKey,
-    getLastBlock().header.index + 1
+      userPublicKey,
+      getLastBlock().header.index + 1
   );
 
   const tx = createTransaction(
-    receiverAddress,
-    amount,
-    myAddress,
-    unspentTxOuts
+      receiverAddress,
+      amount,
+      myAddress,
+      getUnspentTxOuts(),
+      getTransactionPool()
   );
   const blockData = [coinbaseTx, tx];
   return nextBlock(blockData);
@@ -501,12 +584,31 @@ function minningWithTransaction(userPublicKey) {
 }
 
 const sendTransaction = (myAddress, receiverAddress, amount) => {
+  // const { broadCastTransactionPool } = require("./p2pServer");
+
   addBlockWithTransaction(
     generatenextBlockWithTransaction(myAddress, receiverAddress, amount)
   );
+
+  // const tx = createTransaction(
+  //   getPublicKey(receiverAddress),
+  //   amount,
+  //   myAddress,
+  //   getUnspentTxOuts(),
+  //     getTransactionPool()
+  // );
+  // //tx는 보내는 금액이 포함되어 새로 생성된 트랜잭션. 제네시스블럭과 내가 채굴한 내역이 들어있는 getUnspentTxOuts()
+  // addToTransactionPool(tx, getUnspentTxOuts());
+  // broadCastTransactionPool();
+  // return tx;
+
 };
 
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
+const setUnspentTxOuts = (newUnspentTxOut) => {
+    console.log("replacing unspentTxouts with: %s", newUnspentTxOut);
+    unspentTxOuts = newUnspentTxOut;
+};
 
 const findUnspentTxOuts = (ownerAddress, unspentTxOuts) => {
   return _.filter(unspentTxOuts, (uTxO) => uTxO.address === ownerAddress);
@@ -521,6 +623,9 @@ const getBalance = (address, unspentTxOuts) => {
 const getAccountBalance = (userPublicKey) => {
   return getBalance(userPublicKey, getUnspentTxOuts());
 };
+// const handleReceivedTransaction = (transaction) => {
+//   addToTransactionPool(transaction, getUnspentTxOuts());
+// };
 
 module.exports = {
   Blocks,

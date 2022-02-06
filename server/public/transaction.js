@@ -391,20 +391,28 @@ const getCoinbaseTransaction = (address, blockIndex) => {
     return t;
 };
 
+// const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
+//     console.log('\n5.프로세스트랜잭션 진입');
+
+//     // 위 validateTransaction에 추가해서 주석처리
+//     // if (!isValidTransactionsStructure(aTransactions)) {
+//     //     return null;
+//     // }
+
+//     if (!validateBlockTransactions(aTransactions, aUnspentTxOuts, blockIndex)) {
+//         console.log('invalid block transactions');
+//         return null;
+//     }
+//     return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);
+// };
 const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
-    console.log('\n5.프로세스트랜잭션 진입');
-
-    // 위 validateTransaction에 추가해서 주석처리
-    // if (!isValidTransactionsStructure(aTransactions)) {
-    //     return null;
-    // }
-
     if (!validateBlockTransactions(aTransactions, aUnspentTxOuts, blockIndex)) {
-        console.log('invalid block transactions');
-        return null;
+      console.log("invalid block transactions");
+      return null;
     }
     return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);
-};
+  };
+  
 
 const getPublicKey = (aPrivateKey) => {
     return ec.keyFromPrivate(aPrivateKey, "hex").getPublic().encode("hex");
