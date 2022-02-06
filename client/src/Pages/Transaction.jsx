@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, FormControl, OutlinedInput, TextField } from "@mui/material";
+import { Button, FormControl, OutlinedInput, Paper, Tab, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TextField } from "@mui/material";
 import styled from "styled-components";
 import axios from "axios";
+import { DataGrid } from '@mui/x-data-grid';
 import { useHistory } from "react-router";
 
 const CssTextField = styled(TextField)({
@@ -30,17 +31,31 @@ const CssTextField = styled(TextField)({
   },
 });
 
+const columns = [
+  { id: 'txOutId', label: 'txOutId', minWidth: 170 },
+  { id: 'txOutIndex', label: 'txOutIndex', minWidth: 50 },
+  { id: 'address', label: 'address', minWidth: 170 },
+  { id: 'amount', label: 'amount', minWidth: 100 },
+];
+
 const Transaction = () => {
   const userState = useSelector((state) => state.user);
   const ws = useRef(null);
   const [socketMessage, setSocketMessage] = useState(null);
+  const [TransactionPool, setTransactionPool] = useState([]);
+  const reverse = [...TransactionPool].reverse();
+  // const [txOutId, setTxOutId] = useState("");
+  // const [txOutIndex, setTxOutIndex] = useState("");
+  // const [address, setAddress] = useState("");
+  // const [amountpool, setAmountpool] = useState("");
+
   const serverPort = parseInt(window.location.port) + 2000;
   const serverUrl = `http://127.0.0.1:${serverPort}`;
 
   const history = useHistory();
   const dispatch = useDispatch();
-
-  // 객체를 업데이트하는 useState
+  ///////////////////////////////////////////////////////////
+  // 아래는 입력창 객체를 업데이트하는 useState
   const [fromAddress, setFromAddress] = useState("04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534b");
 
   const getFromAddress = (event) => {
@@ -59,6 +74,7 @@ const Transaction = () => {
   // function getFromAddress(event) {
   //   setGetFromAddress(event.currentTarget.value);
   // }
+  /////////////////////////////////////////////////////////////
 
   useEffect(() => {
     if (socketMessage !== null) {
@@ -68,13 +84,11 @@ const Transaction = () => {
             setSocketMessage(reciveData);
             if (reciveData !== null) {
                 setSocketMessage(JSON.parse(JSON.parse(e.data).data)[0]);
-                // setBlockIndex(socketMessage.header.index);
-                // setPrevHash(socketMessage.header.previousHash);
-                // setblockMerkleRoot(socketMessage.header.merkleRoot);
-                // setBlockTimestamp(socketMessage.header.timestamp);
-                // setBlockDifficulty(socketMessage.header.difficulty);
-                // setBlocktNonce(socketMessage.header.nonce);
-                // setBlocktData(socketMessage.body);
+                setSocketMessage(socketMessage.header.index);
+                // setTxOutId(socketMessage.header.txOutId);
+                // setTxOutIndex(socketMessage.header.txOutIndex);
+                // setAddress(socketMessage.header.address);
+                // setAmountpool(socketMessage.header.amount);
                 document.getElementById("socket_writefield").innerText =
                     JSON.stringify(socketMessage);
             }
@@ -106,7 +120,7 @@ const Transaction = () => {
           .then((res) => {
               const data = JSON.stringify(res.data.message);
               // console.log(res.data.message);
-              document.getElementById("writefield").innerText = data;
+              document.getElementById("poolWritefield").innerText = data;
           });
   }
 
@@ -135,9 +149,12 @@ const Transaction = () => {
     axios.post(`${serverUrl}/getTransactionPool`).then((res) => {
         const data = res.data;
         console.log(data);
-        document.getElementById("writefield").innerText =
-            JSON.stringify(data);
-    });
+        // document.getElementById("poolWritefield").innerText =
+        //     JSON.stringify(data);
+            setTransactionPool(data);
+    })
+    .then((res) => setTransactionPool(res.data))
+    .catch((error) => console.error(`ERROR: ${error}`));
   }
 
   // function getUserAmount(userAddress) {
@@ -330,15 +347,57 @@ const Transaction = () => {
                     >
                         get TransactionPool
                     </Button>
-                <TextField
+
+              <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                 </TableRow>
+                </TableHead>
+                <TableBody>
+                {reverse.map((data) => (
+                            <TableRow
+                      sx={{
+                        padding: "0px 0px",
+                        borderRight: "2px solid black",
+                        backgroundColor: "#5c5c5c",
+                        fontSize: "1.1rem",
+                      }}
+                    >
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.txOutId}
+                      </TableCell>
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.txOutIndex}
+                      </TableCell>
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.address}
+                      </TableCell>
+                      <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        {data.txOutIndex}
+                      </TableCell>
+                      <td>{data.txOutId}</td>
+                      <td>{data.txOutIndex}</td>
+                      <td>{data.address}</td>
+                      <td>{data.txOutIndex}</td>
+                  </TableRow>
+                ))}
+                </TableBody>
+                </Table>
+              </Paper>
+                <div id="socket_writefield"></div>
+                <textfild
                   defaultValue="No transactions in transaction pool"
-                  id="socket_writefield"
-                  style={{
-                    width: "800px",
-                    height: "50px",
-                    padding: "10px",
-                  }}
-                  inputProps={{ style: { fontFamily: 'Arial', padding: "17px 15px"}}}
+                  id="poolWritefield"
                 />
               <div className="card__footer"></div>
             </div>

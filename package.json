@@ -1,8 +1,8 @@
 {
   "scripts": {
     "server1": "export HTTP_PORT=5001 && npm start --prefix server",
-    "server2": "export HTTP_PORT=5002 && npm start --prefix server",
-    "server3": "export HTTP_PORT=5003 && npm start --prefix server",
+    "server2": "export HTTP_PORT=5002 && export PRIVATE_KEY=wallet1 && npm start --prefix server",
+    "server3": "export HTTP_PORT=5003 && export PRIVATE_KEY=wallet2 && npm start --prefix server",
     "client1": "export PORT=3001 && npm start --prefix client",
     "client2": "export PORT=3002 && npm start --prefix client",
     "client3": "export PORT=3003 && npm start --prefix client",

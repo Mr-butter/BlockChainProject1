@@ -18,9 +18,12 @@ const {
 } = require("./transaction");
 const _ = require("lodash");
 
-const BLOCK_GENERATION_INTERVAL = 10; //단위시간 초
+// in seconds (블록 생성 간격 10초)
+const BLOCK_GENERATION_INTERVAL = 10;
+// in blocks (난이도 조절 간격 블록 10개당)
 const DIIFFICULTY_ADJUSTMENT_INTERVAL = 10;
 
+// 블록 구조 정의
 class Block {
   constructor(header, body) {
     this.header = header;
@@ -48,10 +51,24 @@ class BlockHeader {
   }
 }
 
+// 버전정보
 function getVersion() {
   const package = fs.readFileSync("package.json");
   return JSON.parse(package).version;
 }
+
+// 제네시스 트랜잭션
+const genesisTransaction = {
+  txIns: [{ signature: "", txOutId: "", txOutIndex: 0 }],
+  txOuts: [
+      {
+          address:
+              "04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534a",
+          amount: 50000,
+      },
+  ],
+  id: "b83d939b523ed0464ffb579d49e3eb62503f034c018a54b827c3a616253d22d3",
+};
 
 function createGenesisBlock() {
   const version = getVersion();
@@ -59,25 +76,24 @@ function createGenesisBlock() {
   const previousHash = "0".repeat(64);
   const timestamp = 1231006505;
 
-  const body = [
-    "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks",
-  ];
+  const body = [genesisTransaction];
   const tree = merkle("sha256").sync(body);
   const merkleRoot = tree.root() || "0".repeat(64);
   const difficulty = 0;
   const nonce = 0;
 
   const header = new BlockHeader(
-    version,
-    index,
-    previousHash,
-    timestamp,
-    merkleRoot,
-    difficulty,
-    nonce
+      version,
+      index,
+      previousHash,
+      timestamp,
+      merkleRoot,
+      difficulty,
+      nonce
   );
   return new Block(header, body);
 }
+
 
 let Blocks = [createGenesisBlock()];
 let unspentTxOuts = [];
