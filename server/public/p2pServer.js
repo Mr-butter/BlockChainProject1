@@ -231,7 +231,7 @@ function handleBlockChainResponse(message) {
   if (latestReceiveBlock.header.index > latesMyBlock.header.index) {
     // 내 블록보다 긴것으로 추정되는 블록을 받은것 같아 비교
     console.log('blockchain possibly behind. We got: '
-      + latestBlockHeld.index + ' Peer got: ' + latestReceiveBlock.index);
+      + latesMyBlock.index + ' Peer got: ' + latestReceiveBlock.index);
     // 받은 마지막 블록의 이전 해시값이 내 마지막 블럭일 때
     // 내 마지막 블록의 해시랑 전달받은 마지막 블록의 이전해시가 같을때
     if (

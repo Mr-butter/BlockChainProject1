@@ -159,15 +159,24 @@ const genesisBlock = createGenesisBlock();
 
 function nextBlock(bodyData) {
   const { broadcast, responseLatestMsg } = require("./p2pServer");
+
+  // 새 블록 생성, 가장 최근블록이 이전블록
   const prevBlock = getLastBlock();
+  console.log('\n4. 코인베이스트랜잭션을 블록데이터에 담는다.');
+  console.log('///////////////////////////////////////');
+  console.log("\n2. 다음 블럭 생성 함수 : ", bodyData);
 
   const version = getVersion();
   const index = prevBlock.header.index + 1;
   const previousHash = createHash(prevBlock);
+  // 다음 블록이 생성되는 시간 = generateRawNextBlock함수가 작동되는 시간
   const timestamp = Math.round(new Date().getTime() / 1000);
   const tree = merkle("sha256").sync(bodyData);
   const merkleRoot = tree.root() || "0".repeat(64);
+
+    // 전체 블록체인을 인자로 해서 difficulty를 가져옴.
   const difficulty = getDifficulty(getBlocks());
+  console.log("difficulty추가 : ", difficulty);
 
   const newBlock = findBlock(
     version,
@@ -178,6 +187,8 @@ function nextBlock(bodyData) {
     difficulty,
     bodyData
   );
+  //chapter3
+  // 블록체인에 채굴한 블록 추가하고 채굴한 블록 전파하기
   if (isValidNewBlock(newBlock, prevBlock)) {
     broadcast(responseLatestMsg());
     return newBlock;
@@ -192,17 +203,30 @@ function nextBlock(bodyData) {
   // }
 }
 
+// 새 블록 블록체인에 추가하기
 const addBlockToChain = (newBlock) => {
+  console.log('\n3. addBlockToChain에 진입\n', newBlock);
+
+  // 새블록을 검증해서 정상이면
   if (isValidNewBlock(newBlock, getLastBlock())) {
+      // 새 블록에 들어갈 트랜잭션들을 검증하고 (processTransactions)
+      // 기존 미사용 트랜잭션 아웃풋 목록(uTxO공용장부)에서 일어난 거래들을
+      // 계산해서 공용장부이용, 고객들 잔고 갱신해서 retVal변수에 담기
       const retVal = processTransactions(
           newBlock.body,
           getUnspentTxOuts(),
           newBlock.header.index
       );
+
+      // 새블록에 들어갈 공용장부가 null일 경우
       if (retVal === null) {
-          console.log("block is not valid in terms of transactions");
+          console.log('\n블록생성 실패/트랜잭션쪽에 문제가 있습니다.');
           return false;
       } else {
+          console.log('\n블록이 성공적으로 생성됩니다.');
+          // 이상이 없다면 블록체인에 새 블록을 추가하고
+          // 내가 가진 기존 공용장부를 갱신한 공용장부로 최신화
+          // 최신화된 공용징부로 트랜잭션 Pool갱신
           Blocks.push(newBlock);
           setUnspentTxOuts(retVal);
           updateTransactionPool(unspentTxOuts);
@@ -212,27 +236,36 @@ const addBlockToChain = (newBlock) => {
   return false;
 };
 
+// 블록체인 교체, 전달하기
 function replaceChain(newBlocks) {
   const { broadcast, responseLatestMsg } = require("./p2pServer");
-  const aUnspentTxOuts = isValidChain(newBlocks);
-
   console.log(isValidChain(newBlocks));
 
-  if (isValidChain(newBlocks)) {
-      if (
-          newBlocks.length > Blocks.length ||
-          (newBlocks.length === Blocks.length && random.boolean())
-      ) {
-          Blocks = newBlocks;
-          setUnspentTxOuts(aUnspentTxOuts);
-          updateTransactionPool(unspentTxOuts);
-          broadcast(responseLatestMsg());
-      }
+  // 전달받은 블록체인, 그안의 트랜잭션들을 검증후 그것들로 만든 공용장부를 aUnspentTxOuts 변수에 저장
+  const aUnspentTxOuts = isValidChain(newBlocks);
+  // 공용장부 상태가 null이 아닌지 확인용 변수 validChiain (true/false)
+  const validChain = aUnspentTxOuts !== null;
+
+  // 공용장부가 비어있지 않고 전달받은 블록체인의 누적난이도가 내가가진 블록체인의 누적난이도보다 높으면
+  if (
+    validChain &&
+    getAccumulatedDifficulty(newBlocks) > getAccumulatedDifficulty(getBlockchain())) {
+      console.log(`Received blockchain is valid. Replacing current blockchain with received blockchain 
+      / 전달받은 블록체인으로 교체했어요!`);
+      // 내 블록체인을 전달받은 블록체인으로 교체
+      Blocks = newBlocks;
+      // 공용장부도 전달받은 블록체인으로부터 만든 공용장부로 교체
+      setUnspentTxOuts(aUnspentTxOuts);
+      // 새 공용장부로 트랜잭션Pool 갱신
+      updateTransactionPool(unspentTxOuts);
+      // 최신화된 블록체인의 마지막 블록 알리기
+      broadcast(responseLatestMsg());
   } else {
-      console.log("받은 원장에 문제가 있음");
+    console.log("Received blockchain invalid/전달받은 블록체인보다 내 블록체인의 누적 난이도가 높으니 내 블록체인을 그대로 유지합니다");
   }
 }
 
+//chapter4 추가
 const getAccumulatedDifficulty = (aBlockchain) => {
   return aBlockchain
       .map((block) => block.difficulty)
@@ -271,12 +304,15 @@ function hexToBinary(s) {
   return ret;
 }
 
+// 찾은 해시값을 2진수로 변환해 난이도 만큼 앞에 0이 채워졌는지 대조하기
 function hashMatchesDifficulty(hash, difficulty) {
+  // 블록의 해시값이 난이도 difficulty를 만족하는지 확인하는 코드
   const hashBinary = hexToBinary(hash.toUpperCase());
   const requirePrefix = "0".repeat(difficulty);
   return hashBinary.startsWith(requirePrefix);
 }
 
+//chapter2 추가
 function findBlock(
   currentVersion,
   nextIndex,
@@ -315,6 +351,8 @@ function findBlock(
   }
 }
 
+// 블록 채굴의 난이도 조정 => difficulty 값을 조정
+// 즉 채굴 간격을 유지하기 위해 difficulty값을 조정
 function getDifficulty(blocks) {
   const lastBlock = blocks[blocks.length - 1];
   if (
@@ -326,6 +364,7 @@ function getDifficulty(blocks) {
   return lastBlock.header.difficulty;
 }
 
+// 마지막 블록이랑 10개 이전 블록 비교해 난이도 조절
 function getAdjustDifficulty(lastBlock, blocks) {
   const prevAdjustmentBlock =
     blocks[blocks.length - DIIFFICULTY_ADJUSTMENT_INTERVAL];
@@ -356,15 +395,17 @@ function isValidBlockStructure(block) {
   );
 }
 
+// 이전 블록과 비교해서 알맞은 블록인지 검증
+// 새 블록 추가할때 (addBlockToChain), 블록체인 교체할때(replaceChain)이 사용된다.
 function isValidNewBlock(newBlock, previousBlock) {
   if (isValidBlockStructure(newBlock) === false) {
-      console.log("Invalid Block Structure");
+    console.log("invalid structure/블록검증실패: 블록구조가 잘못됨.", JSON.stringify(newBlock));
       return false;
   } else if (newBlock.header.index !== previousBlock.header.index + 1) {
-      console.log("Invalid Index");
+    console.log("invalid index/블록검증실패: 인덱스가 잘못됐어요");
       return false;
   } else if (createHash(previousBlock) !== newBlock.header.previousHash) {
-      console.log("Invalid previousHash");
+    console.log("invalid previoushash/블록검증실패: 이전블록의 해시와 새블록의 해시가 달라요");
       return false;
   } else if (
       (newBlock.body.length === 0 &&
@@ -373,21 +414,22 @@ function isValidNewBlock(newBlock, previousBlock) {
           merkle("sha256").sync(newBlock.body).root() !==
               newBlock.header.merkleRoot)
   ) {
-      console.log("Invalid merkleRoot");
+    console.log("Invalid merkleRoot//블록검증실패: 머클루트 재확인바랍니다.");
       return false;
   } else if (!isValidTimestamp(newBlock, previousBlock)) {
-      console.log("invalid timestamp");
+    console.log("invalid timestamp/블록검증실패: 타임스탬프가 잘못됐어요");
       return false;
   } else if (
       !hashMatchesDifficulty(createHash(newBlock), newBlock.header.difficulty)
   ) {
-      console.log("Invalid hash");
+    console.log("Invalid hash/블록검증실패: 해시값 재확인바랍니다.");
       return false;
   }
+  console.log("\n4.애드블럭체인시 유효성 검사 진입 후 통과");
   return true;
 }
 
-
+// 현재시간을 타임스템프로
 function getCurrentTimestamp() {
   return Math.round(new Date().getTime() / 1000);
 }
@@ -399,13 +441,15 @@ function isValidTimestamp(newBlock, previousBlock) {
   );
 }
 
+// 전달받은 블록체인과 그 안의 트랜잭션들을 검증하고 그로부터 만들어낸 공용장부 반환하기
 const isValidChain = (blockchainToValidate) => {
   console.log("isValidChain:");
   console.log(JSON.stringify(blockchainToValidate));
+    // 내가가진 제네시스블록과 전달받은 블록체인의 제네시스 블록이 같으면 true
   const isValidGenesis = (block) => {
       return JSON.stringify(block) === JSON.stringify(genesisBlock);
   };
-
+  // 전달받은 블록체인과 내 제네시스 블록이 동일한지 검증
   if (!isValidGenesis(blockchainToValidate[0])) {
       return null;
   }
@@ -413,11 +457,14 @@ const isValidChain = (blockchainToValidate) => {
 Validate each block in the chain. The block is valid if the block structure is valid
   and the transaction are valid
  */
+  // 새로만들 공용장부
   let aUnspentTxOuts = [];
 
+  // 전달받은 블록체인의 길이만큼 돌리기
   for (let i = 0; i < blockchainToValidate.length; i++) {
       const currentBlock = blockchainToValidate[i];
       if (
+          // 블록들 하나하나 순서대로 정상인지 검사
           i !== 0 &&
           !isValidNewBlock(
               blockchainToValidate[i],
@@ -426,17 +473,19 @@ Validate each block in the chain. The block is valid if the block structure is v
       ) {
           return null;
       }
-
+      // 전달받은 블록들의 트랜잭션들 검사해서 공용장부 갱신
       aUnspentTxOuts = processTransactions(
           currentBlock.body,
           aUnspentTxOuts,
           currentBlock.header.index
       );
+      // 공용장부에 들은게 null이면
       if (aUnspentTxOuts === null) {
           console.log("invalid transactions in blockchain");
           return null;
       }
   }
+  // 전달받은 블록체인으로 만든 공용장부 반환
   return aUnspentTxOuts;
 };
 //////////////////////////////////////////////////////
@@ -498,16 +547,28 @@ async function addBlock(newBlock) {
 //   return false;
 // }
 
+// 새 블록 블록체인에 추가하기
 function addBlockWithTransaction(newBlock) {
+  console.log('\n3. addBlockWithTransaction 진입/나이브에서는 addBlockToChain', newBlock);
   const transactionpool_func = require("./transactionpool");
+
+  // 새블록에 들어갈 트랜잭션들을 검증 (processTransactions)
+  // 기존 미사용 트랜잭션아웃풋 목록(uTxO/공용장부)에서 일어난 거래들을 계산해서 
+  // 공용장부이용 고객들 잔고를 갱신 > retVal 변수에 담기
   const retVal = processTransactions(
       newBlock.body,
       unspentTxOuts,
       newBlock.header.index
   );
+    // 새 블록에 들어갈 공용장부가 null인 경우
   if (retVal === null) {
+    console.log('\n블럭 생성 실패/트랜잭션쪽에 문제가 있습니다');
       return false;
   } else {
+    console.log("\n블럭이 성공적으로 생성됩니다.");
+    // 이상 없으면 블록체인에 새 블록을 추가하고
+    // 내가 가진 기존 공용장부 갱신한 공용장부로 최신화
+    // 최신화된 공용장부로 트랜잭션Pool 갱신
       Blocks.push(newBlock);
       setUnspentTxOuts(retVal);
       transactionpool_func.updateTransactionPool(unspentTxOuts);
@@ -541,12 +602,19 @@ function minning(message, publicKey) {
   }
 }
 
+// 새블록 생성 (chapter4 추가된 내용)
 const generateNextBlock = (userPublicKey) => {
+    // 채굴했으니 지갑 공개키를 담은 코인베이스트랜잭션을 생성
+    console.log('\n1. 마인블럭시 generateNextBlock 진입');
+
   const coinbaseTx = getCoinbaseTransaction(
     userPublicKey,
     getLastBlock().header.index + 1
   );
+
+  // 코인베이스 트랜잭션[]이랑 그동안 생성된 트랜잭션[]이랑 concat으로 합쳐서 새블록 생성
   const blockData = [coinbaseTx].concat(getTransactionPool());
+  console.log("&*&*&*generateNextBlock: blockData :", blockData);
   return nextBlock(blockData);
 };
 
@@ -555,6 +623,7 @@ const generatenextBlockWithTransaction = (
   receiverAddress,
   amount
 ) => {
+  console.log('\n1. generatenextBlockWithTransaction 진입');
   const userPublicKey = getPublicKey(myAddress);
 
   if (!isValidAddress(receiverAddress)) {
@@ -583,6 +652,7 @@ function minningWithTransaction(userPublicKey) {
   addBlockWithTransaction(generateNextBlock(userPublicKey));
 }
 
+// 블록체인에 추가하는 대신 트랜잭션 풀에 넣는다. (chapter5 추가)
 const sendTransaction = (myAddress, receiverAddress, amount) => {
   // const { broadCastTransactionPool } = require("./p2pServer");
 
@@ -605,24 +675,49 @@ const sendTransaction = (myAddress, receiverAddress, amount) => {
 };
 
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
+// 미사용 트랜잭션 목록 교체
 const setUnspentTxOuts = (newUnspentTxOut) => {
-    console.log("replacing unspentTxouts with: %s", newUnspentTxOut);
+  console.log("공용장부(unspentTxOuts)를 최신화합니다. replacing unspentTxouts with: %s", newUnspentTxOut);
     unspentTxOuts = newUnspentTxOut;
 };
 
+// 미사용 트랜잭션 찾기
 const findUnspentTxOuts = (ownerAddress, unspentTxOuts) => {
+  // 미사용 트랜잭션에서 요구하는 지갑주소(ownerAddress)와 일치하는
+  // 지갑 주소들 (uTxO.address)찾아서 반환
   return _.filter(unspentTxOuts, (uTxO) => uTxO.address === ownerAddress);
 };
-
+/////////////////////////////////////////////////////////////////////
+// 지갑 잔고 조회
 const getBalance = (address, unspentTxOuts) => {
+  console.log('\n2.getBalance 진입');
+  console.log(`unspentTxOuts :`+unspentTxOuts);
+
+  // 미사용 트랜잭션에서 해당 지갑주소만 찾아서 합치기
+  const test = _(unspentTxOuts)
+  .filter((uTxO) => uTxO.address === address)
+  .map((uTxO) => uTxO.amount)
+  .sum();
+  console.log('tetetetetet\n', test);
+  ////////////////////////////////////////테스트 용
+
+  // filter : 특정 조건을 만족하는 모든 요소를 추출하는 메소드
+  // 입력한 key값이 true인 객체들을 배열로 반환
   return _(findUnspentTxOuts(address, unspentTxOuts))
+    // .filter((uTxO) => uTxO.address === address)
     .map((uTxO) => uTxO.amount)
     .sum();
 };
 
+// 내 지갑 잔고 조회 (chapter4 추가)
 const getAccountBalance = (userPublicKey) => {
+  console.log("\n1.잔고 계산 시작");
+
+  // 미사용 트랜잭션(getUnspentTxOuts)에서 
+  // 내 지갑(getPublicFromWallet)에 해당하는 것을 찾아옴.
   return getBalance(userPublicKey, getUnspentTxOuts());
 };
+
 // const handleReceivedTransaction = (transaction) => {
 //   addToTransactionPool(transaction, getUnspentTxOuts());
 // };
