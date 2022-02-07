@@ -16,10 +16,10 @@ const columns = [
   { id: "index", label: "index", minWidth: 5 },
   { id: "previousHash", label: "previousHash", minWidth: 50 },
   { id: "timestamp", label: "timestamp", minWidth: 20 },
-  { id: "merkleRoot", label: "amount", minWidth: 50 },
-  { id: "difficulty", label: "amount", minWidth: 50 },
-  { id: "nonce", label: "amount", minWidth: 50 },
-  { id: "body", label: "BlockData", minWidth: 50 },
+  { id: "merkleRoot", label: "merkleRoot", minWidth: 50 },
+  { id: "difficulty", label: "difficulty", minWidth: 50 },
+  { id: "nonce", label: "nonce", minWidth: 50 },
+  { id: "body", label: "body", minWidth: 50 },
 ];
 
 const Mining = () => {
@@ -204,34 +204,63 @@ const Mining = () => {
                         <TableCell align="left" style={{ color: "#bbbbbb" }}>
                           {data.header.index}
                         </TableCell>
-                        <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        <TableCell
+                          align="left"
+                          style={{
+                            color: "#bbbbbb",
+                            maxWidth: "240px",
+                            wordBreak: "break-all",
+                          }}
+                        >
                           {data.header.previousHash}
                         </TableCell>
-                        <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        <TableCell
+                          align="left"
+                          style={{
+                            color: "#bbbbbb",
+                            maxWidth: "240px",
+                            wordBreak: "break-all",
+                          }}
+                        >
                           {data.header.merkleRoot}
                         </TableCell>
-                        <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        <TableCell
+                          align="left"
+                          style={{ color: "#bbbbbb", maxWidth: "100px" }}
+                        >
                           {data.header.timestamp}
                         </TableCell>
-                        <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        <TableCell
+                          align="left"
+                          style={{ color: "#bbbbbb", maxWidth: "100px" }}
+                        >
                           {data.header.difficulty}
                         </TableCell>
-                        <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                        <TableCell
+                          align="left"
+                          style={{ color: "#bbbbbb", maxWidth: "100px" }}
+                        >
                           {data.header.nonce}
                         </TableCell>
                         {reverse.map((bodydata) => (
-                          <TableCell align="left" style={{ color: "#bbbbbb" }}>
+                          <TableCell
+                            align="left"
+                            style={{
+                              color: "#bbbbbb",
+                              maxWidth: "100px",
+                              wordBreak: "break-all",
+                            }}
+                          >
                             {JSON.stringify(bodydata.id)}
                           </TableCell>
                         ))}
-                        <td>{data.header.index}</td>
+                        {/* <td>{data.header.index}</td>
                         <td>{data.header.previousHash}</td>
                         <td>{data.header.merkleRoot}</td>
                         <td>{data.header.timestamp}</td>
                         <td>{data.header.difficulty}</td>
                         <td>{data.header.nonce}</td>
-                        <td>{data.header.nonce}</td>
-                        <td>{JSON.stringify(data.body)}</td>
+                        <td>{JSON.stringify(data.body)}</td> */}
                       </TableRow>
                     ))}
                   </TableBody>
