@@ -77,7 +77,7 @@ router.post("/getTransactionPool", (req, res) => {
 
 router.post("/getUnspentTxOuts", (req, res) => {
     // const p2pServer_func = require("../public/p2pServer");
-    res.send(transactionpool_func.getTransactionPool());
+    res.send(getTransactionPool());
 });
 
 router.post("/version", (req, res) => {

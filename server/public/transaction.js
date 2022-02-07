@@ -106,20 +106,22 @@ const updateUnspentTxOuts = (aTransactions, aUnspentTxOuts) => {
     console.log('5.프로세스 트랜잭션 통과 후 updateUnspentTxOuts 진입');
     console.log('뉴트랜잭션', aTransactions); // Transaction 객체에 id, [txIn], [txOut]
     console.log('aUnspentTxOuts', aUnspentTxOuts); // []
-
     const newUnspentTxOuts = aTransactions
-        .map((t) => {
-            return t.txOuts.map(
-                (txOut, index) =>
-                    new UnspentTxOut(t.id, index, txOut.address, txOut.amount)
+    .map((t) => {
+        return t.txOuts.map(
+            (txOut, index) =>
+            new UnspentTxOut(t.id, index, txOut.address, txOut.amount)
             );
         })
         .reduce((a, b) => a.concat(b), []);
-
-    const consumedTxOuts = aTransactions
+        const consumedTxOuts = aTransactions
         .map((t) => t.txIns)
         .reduce((a, b) => a.concat(b), [])
         .map((txIn) => new UnspentTxOut(txIn.txOutId, txIn.txOutIndex, "", 0));
+        
+        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+        console.log(aUnspentTxOuts);
+        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
     const resultingUnspentTxOuts = aUnspentTxOuts
         .filter(
@@ -411,11 +413,13 @@ const processTransactions = (aTransactions, aUnspentTxOuts, blockIndex) => {
     console.log('\n5.프로세스트랜잭션 진입');
 
     if (!validateBlockTransactions(aTransactions, aUnspentTxOuts, blockIndex)) {
-      console.log("invalid block transactions");
-      return null;
-    }
-    return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);
-  };
+        console.log("invalid block transactions");
+        return null;
+      }
+
+
+      return updateUnspentTxOuts(aTransactions, aUnspentTxOuts);
+};
   
 
 const getPublicKey = (aPrivateKey) => {

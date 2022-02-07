@@ -56,7 +56,8 @@ const Transaction = () => {
   const dispatch = useDispatch();
   ///////////////////////////////////////////////////////////
   // 아래는 입력창 객체를 업데이트하는 useState
-  const [fromAddress, setFromAddress] = useState("04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534b");
+  // const [fromAddress, setFromAddress] = useState("04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534b");
+  const [fromAddress, setFromAddress] = useState("0x23009f380afbb841bf93b7e2d728060041d11fb0");
 
   const getFromAddress = (event) => {
     console.log(event.target)
@@ -143,7 +144,8 @@ const Transaction = () => {
             console.log(res.data.message);
             // document.getElementById("writefield").innerText = data;
         });
-}
+  }
+  
 
   function getTransactionPool() {
     axios.post(`${serverUrl}/getTransactionPool`).then((res) => {
@@ -222,7 +224,7 @@ const Transaction = () => {
                     >
                         피어 연결
                     </Button>
-                    <Button
+                    {/* <Button
                         color="primary"
                         id="inputPort"
                         onClick={() => webon()}
@@ -235,7 +237,7 @@ const Transaction = () => {
                         }}
                     >
                         웹소켓 연결
-                    </Button>
+                    </Button> */}
 
                     {/* <Button
                         color="primary"

@@ -69,7 +69,7 @@ const genesisTransaction = {
       {
           address:
               "04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534a",
-          amount: 50000,
+          amount: 10000,
       },
   ],
   id: "b83d939b523ed0464ffb579d49e3eb62503f034c018a54b827c3a616253d22d3",
@@ -101,9 +101,8 @@ function createGenesisBlock() {
 
 
 let Blocks = [createGenesisBlock()];
-let unspentTxOuts = [];
-// let unspentTxOuts = processTransactions(Blocks[0].body, [], 0);
-
+// let unspentTxOuts = [];
+let unspentTxOuts = processTransactions(Blocks[0].body, [], 0);
 function getBlocks() {
   return Blocks;
 }
@@ -189,18 +188,18 @@ function nextBlock(bodyData) {
   );
   //chapter3
   // 블록체인에 채굴한 블록 추가하고 채굴한 블록 전파하기
-  if (isValidNewBlock(newBlock, prevBlock)) {
-    broadcast(responseLatestMsg());
-    return newBlock;
-  } else {
-    return null;
-  }
-  //   if (addBlockToChain(newBlock)) {
-  //     broadcast(responseLatestMsg());
-  //     return newBlock;
+  // if (isValidNewBlock(newBlock, prevBlock)) {
+  //   broadcast(responseLatestMsg());
+  //   return newBlock;
   // } else {
-  //     return null;
+  //   return null;
   // }
+    if (addBlockToChain(newBlock)) {
+      broadcast(responseLatestMsg());
+      return newBlock;
+  } else {
+      return null;
+  }
 }
 
 // 새 블록 블록체인에 추가하기
@@ -217,7 +216,9 @@ const addBlockToChain = (newBlock) => {
           getUnspentTxOuts(),
           newBlock.header.index
       );
-
+console.log("2222222222222222222222222222222222222222222222222");
+console.log(retVal);
+console.log("2222222222222222222222222222222222222222222222222");
       // 새블록에 들어갈 공용장부가 null일 경우
       if (retVal === null) {
           console.log('\n블록생성 실패/트랜잭션쪽에 문제가 있습니다.');
@@ -232,6 +233,7 @@ const addBlockToChain = (newBlock) => {
           updateTransactionPool(unspentTxOuts);
           return true;
       }
+      
   }
   return false;
 };
@@ -560,6 +562,9 @@ function addBlockWithTransaction(newBlock) {
       unspentTxOuts,
       newBlock.header.index
   );
+  console.log("2222222222222222");
+  console.log(retVal);
+  console.log("2222222222222222");
     // 새 블록에 들어갈 공용장부가 null인 경우
   if (retVal === null) {
     console.log('\n블럭 생성 실패/트랜잭션쪽에 문제가 있습니다');
@@ -649,32 +654,34 @@ const generatenextBlockWithTransaction = (
 };
 
 function minningWithTransaction(userPublicKey) {
-  addBlockWithTransaction(generateNextBlock(userPublicKey));
+  generateNextBlock(userPublicKey);
+  // addBlockWithTransaction(generateNextBlock(userPublicKey));
 }
 
 // 블록체인에 추가하는 대신 트랜잭션 풀에 넣는다. (chapter5 추가)
 const sendTransaction = (myAddress, receiverAddress, amount) => {
-  // const { broadCastTransactionPool } = require("./p2pServer");
+  const { broadCastTransactionPool } = require("./p2pServer");
 
-  addBlockWithTransaction(
-    generatenextBlockWithTransaction(myAddress, receiverAddress, amount)
-  );
-
-  // const tx = createTransaction(
-  //   getPublicKey(receiverAddress),
-  //   amount,
-  //   myAddress,
-  //   getUnspentTxOuts(),
-  //     getTransactionPool()
+  // addBlockWithTransaction(
+  //   generatenextBlockWithTransaction(myAddress, receiverAddress, amount)
   // );
-  // //tx는 보내는 금액이 포함되어 새로 생성된 트랜잭션. 제네시스블럭과 내가 채굴한 내역이 들어있는 getUnspentTxOuts()
-  // addToTransactionPool(tx, getUnspentTxOuts());
-  // broadCastTransactionPool();
-  // return tx;
+
+  const tx = createTransaction(
+    getPublicKey(receiverAddress),
+    amount,
+    myAddress,
+    getUnspentTxOuts(),
+      getTransactionPool()
+  );
+  //tx는 보내는 금액이 포함되어 새로 생성된 트랜잭션. 제네시스블럭과 내가 채굴한 내역이 들어있는 getUnspentTxOuts()
+  addToTransactionPool(tx, getUnspentTxOuts());
+  broadCastTransactionPool();
+  return tx;
 
 };
 
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
+
 // 미사용 트랜잭션 목록 교체
 const setUnspentTxOuts = (newUnspentTxOut) => {
   console.log("공용장부(unspentTxOuts)를 최신화합니다. replacing unspentTxouts with: %s", newUnspentTxOut);
@@ -718,9 +725,9 @@ const getAccountBalance = (userPublicKey) => {
   return getBalance(userPublicKey, getUnspentTxOuts());
 };
 
-// const handleReceivedTransaction = (transaction) => {
-//   addToTransactionPool(transaction, getUnspentTxOuts());
-// };
+const handleReceivedTransaction = (transaction) => {
+  addToTransactionPool(transaction, getUnspentTxOuts());
+};
 
 module.exports = {
   Blocks,
@@ -738,5 +745,6 @@ module.exports = {
   replaceChain,
   minning,
   getUnspentTxOuts,
+  generatenextBlockWithTransaction,
   minningWithTransaction,
 };
