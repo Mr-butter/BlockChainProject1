@@ -69,7 +69,7 @@ const Mining = () => {
               const data = JSON.stringify(res.data.message);
               console.log(data);
               // document.getElementById("poolWritefield").innerText = data;
-              setmineBlockWithTransation(res.data.message);
+              // setmineBlockWithTransation(res.data.message);
           })
           .catch((error) => console.error(`ERROR: ${error}`));
   }

@@ -132,12 +132,12 @@ const Transaction = () => {
     // );
     const receiverAddress = prompt("받으시는 분 주소 맞습니까?", fromAddress)
     // const sendAmounte = Number(prompt("보내실 금액을 입력해주세요", 50));
-    const sendAmounte = Number(prompt("전송 요청하신 금액이 맞습니까?", amount));
+    const sendAmount = Number(prompt("전송 요청하신 금액이 맞습니까?", amount));
     axios
         .post(`${serverUrl}/sendTransation`, {
             myAddress: userState.address,
             receiverAddress: receiverAddress,
-            sendAmounte: sendAmounte,
+            sendAmount: sendAmount,
         })
         .then((res) => {
             // const data = res.data.message;

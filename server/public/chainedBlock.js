@@ -69,7 +69,7 @@ const genesisTransaction = {
       {
           address:
               "04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534a",
-          amount: 10000,
+          amount: 50000,
       },
   ],
   id: "b83d939b523ed0464ffb579d49e3eb62503f034c018a54b827c3a616253d22d3",
@@ -216,9 +216,9 @@ const addBlockToChain = (newBlock) => {
           getUnspentTxOuts(),
           newBlock.header.index
       );
-console.log("2222222222222222222222222222222222222222222222222");
-console.log(retVal);
-console.log("2222222222222222222222222222222222222222222222222");
+      // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+      // console.log(retVal);
+      // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
       // 새블록에 들어갈 공용장부가 null일 경우
       if (retVal === null) {
           console.log('\n블록생성 실패/트랜잭션쪽에 문제가 있습니다.');
@@ -251,7 +251,7 @@ function replaceChain(newBlocks) {
   // 공용장부가 비어있지 않고 전달받은 블록체인의 누적난이도가 내가가진 블록체인의 누적난이도보다 높으면
   if (
     validChain &&
-    getAccumulatedDifficulty(newBlocks) > getAccumulatedDifficulty(getBlockchain())) {
+    getAccumulatedDifficulty(newBlocks) > getAccumulatedDifficulty(getBlocks())) {
       console.log(`Received blockchain is valid. Replacing current blockchain with received blockchain 
       / 전달받은 블록체인으로 교체했어요!`);
       // 내 블록체인을 전달받은 블록체인으로 교체
@@ -661,13 +661,13 @@ function minningWithTransaction(userPublicKey) {
 // 블록체인에 추가하는 대신 트랜잭션 풀에 넣는다. (chapter5 추가)
 const sendTransaction = (myAddress, receiverAddress, amount) => {
   const { broadCastTransactionPool } = require("./p2pServer");
-
+console.log("????????????????????????????????/");
   // addBlockWithTransaction(
   //   generatenextBlockWithTransaction(myAddress, receiverAddress, amount)
   // );
 
   const tx = createTransaction(
-    getPublicKey(receiverAddress),
+    receiverAddress,
     amount,
     myAddress,
     getUnspentTxOuts(),
@@ -688,7 +688,6 @@ const setUnspentTxOuts = (newUnspentTxOut) => {
     unspentTxOuts = newUnspentTxOut;
 };
 
-// 미사용 트랜잭션 찾기
 const findUnspentTxOuts = (ownerAddress, unspentTxOuts) => {
   // 미사용 트랜잭션에서 요구하는 지갑주소(ownerAddress)와 일치하는
   // 지갑 주소들 (uTxO.address)찾아서 반환
@@ -700,18 +699,9 @@ const getBalance = (address, unspentTxOuts) => {
   console.log('\n2.getBalance 진입');
   console.log(`unspentTxOuts :`+unspentTxOuts);
 
-  // 미사용 트랜잭션에서 해당 지갑주소만 찾아서 합치기
-  const test = _(unspentTxOuts)
-  .filter((uTxO) => uTxO.address === address)
-  .map((uTxO) => uTxO.amount)
-  .sum();
-  console.log('tetetetetet\n', test);
-  ////////////////////////////////////////테스트 용
-
   // filter : 특정 조건을 만족하는 모든 요소를 추출하는 메소드
   // 입력한 key값이 true인 객체들을 배열로 반환
   return _(findUnspentTxOuts(address, unspentTxOuts))
-    // .filter((uTxO) => uTxO.address === address)
     .map((uTxO) => uTxO.amount)
     .sum();
 };
@@ -747,4 +737,5 @@ module.exports = {
   getUnspentTxOuts,
   generatenextBlockWithTransaction,
   minningWithTransaction,
+  handleReceivedTransaction,
 };

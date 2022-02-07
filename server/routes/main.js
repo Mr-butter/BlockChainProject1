@@ -40,8 +40,8 @@ router.post("/mineBlockWithTransaction", (req, res) => {
     const key = ec.keyFromPrivate(userAddress, "hex");
     const userPublicKey = key.getPublic().encode("hex");
     chainedBlock_func.minningWithTransaction(userPublicKey);
-    const UnspentTxOuts = chainedBlock_func.getUnspentTxOuts();
-    res.send({ message: UnspentTxOuts });
+    // const UnspentTxOuts = chainedBlock_func.getUnspentTxOuts();
+    // res.send({ message: UnspentTxOuts });
 });
 
 router.post("/getUserAmount", (req, res) => {
@@ -55,14 +55,14 @@ router.post("/getUserAmount", (req, res) => {
 router.post("/sendTransation", (req, res) => {
     const myAddress = req.body.myAddress;
     const receiverAddress = req.body.receiverAddress;
-    const sendAmounte = req.body.sendAmounte;
+    const sendAmount = req.body.sendAmount;
 
-    const userAmount = chainedBlock_func.sendTransaction(
+chainedBlock_func.sendTransaction(
         myAddress,
         receiverAddress,
-        sendAmounte
+        sendAmount
     );
-    res.send({ message: `전체금액 ${userAmount}` });
+    res.send({ message: `전송완료` });
 });
 
 router.post("/getSocket", (req, res) => {

@@ -41,7 +41,7 @@ class UnspentTxOut {
 
 //코인베이스 트랜잭션 : 오직 아웃풋만을 포함, 노드의 첫 트랜잭션
 //코인베이스 아웃풋의 양
-const COINBASE_AMOUNT = 10000;
+const COINBASE_AMOUNT = 50000;
 
 const getTransactionId = (transaction) => {
     // 트랜잭션 아이디 = 트랜잭션의 컨텐트로부터 계산된 해시값
@@ -62,6 +62,8 @@ const getTransactionId = (transaction) => {
 
 const findUnspentTxOut = (transactionId, index, aUnspentTxOuts) => {
     console.log('\n?.findUnspentTxOut 진입');
+    console.log("////??????////?????///???");
+    console.log(aUnspentTxOuts);
     return aUnspentTxOuts.find(
         (uTxO) => uTxO.txOutId === transactionId && uTxO.txOutIndex === index
     );
@@ -118,18 +120,14 @@ const updateUnspentTxOuts = (aTransactions, aUnspentTxOuts) => {
         .map((t) => t.txIns)
         .reduce((a, b) => a.concat(b), [])
         .map((txIn) => new UnspentTxOut(txIn.txOutId, txIn.txOutIndex, "", 0));
-        
-        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-        console.log(aUnspentTxOuts);
-        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
-    const resultingUnspentTxOuts = aUnspentTxOuts
-        .filter(
-            (uTxO) =>
-                !findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts)
-        )
+        console.log("//////////////////////여기까지 진입///////////////////////");
+        console.log(newUnspentTxOuts);
+        const resultingUnspentTxOuts = aUnspentTxOuts
+        .filter(((uTxO) =>
+            !findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts)))
         .concat(newUnspentTxOuts);
-
+        
     return resultingUnspentTxOuts;
 };
 
@@ -281,7 +279,7 @@ const validateBlockTransactions = (
         return false;
     }
     //check for duplicate txIns. Each txIn can be included only once
-    const txIns = _(aTransactions)
+    const txIns= _(aTransactions)
         .map((tx) => tx.txIns)
         .flatten()
         .value();
@@ -510,6 +508,7 @@ const createTransaction = (
     console.log('\n createTransaction 진입 : 블록 생성시 바디데이터에 코인베이스크랜잭션과 함께 담긴다.');
 
     const mypublickey = getPublicKey(myaddress);
+    const receiveAddress = getPublicKey(receiverAddress);
     const myUnspentTxOutsA = unspentTxOuts.filter(
         (uTxO) => uTxO.address === mypublickey
     );
@@ -534,7 +533,7 @@ const createTransaction = (
     const tx = new Transaction();
     tx.txIns = unsignedTxIns;
     tx.txOuts = createTxOuts(
-        receiverAddress,
+        receiveAddress,
         mypublickey,
         amount,
         leftOverAmount
