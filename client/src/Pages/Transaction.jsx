@@ -423,10 +423,10 @@ const Transaction = () => {
                 </Table>
               </Paper>
               <div id="socket_writefield"></div>
-              {/* <textfild
+              <textfild
                 defaultValue="No transactions in transaction pool"
                 id="poolWritefield"
-              /> */}
+              />
               <div className="card__footer"></div>
             </div>
           </div>
