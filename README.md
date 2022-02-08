@@ -163,3 +163,4 @@ Mysql, mariadb (데이터 베이스)
 > > DB자료구조 변경으로 해결 (JSON 형식을 STRING으로 변환)
 
 ## 디렉토리 설명
+# BlockchainTX
