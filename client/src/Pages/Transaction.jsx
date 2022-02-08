@@ -133,7 +133,7 @@ const Transaction = () => {
       .then((res) => {
         const data = JSON.stringify(res.data.message);
         // console.log(res.data.message);
-        document.getElementById("poolWritefield").innerText = data;
+        // document.getElementById("poolWritefield").innerText = data;
       });
   }
 
@@ -159,8 +159,8 @@ const Transaction = () => {
       .then((res) => {
         const data = res.data;
         console.log(data);
-        document.getElementById("poolWritefield").innerText =
-          JSON.stringify(data);
+        // document.getElementById("poolWritefield").innerText =
+        //   JSON.stringify(data);
         setTransactionPool(data);
       })
       .then((res) => setTransactionPool(res.data))
