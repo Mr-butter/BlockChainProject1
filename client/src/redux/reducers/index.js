@@ -6,10 +6,10 @@ import Socket from "./Socket";
 import ThemeReducer from "./ThemeReducer";
 
 const rootReducer = combineReducers({
-    User,
-    Block,
-    Socket,
-    ThemeReducer,
+  User,
+  Block,
+  Socket,
+  ThemeReducer,
 });
 
 export default rootReducer;

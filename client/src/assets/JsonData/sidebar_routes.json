@@ -5,11 +5,6 @@
     "icon": "bx bx-category-alt"
   },
   {
-    "display_name": "Analytics",
-    "route": "/analytics",
-    "icon": "bx bx-bar-chart-alt"
-  },
-  {
     "display_name": "Mining",
     "route": "/mining",
     "icon": "bx bxs-badge-dollar"
@@ -18,10 +13,5 @@
     "display_name": "wallet",
     "route": "/mypage",
     "icon": "bx bx-wallet"
-  },
-  {
-    "display_name": "Testing board",
-    "route": "/testing",
-    "icon": "bx bx-bar-chart-alt"
   }
 ]

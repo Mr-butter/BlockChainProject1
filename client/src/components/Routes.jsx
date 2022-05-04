@@ -9,15 +9,15 @@ import Mypage from "../Pages/Mypage";
 import Testingboard from "../Pages/Testingboard";
 
 const Routes = () => {
-    return (
-        <Switch>
-            <Route path="/" exact component={Dashboard} />
-            <Route path="/analytics" component={Analytics} />
-            <Route path="/mining" component={Mining} />
-            <Route path="/mypage" component={Mypage} />
-            <Route path="/testing" component={Testingboard} />
-        </Switch>
-    );
+  return (
+    <Switch>
+      <Route path="/" exact component={Dashboard} />
+      {/* <Route path="/analytics" component={Analytics} /> */}
+      <Route path="/mining" component={Mining} />
+      <Route path="/mypage" component={Mypage} />
+      {/* <Route path="/testing" component={Testingboard} /> */}
+    </Switch>
+  );
 };
 
 export default Routes;
