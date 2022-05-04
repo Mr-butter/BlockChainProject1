@@ -16,6 +16,19 @@ Member.
 
 #### 이민주: [깃허브] (https://github.com/codecocos) :strawberry:
 
+
+### 로컬 환경에서 실행 방법
+port 3306 확인
+export , set 확인 ![image](https://user-images.githubusercontent.com/89626469/166634031-025e80f4-f3b8-43bc-a0a2-2221f5381207.png)
+
+
+cd client
+npm install
+
+cd server
+npm install
+npx sequelize db:create
+
 ## 목차
 
 [1.개요](#개요)
